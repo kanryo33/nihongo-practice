@@ -114,14 +114,12 @@ function startGame(){
     const cards = document.querySelectorAll('.flip-card');
     if(!cards.length) return;
     const box = document.getElementById('cards');
+    const animMs = 300; // 洗牌动画时长（毫秒）
 
-    // 1) 所有卡翻到编号背面
-    cards.forEach(function(c){ c.classList.add('flipped'); });
-
-    // 2) 先读当前位置（FLIP 前）
+    // 1) 先记录当前位置（卡都是正面朝上，汉字可见）
     const rects = Array.from(cards).map(function(c){ return c.getBoundingClientRect(); });
 
-    // 3) 洗牌 DOM 顺序
+    // 2) 洗牌 DOM 顺序
     const shuffled = Array.from(cards);
     for(let i = shuffled.length - 1; i > 0; i--){
         const j = Math.floor(Math.random() * (i+1));
@@ -129,25 +127,43 @@ function startGame(){
     }
     shuffled.forEach(function(c){ box.appendChild(c); });
 
-    // 4) 计算每个卡的位置偏移，瞬时应用（关过渡）
-    const newRects = Array.from(document.querySelectorAll('.flip-card')).map(function(c){ return c.getBoundingClientRect(); });
+    // 3) 计算每个卡的位置偏移，瞬时 translate 回原位（关过渡）
     box.classList.add('shuffling');
-    cards.forEach(function(c, i){
-        const dx = rects[i].left - newRects[i].left;
-        const dy = rects[i].top - newRects[i].top;
+    box.style.transition = 'none';
+    const newCards = Array.from(document.querySelectorAll('.flip-card'));
+    newCards.forEach(function(c, i){
+        const dx = rects[i].left - c.getBoundingClientRect().left;
+        const dy = rects[i].top - c.getBoundingClientRect().top;
+        c.style.transition = 'none';
         c.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
     });
 
-    // 5) 下一帧清掉 transform —— 浏览器从偏移位置动画飞向新位置
+    // 4) 下一帧清 transform + 开过渡 → 卡片快速飞到新位置（汉字还在正面）
     requestAnimationFrame(function(){
         requestAnimationFrame(function(){
-            box.classList.remove('shuffling');
-            cards.forEach(function(c){ c.style.transform = ''; });
+            box.style.transition = '';
+            newCards.forEach(function(c){
+                c.style.transition = 'transform ' + animMs + 'ms cubic-bezier(.25,.8,.25,1)';
+                c.style.transform = '';
+            });
         });
     });
 
-    gameActive = true;
-    document.getElementById('game-state').textContent = '🎮 ゲーム中！ カードをクリックして漢字を確認';
+    // 5) 洗牌动画完成后 → 全部翻到背面 + 重新编号
+    setTimeout(function(){
+        // 翻到背面
+        newCards.forEach(function(c){ c.classList.add('flipped'); });
+        // 根据新 DOM 顺序重新编号 #1, #2, #3...
+        newCards.forEach(function(c, i){
+            c.querySelector('.card-num').textContent = '#' + (i+1);
+        });
+        // 清理内联 transition
+        box.classList.remove('shuffling');
+        newCards.forEach(function(c){ c.style.transition = ''; });
+
+        gameActive = true;
+        document.getElementById('game-state').textContent = '🎮 ゲーム開始！ 生徒に読ませたいカードをタップ';
+    }, animMs + 20);
 }
 
 function resetAll(){
