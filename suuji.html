@@ -95,22 +95,53 @@ function toggleYomi(){
     renderDisplay();
 }
 
-// ======== 数字変換ロジック（校正済み 最大8桁対応）========
+// ======== 数字変換ロジック（日本語式4桁グループ化）========
 const numYomiBase = ["れい","いち","に","さん","よん","ご","ろく","なな","はち","きゅう"];
-const ketaName = ["","じゅう","ひゃく","せん","まん","じゅうまん","ひゃくまん","せんまん"];
+// 4桁グループの名前（右から4桁ごと）
+const groupName = ["", "まん", "おく", "ちょう"]; // 0=なし, 1=万, 2=億, 3=兆
+
+// 4桁グループ内部を読む（例: "903" → "きゅうひゃくさん"）
+function readOneGroup(s4){
+    // s4 は 1-4 桁の文字列（先頭の0は含まない）
+    let res = [];
+    const len = s4.length;
+    for(let i=0; i<len; i++){
+        const d = parseInt(s4[i]);
+        const pos = len - i - 1; // 0=一, 1=十, 2=百, 3=千
+        if(d === 0) continue;
+        res.push(numYomiBase[d]);
+        if(pos === 3) res.push("せん");
+        else if(pos === 2) res.push("ひゃく");
+        else if(pos === 1) res.push("じゅう");
+    }
+    return res.join("");
+}
 
 function numToReading(num){
+    if(num === 0) return "れい";
     let s = num.toString();
-    let res = [];
-    const len = s.length;
-    for(let i=0;i<len;i++){
-        const d = parseInt(s[i]);
-        const ketaIdx = len - i - 1;
-        if(d===0) continue;
-        res.push(numYomiBase[d]);
-        if(ketaIdx>0) res.push(ketaName[ketaIdx]);
+    // 右から4桁ごとに区切る
+    let groups = [];
+    while(s.length > 0){
+        if(s.length <= 4){
+            groups.unshift(s);
+            s = "";
+        } else {
+            groups.unshift(s.slice(-4));
+            s = s.slice(0, -4);
+        }
     }
-    return res.length===0 ? "れい" : res.join(" ");
+    // groups[0] が最上位、groupName[groupIdx] を付ける
+    let result = [];
+    for(let g=0; g<groups.length; g++){
+        const gnum = groups[g];
+        const gval = parseInt(gnum);
+        if(gval === 0) continue; // 0000 グループはスキップ
+        const yomi = readOneGroup(gnum);
+        const groupIdx = groups.length - 1 - g; // 右から何番目のグループか
+        result.push(yomi + groupName[groupIdx]);
+    }
+    return result.join(" ");
 }
 
 // 数字問題
