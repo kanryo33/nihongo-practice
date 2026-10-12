@@ -45,6 +45,7 @@ select:focus{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.15)}
     <label><input type="checkbox" id="basic" checked> 基本五十音</label>
     <label><input type="checkbox" id="daku"> 濁音・半濁音</label>
     <label><input type="checkbox" id="youon"> 拗音</label>
+    <label><input type="checkbox" id="special"> 特殊文字</label>
     <span>一度に表示：</span>
     <select id="countSel">
       <option value="1">1 文字</option>
@@ -108,6 +109,13 @@ const youon = [
   {h:'ぴゃ',k:'ピャ',r:'pya'},{h:'ぴゅ',k:'ピュ',r:'pyu'},{h:'ぴょ',k:'ピョ',r:'pyo'}
 ];
 
+// 特殊文字（小文字・促音・長音記号）
+const special = [
+  {h:'ぁ',k:'ァ',r:'la'},{h:'ぃ',k:'ィ',r:'li'},{h:'ぅ',k:'ゥ',r:'lu'},{h:'ぇ',k:'ェ',r:'le'},{h:'ぉ',k:'ォ',r:'lo'},
+  {h:'っ',k:'ッ',r:'ltu'},
+  {h:'ー',k:'ー',r:'chouon'}
+];
+
 let currentList = [];
 let allFlipped = false; // 记录全体卡片翻转状态
 const box = document.getElementById('box');
@@ -116,6 +124,7 @@ const kataCb = document.getElementById('kata');
 const basicCb = document.getElementById('basic');
 const dakuCb = document.getElementById('daku');
 const youonCb = document.getElementById('youon');
+const specialCb = document.getElementById('special');
 const sel = document.getElementById('countSel');
 
 function getRandomPool(){
@@ -123,6 +132,7 @@ function getRandomPool(){
   if(basicCb.checked) pool = pool.concat(gojuon);
   if(dakuCb.checked) pool = pool.concat(dakuon);
   if(youonCb.checked) pool = pool.concat(youon);
+  if(specialCb.checked) pool = pool.concat(special);
   return pool;
 }
 
@@ -204,6 +214,7 @@ kataCb.onchange = ()=>render();
 basicCb.onchange = ()=>render();
 dakuCb.onchange = ()=>render();
 youonCb.onchange = ()=>render();
+specialCb.onchange = ()=>render();
 
 render();
 </script>
