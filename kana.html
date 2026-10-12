@@ -45,7 +45,7 @@ select:focus{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.15)}
     <label><input type="checkbox" id="basic" checked> 基本五十音</label>
     <label><input type="checkbox" id="daku"> 濁音・半濁音</label>
     <label><input type="checkbox" id="youon"> 拗音</label>
-    <label><input type="checkbox" id="special"> 特殊文字</label>
+    <label><input type="checkbox" id="gai"> 外来語拗音</label>
     <span>一度に表示：</span>
     <select id="countSel">
       <option value="1">1 文字</option>
@@ -109,11 +109,15 @@ const youon = [
   {h:'ぴゃ',k:'ピャ',r:'pya'},{h:'ぴゅ',k:'ピュ',r:'pyu'},{h:'ぴょ',k:'ピョ',r:'pyo'}
 ];
 
-// 特殊文字（小文字・促音・長音記号）
-const special = [
-  {h:'ぁ',k:'ァ',r:'la'},{h:'ぃ',k:'ィ',r:'li'},{h:'ぅ',k:'ゥ',r:'lu'},{h:'ぇ',k:'ェ',r:'le'},{h:'ぉ',k:'ォ',r:'lo'},
-  {h:'っ',k:'ッ',r:'ltu'},
-  {h:'ー',k:'ー',r:'chouon'}
+// 外来語拗音（小文字が他の仮名と組み合わさったもの）
+const gaigoyouon = [
+  {h:'ふぁ',k:'ファ',r:'fa'},{h:'ふぃ',k:'フィ',r:'fi'},{h:'ふぇ',k:'フェ',r:'fe'},{h:'ふぉ',k:'フォ',r:'fo'},{h:'ふゅ',k:'フュ',r:'fyu'},
+  {h:'しぇ',k:'シェ',r:'she'},{h:'じぇ',k:'ジェ',r:'je'},{h:'ちぇ',k:'チェ',r:'che'},
+  {h:'てぃ',k:'ティ',r:'ti'},{h:'てゅ',k:'テュ',r:'tyu'},{h:'でぃ',k:'ディ',r:'di'},{h:'でゅ',k:'デュ',r:'dyu'},{h:'とぅ',k:'トゥ',r:'tu'},{h:'どぅ',k:'ドゥ',r:'du'},
+  {h:'うぃ',k:'ウィ',r:'wi'},{h:'うぇ',k:'ウェ',r:'we'},{h:'うぉ',k:'ウォ',r:'wo'},
+  {h:'くぁ',k:'クァ',r:'kwa'},{h:'くぉ',k:'クォ',r:'kwo'},{h:'くぇ',k:'クェ',r:'kwe'},
+  {h:'つぁ',k:'ツァ',r:'tsa'},{h:'つぃ',k:'ツィ',r:'tsi'},{h:'つぇ',k:'ツェ',r:'tse'},{h:'つぉ',k:'ツォ',r:'tso'},
+  {h:'ゔぁ',k:'ヴァ',r:'va'},{h:'ゔぃ',k:'ヴィ',r:'vi'},{h:'ゔぇ',k:'ヴェ',r:'ve'},{h:'ゔぉ',k:'ヴォ',r:'vo'},{h:'ゔ',k:'ヴ',r:'vu'}
 ];
 
 let currentList = [];
@@ -124,7 +128,7 @@ const kataCb = document.getElementById('kata');
 const basicCb = document.getElementById('basic');
 const dakuCb = document.getElementById('daku');
 const youonCb = document.getElementById('youon');
-const specialCb = document.getElementById('special');
+const gaiCb = document.getElementById('gai');
 const sel = document.getElementById('countSel');
 
 function getRandomPool(){
@@ -132,7 +136,7 @@ function getRandomPool(){
   if(basicCb.checked) pool = pool.concat(gojuon);
   if(dakuCb.checked) pool = pool.concat(dakuon);
   if(youonCb.checked) pool = pool.concat(youon);
-  if(specialCb.checked) pool = pool.concat(special);
+  if(gaiCb.checked) pool = pool.concat(gaigoyouon);
   return pool;
 }
 
@@ -214,7 +218,7 @@ kataCb.onchange = ()=>render();
 basicCb.onchange = ()=>render();
 dakuCb.onchange = ()=>render();
 youonCb.onchange = ()=>render();
-specialCb.onchange = ()=>render();
+gaiCb.onchange = ()=>render();
 
 render();
 </script>
