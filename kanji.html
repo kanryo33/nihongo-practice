@@ -56,6 +56,7 @@ h1{font-size:1.5rem;font-weight:700;text-align:center;margin-bottom:24px;letter-
   <div class="pages-info" id="pages-info"></div>
 </div>
 <div class="cards" id="cards"></div>
+<div style="text-align:center;font-size:12px;color:#9ca3af;margin-top:10px">※ カードをクリック：選択（青枠）→ もう一度クリック：反転表示</div>
 </div>
 
 <script>
@@ -81,14 +82,18 @@ function renderCards(chars){
             + '<div class="flip-card-back"><div class="kana-back">' + c + '</div></div>'
             + '</div>';
         card.addEventListener('click', function(){
-            if(card.classList.contains('flipped')) return; // 已翻转的不再切换选中
-            card.classList.toggle('selected');
-            // 选中时把编号颜色加深，未选中时浅灰
-            var num = card.querySelector('.card-num');
+            if(card.classList.contains('flipped')) return; // 已翻转，不再响应
             if(card.classList.contains('selected')){
-                num.classList.remove('card-num'); num.classList.add('card-num-active');
+                // 已选中 → 第二次点击 = 翻转
+                card.classList.remove('selected');
+                card.classList.add('flipped');
+                var num = card.querySelector('.card-num-active');
+                if(num){ num.classList.remove('card-num-active'); num.classList.add('card-num'); }
             } else {
-                num.classList.remove('card-num-active'); num.classList.add('card-num');
+                // 未选中 → 第一次点击 = 选中
+                card.classList.add('selected');
+                var num = card.querySelector('.card-num');
+                if(num){ num.classList.remove('card-num'); num.classList.add('card-num-active'); }
             }
         });
         box.appendChild(card);
