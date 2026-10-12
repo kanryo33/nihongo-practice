@@ -21,10 +21,15 @@ h1{font-size:1.5rem;font-weight:700;text-align:center;margin-bottom:24px;letter-
 .flip-card-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
 .flip-card.flipped .flip-card-inner{transform:rotateY(180deg)}
 .flip-card-front,.flip-card-back{position:absolute;width:100%;height:100%;-webkit-backface-visibility:hidden;backface-visibility:hidden;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;box-shadow:0 8px 20px rgba(0,0,0,.08);text-align:center}
-.flip-card-front{background:#fff;border:1px solid #e5e7eb}
+.flip-card-front{background:#fff;border:1px solid #d1d5db}
+.flip-card.flipped .flip-card-inner{transform:rotateY(180deg)}
+.flip-card.selected{transform:translateY(-3px)}
+.flip-card.selected .flip-card-front{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.25),0 10px 24px rgba(99,102,241,.2)}
 .flip-card-back{background:#6366f1;border:1px solid #4f46e5;transform:rotateY(180deg)}
+.card-num{font-size:clamp(1.8rem,5vw,3rem);font-weight:700;color:#cbd5e1;line-height:1}
+.card-num-active{font-size:clamp(1.8rem,5vw,3rem);font-weight:700;color:#6366f1;line-height:1}
 .kana-front{font-size:clamp(1.4rem,4vw,2.5rem);font-weight:bold;color:#111;line-height:1.2;word-break:break-all}
-.kana-back{font-size:clamp(1rem,2.5vw,1.6rem);font-weight:bold;color:#fff;line-height:1.3;word-break:break-all;max-height:160px;overflow:hidden}
+.kana-back{font-size:clamp(1.4rem,4vw,2.5rem);font-weight:bold;color:#fff;line-height:1.2;word-break:break-all}
 .btn{padding:10px 22px;margin:6px;font-size:14px;border:none;border-radius:12px;cursor:pointer;transition:transform .15s,box-shadow .15s;font-weight:600;color:#fff}
 .btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.15)}
 .b1{background:#6366f1} .b2{background:#10b981} .b3{background:#f59e0b} .b4{background:#6b7280}
@@ -43,7 +48,9 @@ h1{font-size:1.5rem;font-weight:700;text-align:center;margin-bottom:24px;letter-
   <label>ページ</label>
   <input type="text" id="inp-pages" placeholder="例：10 11 12" autocomplete="off">
   <button class="btn b1" onclick="generate()">表示</button>
-  <button class="btn b2" onclick="flipAll()">一括反転</button>
+  <button class="btn b2" onclick="flipSelected()">反転（選択カード）</button>
+  <button class="btn b2" onclick="flipAllCards()">一括反転</button>
+  <button class="btn b4" onclick="resetFlipped()">裏返す</button>
   <button class="btn b3" onclick="nextSet()">次のセット</button>
   <button class="btn b4" onclick="resetAll()">再生成</button>
   <div class="pages-info" id="pages-info"></div>
@@ -66,11 +73,24 @@ function renderCards(chars){
     const box = document.getElementById('cards');
     box.innerHTML = '';
     allFlipped = false;
-    chars.forEach(function(c){
+    chars.forEach(function(c, i){
         const card = document.createElement('div');
         card.className = 'flip-card';
-        card.innerHTML = '<div class="flip-card-inner"><div class="flip-card-front"><div class="kana-front">' + c + '</div></div><div class="flip-card-back"><div class="kana-back">' + c + '</div></div></div>';
-        card.addEventListener('click', function(){ card.classList.toggle('flipped'); });
+        card.innerHTML = '<div class="flip-card-inner">'
+            + '<div class="flip-card-front"><div class="card-num">#' + (i+1) + '</div></div>'
+            + '<div class="flip-card-back"><div class="kana-back">' + c + '</div></div>'
+            + '</div>';
+        card.addEventListener('click', function(){
+            if(card.classList.contains('flipped')) return; // 已翻转的不再切换选中
+            card.classList.toggle('selected');
+            // 选中时把编号颜色加深，未选中时浅灰
+            var num = card.querySelector('.card-num');
+            if(card.classList.contains('selected')){
+                num.classList.remove('card-num'); num.classList.add('card-num-active');
+            } else {
+                num.classList.remove('card-num-active'); num.classList.add('card-num');
+            }
+        });
         box.appendChild(card);
     });
 }
@@ -102,11 +122,30 @@ function generate(){
     renderCards(found);
 }
 
-function flipAll(){
+function flipSelected(){
+    document.querySelectorAll('.flip-card.selected').forEach(function(c){
+        c.classList.remove('selected');
+        c.classList.add('flipped');
+        var num = c.querySelector('.card-num-active');
+        if(num){ num.classList.remove('card-num-active'); num.classList.add('card-num'); }
+    });
+}
+
+function flipAllCards(){
     allFlipped = !allFlipped;
     document.querySelectorAll('.flip-card').forEach(function(c){
-        if(allFlipped) c.classList.add('flipped');
-        else c.classList.remove('flipped');
+        if(allFlipped){ c.classList.add('flipped'); }
+        else { c.classList.remove('flipped'); c.classList.remove('selected'); }
+    });
+}
+
+function resetFlipped(){
+    allFlipped = false;
+    document.querySelectorAll('.flip-card').forEach(function(c){
+        c.classList.remove('flipped');
+        c.classList.remove('selected');
+        var num = c.querySelector('.card-num-active');
+        if(num){ num.classList.remove('card-num-active'); num.classList.add('card-num'); }
     });
 }
 
