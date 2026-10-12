@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>日本語数字・日付・時刻練習</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:"Meiryo","メイリオ","Noto Sans JP",sans-serif;}
+body{
+    background:#ffffff;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+.main-display{
+    text-align:center;
+    margin-bottom:50px;
+    min-height:180px;
+}
+.yomi-line{
+    font-size:30px;
+    letter-spacing:5px;
+    color:#222;
+    margin-bottom:12px;
+    min-height:40px;
+}
+.question-line{
+    font-size:90px;
+}
+.button-area{
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+    justify-content:center;
+    max-width:1200px;
+}
+button{
+    width:142px;
+    height:52px;
+    font-size:17px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    transition:0.2s;
+}
+.btn-orange{background:#ff9433;color:white;}
+.btn-blue{background:#4285dd;color:white;}
+.btn-green{background:#34a853;color:white;}
+.btn-gray{background:#777777;color:white;}
+button:hover{opacity:0.85;}
+/* 桁選択ポップアップ */
+.popup-wrap{
+    display:none;
+    position:fixed;
+    top:0;left:0;
+    width:100%;height:100%;
+    background:rgba(0,0,0,0.4);
+    align-items:center;
+    justify-content:center;
+}
+.popup-box{
+    background:#fff;
+    padding:32px;
+    border-radius:8px;
+}
+.popup-box > div{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:16px;
+}
+.popup-box button{
+    width:92px;
+    height:46px;
+}
+</style>
+</head>
+<body>
+<div class="main-display" id="displayBox">
+    <div class="yomi-line" id="yomiBox"></div>
+    <div class="question-line" id="textBox">ボタンを押して問題を生成</div>
+</div>
+
+<div class="button-area">
+    <button class="btn-orange" onclick="openDigitSelect()">数字（桁選択）</button>
+    <button class="btn-blue" onclick="generateDate()">年月日</button>
+    <button class="btn-blue" onclick="generateTime()">時刻（時:分）</button>
+    <button class="btn-green" onclick="toggleYomi()">読み方表示</button>
+    <button class="btn-gray" onclick="nextQuestion()">次へ</button>
+    <button class="btn-gray" onclick="resetAll()">リセット</button>
+</div>
+
+<div class="popup-wrap" id="digitPopup">
+    <div class="popup-box">
+        <div>
+            <button onclick="setDigit(1)">1桁</button>
+            <button onclick="setDigit(2)">2桁</button>
+            <button onclick="setDigit(3)">3桁</button>
+            <button onclick="setDigit(4)">4桁</button>
+            <button onclick="setDigit(5)">5桁</button>
+            <button onclick="setDigit(6)">6桁</button>
+            <button onclick="setDigit(7)">7桁</button>
+            <button onclick="setDigit(8)">8桁</button>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentMode = null;
+let targetDigit = 4;
+let rawData = {};
+let showYomi = false;
+
+// 桁ポップアップ
+function openDigitSelect(){
+    document.getElementById("digitPopup").style.display="flex";
+}
+function setDigit(n){
+    targetDigit = n;
+    document.getElementById("digitPopup").style.display="none";
+    generateNumber();
+}
+
+// リセット
+function resetAll(){
+    rawData = {};
+    showYomi = false;
+    currentMode = null;
+    document.getElementById("yomiBox").innerText = "";
+    document.getElementById("textBox").innerText = "ボタンを押して問題を生成";
+}
+
+// 次の問題
+function nextQuestion(){
+    if(currentMode==="num") generateNumber();
+    else if(currentMode==="date") generateDate();
+    else if(currentMode==="time") generateTime();
+}
+
+// 読み方切替
+function toggleYomi(){
+    showYomi = !showYomi;
+    renderDisplay();
+}
+
+// ======== 数字変換ロジック（校正済み 最大8桁対応）========
+const numYomiBase = ["れい","いち","に","さん","よん","ご","ろく","なな","はち","きゅう"];
+const ketaName = ["","じゅう","ひゃく","せん","まん","じゅうまん","ひゃくまん","せんまん"];
+
+function numToReading(num){
+    let s = num.toString();
+    let res = [];
+    const len = s.length;
+    for(let i=0;i<len;i++){
+        const d = parseInt(s[i]);
+        const ketaIdx = len - i - 1;
+        if(d===0) continue;
+        res.push(numYomiBase[d]);
+        if(ketaIdx>0) res.push(ketaName[ketaIdx]);
+    }
+    return res.length===0 ? "れい" : res.join(" ");
+}
+
+// 数字問題
+function generateNumber(){
+    currentMode = "num";
+    const min = 10 ** (targetDigit-1);
+    const max = (10 ** targetDigit)-1;
+    const val = Math.floor(Math.random()*(max-min+1))+min;
+    rawData = {
+        type:"num",
+        text:val.toLocaleString(),
+        yomi:numToReading(val)
+    };
+    renderDisplay();
+}
+
+// ======== 年月日生成 ========
+function generateDate(){
+    currentMode = "date";
+    const year = Math.floor(Math.random()*(2035-1950+1))+1950;
+    const month = Math.floor(Math.random()*12)+1;
+    let dayMax;
+    if([1,3,5,7,8,10,12].includes(month)) dayMax=31;
+    else if([4,6,9,11].includes(month)) dayMax=30;
+    else dayMax=28;
+    const day = Math.floor(Math.random()*dayMax)+1;
+
+    const monthRead = ["","いちがつ","にがつ","さんがつ","しがつ","ごがつ","ろくがつ","しちがつ","はちがつ","くがつ","じゅうがつ","じゅういちがつ","じゅうにがつ"];
+    const dayRead = getDayReading(day);
+    const fullYomi = `${numToReading(year)} ねん ${monthRead[month]} ${dayRead}`;
+
+    rawData = {
+        type:"date",
+        text:`${year}年${month}月${day}日`,
+        yomi: fullYomi
+    };
+    renderDisplay();
+}
+
+// 日付特殊読み
+function getDayReading(d){
+    const sp = {
+        1:"ついたち",2:"ふつか",3:"みっか",4:"よっか",5:"いつか",6:"むいか",7:"なのか",8:"ようか",9:"ここのか",10:"とおか",
+        14:"じゅうよっか",20:"はつか",24:"にじゅうよっか"
+    };
+    if(sp[d]) return sp[d];
+    if(d <= 10) return numToReading(d)+" か";
+    return numToReading(d)+" にち";
+}
+
+// ======== 時刻 ========
+function generateTime(){
+    currentMode = "time";
+    const h = Math.floor(Math.random()*24);
+    const m = Math.floor(Math.random()*60);
+    const hStr = String(h).padStart(2,"0");
+    const mStr = String(m).padStart(2,"0");
+    let hYomi = numToReading(h);
+    let mYomi = numToReading(m);
+    let minuteBase = mYomi + " ふん";
+    minuteBase = minuteBase.replace("さん ふん","さんぷん")
+                 .replace("ろく ふん","ろっぷん")
+                 .replace("はち ふん","はっぷん");
+    const fullYomi = `${hYomi} じ ${minuteBase}`;
+
+    rawData = {
+        type:"time",
+        text:`${hStr}:${mStr}`,
+        yomi: fullYomi
+    };
+    renderDisplay();
+}
+
+// ======== 描画処理：読み方を独立1行に配置（重なり完全解消） ========
+function renderDisplay(){
+    const yomiBox = document.getElementById("yomiBox");
+    const textBox = document.getElementById("textBox");
+    if(!rawData.type){
+        yomiBox.innerText = "";
+        textBox.innerText = "ボタンを押して問題を生成";
+        return;
+    }
+
+    textBox.innerText = rawData.text;
+    if(showYomi){
+        yomiBox.innerText = rawData.yomi;
+    }else{
+        yomiBox.innerText = "";
+    }
+}
+</script>
+</body>
+</html>

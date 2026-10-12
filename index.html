@@ -2,255 +2,76 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>五十音ランダム練習</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>日本語 基礎練習 | 五十音・数字・日付・時刻</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui, sans-serif}
-body{background:#f7f9fc;text-align:center;padding:24px}
-.wrap{max-width:1100px;margin:0 auto;background:#fff;padding:32px;border-radius:16px;box-shadow:0 4px 12px #0002}
-.ctrl{margin-bottom:28px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;justify-content:center;font-size:18px}
-.kana-area{min-height:260px;display:flex;gap:26px;justify-content:center;align-items:center;flex-wrap:wrap;margin:30px 10px}
-
-/* 卡片翻转核心样式 */
-.flip-card {
-  width: 180px;
-  height: 220px;
-  perspective: 1000px;
-  cursor: pointer;
+*{box-sizing:border-box;margin:0;padding:0;font-family:"Meiryo","メイリオ","Noto Sans JP",system-ui,sans-serif;}
+body{
+    min-height:100vh;
+    background:linear-gradient(135deg,#eef2ff 0%,#fdf4ff 50%,#f0fdf4 100%);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    color:#1f2937;
 }
-.flip-card-inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transition: transform 0.6s;
-  transform-style: preserve-3d;
+header{text-align:center;margin-bottom:48px;}
+h1{font-size:clamp(1.8rem,5vw,2.6rem);font-weight:700;letter-spacing:2px;margin-bottom:12px;}
+.subtitle{font-size:1rem;color:#6b7280;}
+.cards{
+    display:flex;
+    gap:24px;
+    flex-wrap:wrap;
+    justify-content:center;
+    max-width:900px;
 }
-.flip-card.flipped .flip-card-inner {
-  transform: rotateY(180deg);
+.card{
+    display:block;
+    width:320px;
+    padding:36px 28px;
+    background:#fff;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    text-decoration:none;
+    color:inherit;
+    transition:transform .2s,box-shadow .2s;
+    border:1px solid #e5e7eb;
 }
-.flip-card-front, .flip-card-back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  border-radius:16px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  padding:12px;
-  box-shadow:0 8px 20px #000008;
-}
-.flip-card-front {
-  background:#fff8e8;
-  border:1px solid #f0e6c8;
-}
-.flip-card-back {
-  background:#e8f4ff;
-  border:1px solid #b8d6f0;
-  transform: rotateY(180deg);
-}
-
-.kana-front{
-  font-size: clamp(2.8rem, 6vw, 5rem);
-  font-weight:bold;
-  color:#111;
-  line-height:1.1;
-  white-space: nowrap;
-  text-align:center;
-}
-.kana-back{
-  font-size: clamp(1.8rem, 4vw, 3.4rem);
-  font-weight:bold;
-  color:#111;
-  line-height:1.1;
-  white-space: nowrap;
-  text-align:center;
-}
-/* 放大背面罗马音 */
-.roma-back{
-  font-size: 38px;
-  font-weight: 600;
-  color:#222;
-  margin-top:16px;
-}
-
-.btn{padding:14px 26px;margin:8px;font-size:18px;border:none;border-radius:12px;cursor:pointer}
-.b1{background:#6366f1;color:#fff}
-.b2{background:#10b981;color:#fff}
-.b3{background:#f59e0b;color:#fff}
-select{padding:10px 14px;font-size:17px;border-radius:8px;border:1px solid #ccc}
+.card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.12);}
+.icon{font-size:3rem;margin-bottom:16px;}
+.card h2{font-size:1.4rem;margin-bottom:8px;}
+.card p{font-size:.95rem;color:#6b7280;line-height:1.5;}
+.badge{display:inline-block;margin-top:14px;padding:4px 12px;border-radius:999px;font-size:.8rem;font-weight:600;}
+.badge-kana{background:#eef2ff;color:#4f46e5;}
+.badge-suuji{background:#fff7ed;color:#ea580c;}
+footer{margin-top:48px;font-size:.85rem;color:#9ca3af;}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="ctrl">
-    <label><input type="checkbox" id="hira" checked> ひらがな</label>
-    <label><input type="checkbox" id="kata" checked> カタカナ</label>
-    <label><input type="checkbox" id="basic" checked> 基本五十音</label>
-    <label><input type="checkbox" id="daku"> 濁音・半濁音</label>
-    <label><input type="checkbox" id="youon"> 拗音</label>
-    <span>一度に表示：</span>
-    <select id="countSel">
-      <option value="1">1 文字</option>
-      <option value="2">2 文字</option>
-      <option value="3">3 文字</option>
-      <option value="4">4 文字</option>
-      <option value="5">5 文字</option>
-      <option value="6">6 文字</option>
-      <option value="7">7 文字</option>
-      <option value="8">8 文字</option>
-      <option value="9">9 文字</option>
-      <option value="10">10 文字</option>
-    </select>
-  </div>
+<header>
+    <h1>日本語 基礎練習</h1>
+    <p class="subtitle">五十音 ・ 数字 ・ 日付 ・ 時刻 　のランダム練習ツール</p>
+</header>
 
-  <div class="kana-area" id="box"></div>
+<div class="cards">
+    <a class="card" href="kana.html">
+        <div class="icon">あ</div>
+        <h2>五十音 ランダム練習</h2>
+        <p>ひらがな・カタカナをランダム出題。カードをクリックしてローマ字を確認。基本五十音・濁音・拗音を選択可能。</p>
+        <span class="badge badge-kana">ひらがな / カタカナ</span>
+    </a>
 
-  <div>
-    <button class="btn b1" onclick="flipAllCards()">一括反転</button>
-    <button class="btn b2" onclick="nextSet()">次のセット</button>
-    <button class="btn b3" onclick="reset()">再生成</button>
-  </div>
+    <a class="card" href="suuji.html">
+        <div class="icon">123</div>
+        <h2>数字・日付・時刻 練習</h2>
+        <p>数字（1〜8桁）・年月日・時刻をランダム出題。「読み方表示」で正しい読みを確認。</p>
+        <span class="badge badge-suuji">数字 / 日付 / 時刻</span>
+    </a>
 </div>
 
-<script>
-// 基本五十音
-const gojuon = [
-  {h:'あ',k:'ア',r:'a'},{h:'い',k:'イ',r:'i'},{h:'う',k:'ウ',r:'u'},{h:'え',k:'エ',r:'e'},{h:'お',k:'オ',r:'o'},
-  {h:'か',k:'カ',r:'ka'},{h:'き',k:'キ',r:'ki'},{h:'く',k:'ク',r:'ku'},{h:'け',k:'ケ',r:'ke'},{h:'こ',k:'コ',r:'ko'},
-  {h:'さ',k:'サ',r:'sa'},{h:'し',k:'シ',r:'shi'},{h:'す',k:'ス',r:'su'},{h:'せ',k:'セ',r:'se'},{h:'そ',k:'ソ',r:'so'},
-  {h:'た',k:'タ',r:'ta'},{h:'ち',k:'チ',r:'chi'},{h:'つ',k:'ツ',r:'tsu'},{h:'て',k:'テ',r:'te'},{h:'と',k:'ト',r:'to'},
-  {h:'な',k:'ナ',r:'na'},{h:'に',k:'ニ',r:'ni'},{h:'ぬ',k:'ヌ',r:'nu'},{h:'ね',k:'ネ',r:'ne'},{h:'の',k:'ノ',r:'no'},
-  {h:'は',k:'ハ',r:'ha'},{h:'ひ',k:'ヒ',r:'hi'},{h:'ふ',k:'フ',r:'fu'},{h:'へ',k:'ヘ',r:'he'},{h:'ほ',k:'ホ',r:'ho'},
-  {h:'ま',k:'マ',r:'ma'},{h:'み',k:'ミ',r:'mi'},{h:'む',k:'ム',r:'mu'},{h:'め',k:'メ',r:'me'},{h:'も',k:'モ',r:'mo'},
-  {h:'や',k:'ヤ',r:'ya'},{h:'ゆ',k:'ユ',r:'yu'},{h:'よ',k:'ヨ',r:'yo'},
-  {h:'ら',k:'ラ',r:'ra'},{h:'り',k:'リ',r:'ri'},{h:'る',k:'ル',r:'ru'},{h:'れ',k:'レ',r:'re'},{h:'ろ',k:'ロ',r:'ro'},
-  {h:'わ',k:'ワ',r:'wa'},{h:'を',k:'ヲ',r:'wo'},{h:'ん',k:'ン',r:'n'}
-];
-
-// 濁音・半濁音
-const dakuon = [
-  {h:'が',k:'ガ',r:'ga'},{h:'ぎ',k:'ギ',r:'gi'},{h:'ぐ',k:'グ',r:'gu'},{h:'げ',k:'ゲ',r:'ge'},{h:'ご',k:'ゴ',r:'go'},
-  {h:'ざ',k:'ザ',r:'za'},{h:'じ',k:'ジ',r:'ji'},{h:'ず',k:'ズ',r:'zu'},{h:'ぜ',k:'ゼ',r:'ze'},{h:'ぞ',k:'ゾ',r:'zo'},
-  {h:'だ',k:'ダ',r:'da'},{h:'ぢ',k:'ヂ',r:'ji'},{h:'づ',k:'ヅ',r:'zu'},{h:'で',k:'デ',r:'de'},{h:'ど',k:'ド',r:'do'},
-  {h:'ば',k:'バ',r:'ba'},{h:'び',k:'ビ',r:'bi'},{h:'ぶ',k:'ブ',r:'bu'},{h:'べ',k:'ベ',r:'be'},{h:'ぼ',k:'ボ',r:'bo'},
-  {h:'ぱ',k:'パ',r:'pa'},{h:'ぴ',k:'ピ',r:'pi'},{h:'ぷ',k:'プ',r:'pu'},{h:'ぺ',k:'ペ',r:'pe'},{h:'ぽ',k:'ポ',r:'po'}
-];
-
-// 拗音（ようおん）
-const youon = [
-  {h:'きゃ',k:'キャ',r:'kya'},{h:'きゅ',k:'キュ',r:'kyu'},{h:'きょ',k:'キョ',r:'kyo'},
-  {h:'しゃ',k:'シャ',r:'sha'},{h:'しゅ',k:'シュ',r:'shu'},{h:'しょ',k:'ショ',r:'sho'},
-  {h:'ちゃ',k:'チャ',r:'cha'},{h:'ちゅ',k:'チュ',r:'chu'},{h:'ちょ',k:'チョ',r:'cho'},
-  {h:'にゃ',k:'ニャ',r:'nya'},{h:'にゅ',k:'ニュ',r:'nyu'},{h:'にょ',k:'ニョ',r:'nyo'},
-  {h:'ひゃ',k:'ヒャ',r:'hya'},{h:'ひゅ',k:'ヒュ',r:'hyu'},{h:'ひょ',k:'ヒョ',r:'hyo'},
-  {h:'みゃ',k:'ミャ',r:'mya'},{h:'みゅ',k:'ミュ',r:'myu'},{h:'みょ',k:'ミョ',r:'myo'},
-  {h:'りゃ',k:'リャ',r:'rya'},{h:'りゅ',k:'リュ',r:'ryu'},{h:'りょ',k:'リョ',r:'ryo'},
-  {h:'ぎゃ',k:'ギャ',r:'gya'},{h:'ぎゅ',k:'ギュ',r:'gyu'},{h:'ぎょ',k:'ギョ',r:'gyo'},
-  {h:'じゃ',k:'ジャ',r:'ja'},{h:'じゅ',k:'ジュ',r:'ju'},{h:'じょ',k:'ジョ',r:'jo'},
-  {h:'びゃ',k:'ビャ',r:'bya'},{h:'びゅ',k:'ビュ',r:'byu'},{h:'びょ',k:'ビョ',r:'byo'},
-  {h:'ぴゃ',k:'ピャ',r:'pya'},{h:'ぴゅ',k:'ピュ',r:'pyu'},{h:'ぴょ',k:'ピョ',r:'pyo'}
-];
-
-let currentList = [];
-let allFlipped = false; // 记录全体卡片翻转状态
-const box = document.getElementById('box');
-const hiraCb = document.getElementById('hira');
-const kataCb = document.getElementById('kata');
-const basicCb = document.getElementById('basic');
-const dakuCb = document.getElementById('daku');
-const youonCb = document.getElementById('youon');
-const sel = document.getElementById('countSel');
-
-function getRandomPool(){
-  let pool = [];
-  if(basicCb.checked) pool = pool.concat(gojuon);
-  if(dakuCb.checked) pool = pool.concat(dakuon);
-  if(youonCb.checked) pool = pool.concat(youon);
-  return pool;
-}
-
-function getRandom(arr, num){
-  let res = [];
-  let copy = [...arr];
-  for(let i=0;i<num && copy.length>0;i++){
-    let idx = Math.floor(Math.random()*copy.length);
-    res.push(copy.splice(idx,1)[0]);
-  }
-  return res;
-}
-
-function render(){
-  let cnt = Number(sel.value);
-  let pool = getRandomPool();
-  box.innerHTML = '';
-  allFlipped = false; // 新生成卡片默认全部正面
-
-  if(pool.length === 0){
-    box.innerHTML = '<div style="font-size:24px;color:red;">少なくとも1種類の文字を選択してください</div>';
-    currentList = [];
-    return;
-  }
-  if(!hiraCb.checked && !kataCb.checked){
-    box.innerHTML = '<div style="font-size:24px;color:red;">ひらがなまたはカタカナを選択してください</div>';
-    currentList = [];
-    return;
-  }
-
-  currentList = getRandom(pool, cnt);
-  currentList.forEach(item=>{
-    let typePool = [];
-    if(hiraCb.checked) typePool.push('h');
-    if(kataCb.checked) typePool.push('k');
-    let t = typePool[Math.floor(Math.random()*typePool.length)];
-    let charFront = t==='h' ? item.h : item.k;
-
-    let flipCard = document.createElement('div');
-    flipCard.className = 'flip-card';
-    flipCard.innerHTML = `
-      <div class="flip-card-inner">
-        <div class="flip-card-front">
-          <div class="kana-front">${charFront}</div>
-        </div>
-        <div class="flip-card-back">
-          <div class="kana-back">${charFront}</div>
-          <div class="roma-back">${item.r}</div>
-        </div>
-      </div>
-    `;
-    // 单机卡片单独翻转
-    flipCard.addEventListener('click', ()=>{
-      flipCard.classList.toggle('flipped');
-    })
-    box.appendChild(flipCard);
-  })
-}
-
-// 一键批量翻转所有卡片
-function flipAllCards(){
-  allFlipped = !allFlipped;
-  const cards = document.querySelectorAll('.flip-card');
-  cards.forEach(card=>{
-    if(allFlipped){
-      card.classList.add('flipped');
-    }else{
-      card.classList.remove('flipped');
-    }
-  })
-}
-
-function nextSet(){ render() }
-function reset(){ render() }
-
-sel.onchange = ()=>render();
-hiraCb.onchange = ()=>render();
-kataCb.onchange = ()=>render();
-basicCb.onchange = ()=>render();
-dakuCb.onchange = ()=>render();
-youonCb.onchange = ()=>render();
-
-render();
-</script>
+<footer>
+    2 つのツールを 1 つのプロジェクトに統合
+</footer>
 </body>
 </html>
