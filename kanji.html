@@ -105,9 +105,14 @@ h1{font-size:1.5rem;font-weight:700;text-align:center;margin-bottom:24px;letter-
 }
 
 
+
+/* 背景：首页草坡图（低透明度 + 高斯模糊） */
+.page-bg{position:fixed;inset:0;z-index:0;background:#f8faf9 url('assets/hero-34-bg.jpg') center/cover no-repeat;opacity:.16;filter:blur(12px);transform:scale(1.06);pointer-events:none;}
+body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1;}
 </style>
 </head>
 <body>
+<div class="page-bg" aria-hidden="true"></div>
 <a class="back-btn" href="./index.html">← ホーム</a>
 <div class="wrap">
 <h1>漢字たまご 練習</h1>

@@ -56,9 +56,14 @@ select:focus{border-color:#0f7a40!important;box-shadow:0 0 0 3px rgba(15,122,64,
 .wrap > h1{color:#111827!important;position:relative;padding-bottom:14px;}
 .wrap > h1::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:36px;height:3px;background:#0f7a40;border-radius:2px;}
 
+
+/* 背景：首页草坡图（低透明度 + 高斯模糊） */
+.page-bg{position:fixed;inset:0;z-index:0;background:#f8faf9 url('assets/hero-34-bg.jpg') center/cover no-repeat;opacity:.16;filter:blur(12px);transform:scale(1.06);pointer-events:none;}
+body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1;}
 </style>
 </head>
 <body>
+<div class="page-bg" aria-hidden="true"></div>
 <!-- Hero 波打つ曲線装饰 -->
 <div class="hero-tool">
     <svg class="hero-tool-wave" viewBox="0 0 1440 120" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
