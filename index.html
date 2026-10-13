@@ -32,12 +32,12 @@ body{
   position:relative;overflow-x:hidden;
 }
 
-/* 右侧自然插画背景 */
+/* 右侧自然插画（模板原图 hero-34-bg.avif） */
 .landscape{
   position:fixed;right:0;bottom:0;width:100%;height:100%;
-  pointer-events:none;z-index:0;
+  pointer-events:none;z-index:0;overflow:hidden;background:#f7f5ef;
 }
-.landscape svg{display:block;width:100%;height:100%;}
+.landscape img{width:100%;height:100%;object-fit:cover;display:block;}
 
 /* ========= 入场动画 ========= */
 @keyframes navIn{from{opacity:0;transform:translateY(-12px);}to{opacity:1;transform:none;}}
@@ -73,8 +73,9 @@ body{
 /* 社交证明 / 徽章 */
 .proof{display:flex;align-items:center;gap:12px;margin-bottom:30px;}
 .avatars{display:flex;}
-.avatars span{width:34px;height:34px;border-radius:50%;border:2px solid #fff;margin-left:-10px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff;}
+.avatars span{width:34px;height:34px;border-radius:50%;border:2px solid #fff;margin-left:-10px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#0f7a40;}
 .avatars span:first-child{margin-left:0;}
+.avatars img{width:100%;height:100%;object-fit:cover;display:block;}
 .proof p{font-size:.9rem;color:var(--text-muted);font-weight:500;}
 
 /* 标题（两行错落） */
@@ -129,89 +130,10 @@ footer{border-top:1px solid var(--line);padding:22px 28px;text-align:center;colo
 </head>
 <body>
 
-<!-- 右侧自然插画：草坡、树、人物遛狗、飞鸟 -->
-<div class="landscape" aria-hidden="true">
-  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stop-color="#f7f5ef"/>
-        <stop offset="100%" stop-color="#ffffff"/>
-      </linearGradient>
-      <linearGradient id="hill" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#d4e9a0"/>
-        <stop offset="55%" stop-color="#9cc96a"/>
-        <stop offset="100%" stop-color="#0f7a40"/>
-      </linearGradient>
-      <linearGradient id="hillShadow" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stop-color="#0f7a40"/>
-        <stop offset="100%" stop-color="#0a5a2e"/>
-      </linearGradient>
-      <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
-        <feGaussianBlur stdDeviation="2"/>
-      </filter>
-    </defs>
-
-    <!-- 天空飞鸟 -->
-    <g fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round">
-      <path d="M980 180q12 -8 24 0q-12 4 -24 0" transform="translate(0,0) scale(.9)"/>
-      <path d="M1080 140q10 -7 20 0q-10 4 -20 0" transform="translate(0,0) scale(.75)"/>
-      <path d="M1020 220q8 -5 16 0q-8 3 -16 0" transform="translate(0,0) scale(.6)"/>
-    </g>
-
-    <!-- 远山淡影 -->
-    <ellipse cx="1180" cy="420" rx="260" ry="90" fill="#e8efe0" opacity=".7"/>
-
-    <!-- 大树 -->
-    <g class="tree" transform="translate(1160, 180) scale(1.1)">
-      <path d="M28 220 Q22 160 30 110 Q18 80 35 50 Q55 20 85 35 Q115 25 130 55 Q155 70 145 105 Q165 140 140 175 Q135 200 130 220 Z" fill="#6a9e45"/>
-      <path d="M28 220 Q35 170 32 130" stroke="#5d4a35" stroke-width="5" fill="none" stroke-linecap="round"/>
-      <path d="M32 130 Q10 110 5 90" stroke="#5d4a35" stroke-width="3" fill="none" stroke-linecap="round"/>
-      <path d="M32 115 Q55 95 70 80" stroke="#5d4a35" stroke-width="3" fill="none" stroke-linecap="round"/>
-    </g>
-
-    <!-- 主草坡 -->
-    <path d="M0 900 L1440 900 L1440 520 Q1100 480 820 620 Q520 780 0 760 Z" fill="url(#hill)"/>
-    <path d="M0 900 L1440 900 L1440 620 Q1150 620 900 720 Q600 840 0 820 Z" fill="url(#hillShadow)" opacity=".35"/>
-
-    <!-- 草坡纹理 -->
-    <g stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" opacity=".18">
-      <path d="M980 720q20 -12 40 0"/>
-      <path d="M1050 700q18 -10 36 0"/>
-      <path d="M1120 740q22 -14 44 0"/>
-      <path d="M1200 680q16 -9 32 0"/>
-      <path d="M1280 710q20 -12 40 0"/>
-      <path d="M850 760q18 -10 36 0"/>
-      <path d="M920 780q16 -9 32 0"/>
-    </g>
-
-    <!-- 人物与狗 -->
-    <g class="person-group" transform="translate(1010, 545) scale(0.85)">
-      <!-- 人物影子 -->
-      <ellipse cx="55" cy="268" rx="35" ry="6" fill="#0a5a2e" opacity=".25"/>
-      <!-- 长裙 -->
-      <path d="M55 268 L28 150 Q25 130 45 125 L70 125 Q88 130 85 150 L75 268 Z" fill="#0f7a40"/>
-      <!-- 头 -->
-      <circle cx="57" cy="108" r="14" fill="#f3d2c1"/>
-      <!-- 斗笠 -->
-      <ellipse cx="57" cy="100" rx="28" ry="10" fill="#e8c97a"/>
-      <ellipse cx="57" cy="96" rx="12" ry="5" fill="#d4b065"/>
-      <!-- 手臂 -->
-      <path d="M72 145 Q95 170 120 185" stroke="#f3d2c1" stroke-width="5" fill="none" stroke-linecap="round"/>
-      <!-- 牵引绳 -->
-      <path d="M120 185 Q150 200 175 210" stroke="#8b7355" stroke-width="1.8" fill="none"/>
-      <!-- 狗 -->
-      <g transform="translate(165, 195)">
-        <ellipse cx="18" cy="18" rx="18" ry="12" fill="#f5f0e6"/>
-        <circle cx="32" cy="10" r="9" fill="#f5f0e6"/>
-        <circle cx="35" cy="8" r="1.5" fill="#333"/>
-        <ellipse cx="8" cy="25" rx="5" ry="10" fill="#f5f0e6"/>
-        <ellipse cx="26" cy="25" rx="5" ry="10" fill="#f5f0e6"/>
-        <path d="M30 4 L34 -2" stroke="#f5f0e6" stroke-width="3" stroke-linecap="round"/>
-        <path d="M36 4 L40 -2" stroke="#f5f0e6" stroke-width="3" stroke-linecap="round"/>
-      </g>
-    </g>
-  </svg>
-</div>
+<!-- 右侧自然插画（模板原图 hero-34-bg.avif） -->
+  <div class="landscape" aria-hidden="true">
+    <img src="assets/hero-34-bg.avif" alt="">
+  </div>
 
 <div class="wrap">
 
@@ -245,10 +167,10 @@ footer{border-top:1px solid var(--line);padding:22px 28px;text-align:center;colo
       <!-- 社交证明 -->
       <div class="proof anim" style="animation-name:fadeUp;animation-duration:.6s;animation-delay:.2s;">
         <div class="avatars">
-          <span style="background:#0f7a40">あ</span>
-          <span style="background:#f59e0b">1</span>
-          <span style="background:#3b82f6">日</span>
-          <span style="background:#8b5cf6">漢</span>
+          <span><img src="assets/av-ben.jpg" alt=""></span>
+          <span><img src="assets/av-alex.jpg" alt=""></span>
+          <span><img src="assets/av-olivia.jpg" alt=""></span>
+          <span><img src="assets/av-mia.jpg" alt=""></span>
         </div>
         <p>JLPT N5〜N1 対応 · 教室内ですぐ使える</p>
       </div>
