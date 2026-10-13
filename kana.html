@@ -35,51 +35,77 @@ select:focus{border-color:#0f7a40;box-shadow:0 0 0 3px rgba(15,122,64,.15)}
 .back-btn{position:fixed;top:16px;left:20px;z-index:999;padding:8px 16px;background:rgba(255,255,255,.85);backdrop-filter:blur(4px);color:#0f7a40;font-size:14px;font-weight:600;border-radius:10px;border:1px solid #e5e7eb;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:transform .15s,box-shadow .15s}
 .back-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.12)}
 
-/* ===== JREast 風 追加装飾 ===== */
-body{background:#f8faf9!important;}
-.hero-tool{position:relative;width:100%;height:90px;overflow:hidden;margin-bottom:8px;pointer-events:none;}
-.hero-tool-wave{position:absolute;bottom:-10px;left:0;width:100%;height:140px;z-index:1;}
-.hero-tool-dot{position:absolute;z-index:2;}
-.hero-tool-dot-1{top:24px;left:12%;}
-.hero-tool-dot-2{top:36px;right:18%;}
-.hero-tool-ring{position:absolute;z-index:2;}
-.hero-tool-ring-1{top:14px;right:8%;}
-/* wrap / main-display 美化 */
-.wrap{box-shadow:0 4px 24px rgba(15,122,64,.08)!important;border:1px solid #e5e7eb!important;border-top:3px solid #0f7a40!important;border-radius:16px!important;}
-.main-display{box-shadow:0 4px 24px rgba(15,122,64,.08)!important;border:1px solid #e5e7eb!important;border-top:3px solid #0f7a40!important;border-radius:16px!important;}
-/* 返却ボタン */
-.back-btn{background:rgba(255,255,255,.95)!important;color:#0f7a40!important;border:1px solid #d1fae5!important;box-shadow:0 2px 12px rgba(15,122,64,.12)!important;font-weight:700!important;}
-.back-btn:hover{box-shadow:0 4px 18px rgba(15,122,64,.2)!important;transform:translateY(-1px)!important;}
-/* ボタン統一：全て JR緑 系 */
-.b1{background:#0f7a40!important;}
-.b2{background:#16a34a!important;}
-.b3{background:#65a30d!important;}
-.b4{background:#6b7280!important;}
-.btn-blue{background:#0f7a40!important;}
-.btn-green{background:#16a34a!important;}
-.btn-orange{background:#65a30d!important;}
-/* flip-card 裏面も緑 */
-.flip-card-back{background:#0f7a40!important;border-color:#0a5c2f!important;}
-/* select フォーカスリング */
-select:focus{border-color:#0f7a40!important;box-shadow:0 0 0 3px rgba(15,122,64,.15)!important;}
-/* h1 も緑アクセント */
-.wrap > h1{color:#111827!important;position:relative;padding-bottom:14px;}
-.wrap > h1::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:36px;height:3px;background:#0f7a40;border-radius:2px;}
+/* ===== JR東日本風 カード美化 ===== */
+.flip-card{
+    width:180px;height:220px;border-radius:20px;
+    transition:transform .3s cubic-bezier(.2,1.3,.3,1), box-shadow .3s;
+    position:relative;
+}
+.flip-card:hover{
+    transform:translateY(-6px) scale(1.02);
+    box-shadow:0 16px 40px rgba(15,122,64,.18);
+}
+.flip-card-front, .flip-card-back{
+    border-radius:20px!important;
+    border:1px solid #d1fae5!important;
+    box-shadow:0 8px 24px rgba(15,122,64,.10)!important;
+    overflow:hidden;
+    position:relative;
+}
+.flip-card-front::before{
+    content:'';position:absolute;top:-40px;right:-40px;width:100px;height:100px;
+    border-radius:50%;background:#0f7a40;opacity:.06;
+}
+.flip-card-front::after{
+    content:'';position:absolute;bottom:-30px;left:-30px;width:80px;height:80px;
+    border-radius:50%;background:#0f7a40;opacity:.04;
+}
+.flip-card-front{
+    background:linear-gradient(160deg,#ffffff 0%,#f0fdf4 100%)!important;
+}
+.flip-card-back{
+    background:linear-gradient(160deg,#0f7a40 0%,#0a5c2f 100%)!important;
+    border:1px solid #0a5c2f!important;
+    box-shadow:0 12px 32px rgba(15,122,64,.28)!important;
+}
+.flip-card-back::before{
+    content:'';position:absolute;top:0;left:0;width:100%;height:40%;
+    background:linear-gradient(180deg,rgba(255,255,255,.12) 0%,transparent 100%);
+    pointer-events:none;
+}
+.kana-front{
+    font-size:clamp(2.8rem,6vw,5rem)!important;
+    font-weight:700!important;
+    color:#0f7a40!important;
+    text-shadow:0 2px 0 rgba(15,122,64,.08);
+}
+.kana-back{
+    font-size:clamp(1.8rem,4vw,3.4rem)!important;
+    font-weight:700!important;
+    color:#ffffff!important;
+    text-shadow:0 2px 8px rgba(0,0,0,.2);
+}
+.roma-back{
+    font-size:1.6rem!important;
+    font-weight:600!important;
+    color:#ffffff!important;
+    margin-top:16px!important;
+    padding:6px 18px;
+    background:rgba(255,255,255,.18);
+    border-radius:8px;
+    letter-spacing:.08em;
+    backdrop-filter:blur(2px);
+}
+/* カード全体の軽い光沢 */
+.flip-card-inner::after{
+    content:'';position:absolute;top:0;left:0;width:100%;height:100%;
+    background:linear-gradient(135deg,rgba(255,255,255,.08) 0%,transparent 50%);
+    border-radius:20px;pointer-events:none;z-index:3;
+}
 
 </style>
 </head>
 <body>
-<!-- Hero 波打つ曲線装饰 -->
-<div class="hero-tool">
-    <svg class="hero-tool-wave" viewBox="0 0 1440 120" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M0 80 Q 180 20 360 60 T 720 50 T 1080 70 T 1440 40 L1440 120 L0 120Z" fill="#0f7a40" fill-opacity="0.07"/>
-        <path d="M0 100 Q 220 55 440 80 T 880 70 T 1320 85 L1440 80 L1440 120 L0 120Z" fill="#0f7a40" fill-opacity="0.05"/>
-    </svg>
-    <svg class="hero-tool-dot hero-tool-dot-1" width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" fill="#0f7a40" fill-opacity="0.3"/></svg>
-    <svg class="hero-tool-dot hero-tool-dot-2" width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#0f7a40" fill-opacity="0.2"/></svg>
-    <svg class="hero-tool-ring hero-tool-ring-1" width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="#0f7a40" stroke-width="1.5" stroke-opacity="0.2"/></svg>
-</div>
-
 <a class="back-btn" href="./index.html">← ホーム</a>
 <div class="wrap">
   <div class="ctrl">
