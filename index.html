@@ -3,311 +3,307 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>日本語 基礎練習 | 五十音・数字・日付・時刻</title>
+<title>日本語 基礎練習 | 五十音・数字・日付・時刻・漢字</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" />
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:"Meiryo","メイリオ","Noto Sans JP",system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
-html,body{background:#ffffff;}
+/* ========= 基础 ========= */
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f7f5ef;
+  --bg-2:#f2efe7;
+  --text:#1f2937;
+  --text-muted:#6b7280;
+  --green:#0f7a40;
+  --green-light:#e8f5ee;
+  --green-soft:#b8dcc7;
+  --btn-bg:#1f2937;
+  --btn-hover:#111827;
+  --line:rgba(0,0,0,.08);
+}
+html{scroll-behavior:smooth;}
 body{
-    min-height:100vh;
-    display:flex;flex-direction:column;align-items:center;
-    color:#1f2937;line-height:1.6;overflow-x:hidden;
+  font-family:"Inter","Noto Sans JP","Meiryo",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  color:var(--text);
+  min-height:100vh;
+  background:linear-gradient(180deg,var(--bg) 0%,#fff 100%);
+  position:relative;overflow-x:hidden;
 }
 
-/* ========= Hero ========= */
-.hero{
-    position:relative;width:100%;
-    text-align:center;
-    padding:96px 24px 72px;
-    overflow:hidden;
+/* 右侧自然插画背景 */
+.landscape{
+  position:fixed;right:0;bottom:0;width:100%;height:100%;
+  pointer-events:none;z-index:0;
 }
-.hero h1{
-    position:relative;z-index:3;
-    font-size:clamp(2.6rem,7vw,4.5rem);
-    font-weight:700;letter-spacing:.02em;line-height:1.25;
-    color:#111827;margin-bottom:22px;
-}
-.hero h1 .accent{color:#0f7a40;}
-.hero .sub{
-    position:relative;z-index:3;
-    font-size:clamp(.95rem,1.8vw,1.15rem);
-    color:#6b7280;letter-spacing:.05em;
-}
+.landscape svg{display:block;width:100%;height:100%;}
 
-/* Hero 背景の大きな曲線 SVG */
-.hero-bg-curve{
-    position:absolute;bottom:-40px;left:0;width:100%;height:320px;z-index:1;pointer-events:none;opacity:.35;
-}
-/* Hero 右の大きな円 */
-.hero-bg-circle{
-    position:absolute;top:-120px;right:-140px;width:420px;height:420px;z-index:1;
-    pointer-events:none;
-}
-/* Hero 左の小さな雲 */
-.hero-bg-cloud{
-    position:absolute;top:40px;left:-80px;width:220px;height:160px;z-index:1;
-    pointer-events:none;opacity:.55;
-}
+/* ========= 入场动画 ========= */
+@keyframes navIn{from{opacity:0;transform:translateY(-12px);}to{opacity:1;transform:none;}}
+@keyframes riseBlur{from{opacity:0;transform:translateY(34px);filter:blur(10px);}to{opacity:1;transform:none;filter:blur(0);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.98);}to{opacity:1;transform:none;}}
+.anim{opacity:0;animation-fill-mode:both;animation-timing-function:cubic-bezier(.2,.7,.2,1);}
 
-/* Hero 周りに浮かぶ小さな装飾 */
-.deco{position:absolute;pointer-events:none;z-index:2;}
-.deco-dot-1{top:20%;left:12%;}
-.deco-dot-2{top:15%;right:25%;}
-.deco-dot-3{top:55%;left:18%;}
-.deco-tri{top:65%;right:18%;}
-.deco-ring{top:30%;right:8%;}
+/* ========= 布局 ========= */
+.wrap{position:relative;z-index:1;display:flex;flex-direction:column;min-height:100vh;}
 
-/* Hero 下の緑セクション */
-.green-band{
-    width:100%;background:#0f7a40;
-    padding:48px 24px;color:#fff;
-    text-align:center;position:relative;
-}
-.green-band::before,.green-band::after{
-    content:'';position:absolute;left:0;width:100%;height:24px;
-    background:inherit;
-}
-.green-band::before{top:-12px;border-radius:0 0 50% 50% / 100% 100% 0 0;}
-.green-band::after{bottom:-12px;border-radius:50% 50% 0 0 / 0 0 100% 100%;}
-.green-band p{font-size:clamp(.95rem,1.8vw,1.1rem);opacity:.95;letter-spacing:.06em;}
-.green-band .tiny-decos{
-    position:absolute;top:100%;left:0;width:100%;height:40px;pointer-events:none;
-}
+/* 导航 */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:22px 28px;max-width:1400px;margin:0 auto;width:100%;}
+.brand{display:flex;align-items:center;gap:10px;cursor:pointer;color:var(--text);text-decoration:none;}
+.brand .logo{width:32px;height:32px;border-radius:9px;background:var(--green);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;color:#fff;transition:transform .4s cubic-bezier(.2,.8,.2,1);}
+.brand:hover .logo{transform:rotate(90deg);}
+.brand span{font-size:1.12rem;font-weight:600;letter-spacing:-.01em;}
+.nav-links{display:flex;gap:8px;}
+.nav-links a{color:var(--text-muted);text-decoration:none;font-size:.92rem;font-weight:500;padding:9px 14px;border-radius:8px;transition:.15s;}
+.nav-links a:hover{color:var(--text);background:rgba(0,0,0,.04);}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.lang{display:flex;align-items:center;gap:5px;color:var(--text-muted);font-size:.9rem;font-weight:500;cursor:pointer;padding:8px 10px;border-radius:8px;transition:.15s;}
+.lang:hover{background:rgba(0,0,0,.04);color:var(--text);}
+.lang svg{width:16px;height:16px;}
+.btn-dark{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:0 18px;border-radius:8px;font-size:.9rem;font-weight:600;color:#fff;text-decoration:none;background:var(--btn-bg);border:1px solid var(--btn-bg);transition:.15s;}
+.btn-dark:hover{background:var(--btn-hover);}
+.btn-dark svg{width:15px;height:15px;}
 
-/* ========= Project Folders（卡片ファン スタイル） ========= */
-.cards{
-    display:flex;gap:28px;flex-wrap:wrap;justify-content:center;
-    max-width:1000px;padding:56px 24px 40px;width:100%;
-    position:relative;
+/* Hero 主体 */
+.hero{flex:1;display:flex;flex-direction:column;justify-content:center;max-width:1180px;width:100%;margin:0 auto;padding:50px 28px 60px;}
+.hero-content{max-width:640px;}
+
+/* 社交证明 / 徽章 */
+.proof{display:flex;align-items:center;gap:12px;margin-bottom:30px;}
+.avatars{display:flex;}
+.avatars span{width:34px;height:34px;border-radius:50%;border:2px solid #fff;margin-left:-10px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff;}
+.avatars span:first-child{margin-left:0;}
+.proof p{font-size:.9rem;color:var(--text-muted);font-weight:500;}
+
+/* 标题（两行错落） */
+h1{font-weight:400;letter-spacing:-.03em;line-height:1.05;font-size:clamp(2.8rem,7vw,4.8rem);margin-bottom:24px;color:var(--text);}
+h1 .l1{display:block;}
+h1 .l2{display:block;color:var(--green);}
+
+/* 副标题 */
+.subtitle{max-width:500px;font-size:clamp(1rem,2.2vw,1.18rem);line-height:1.6;color:var(--text-muted);font-weight:400;margin-bottom:38px;}
+
+/* CTA */
+.cta-row{display:flex;flex-wrap:wrap;align-items:center;gap:18px;}
+.btn-primary{display:inline-flex;align-items:center;gap:9px;min-height:48px;padding:0 22px;border-radius:10px;background:var(--btn-bg);color:#fff;font-weight:600;font-size:.98rem;text-decoration:none;transition:transform .12s,background .2s;}
+.btn-primary:hover{background:var(--btn-hover);transform:translateY(-1px);}
+.btn-primary svg{width:16px;height:16px;transition:transform .15s;}
+.btn-primary:hover svg{transform:translateX(3px);}
+.btn-ghost{display:inline-flex;align-items:center;gap:12px;min-height:48px;padding:0 14px;border-radius:10px;color:var(--text);text-decoration:none;font-weight:600;font-size:.98rem;transition:opacity .15s;}
+.btn-ghost:hover{opacity:.72;}
+.btn-ghost .play{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;transition:transform .15s;background:#fff;}
+.btn-ghost:hover .play{transform:scale(1.06);}
+.btn-ghost .play svg{width:14px;height:14px;}
+
+/* 底部 3 列特性区 */
+.features{max-width:1180px;width:100%;margin:0 auto;padding:0 28px 50px;display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap;}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;flex:1;min-width:280px;}
+.feat{display:flex;flex-direction:column;gap:12px;text-decoration:none;color:inherit;}
+.feat .ic{width:34px;height:34px;color:var(--green);}
+.feat p{max-width:210px;font-size:.92rem;line-height:1.45;font-weight:500;color:var(--text-muted);}
+.feat:hover p{color:var(--text);}
+.feat .more{display:inline-flex;align-items:center;gap:5px;font-size:.82rem;color:var(--green);margin-top:2px;opacity:0;transform:translateX(-4px);transition:.2s;}
+.feat:hover .more{opacity:1;transform:none;}
+.scroll-hint{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--text-muted);font-weight:500;cursor:pointer;padding-bottom:4px;white-space:nowrap;}
+.scroll-hint svg{width:16px;height:16px;transition:transform .15s;}
+.scroll-hint:hover svg{transform:translateY(3px);}
+
+footer{border-top:1px solid var(--line);padding:22px 28px;text-align:center;color:var(--text-muted);font-size:.8rem;position:relative;z-index:1;background:rgba(255,255,255,.6);}
+
+@media(max-width:960px){
+  .landscape svg .person-group,.landscape svg .tree{opacity:.6;}
 }
-
-/* 单个文件夹 */
-.project-folder{
-    position:relative;width:288px;height:224px;flex:0 0 auto;display:block;
-    text-decoration:none;color:inherit;
-    border-radius:18px;perspective:1200px;cursor:pointer;outline:none;
-    transition:transform .25s ease;
+@media(max-width:760px){
+  .nav-links{display:none;}
+  .hero{padding:40px 22px 50px;}
+  .feat-grid{grid-template-columns:1fr;gap:22px;}
+  .features{flex-direction:column;align-items:flex-start;}
+  .landscape{opacity:.35;}
 }
-.project-folder:focus-visible{box-shadow:0 0 0 4px rgba(15,122,64,.28);border-radius:18px;}
-
-/* 背面の壁（開くと後ろに傾く） */
-.pf-back{
-    position:absolute;inset:0;border-radius:18px;
-    border:1px solid rgba(0,0,0,.08);
-    background:rgba(255,255,255,.28);backdrop-filter:blur(12px);
-    transform-origin:center bottom;transform:rotateX(0deg);
-    transition:transform .5s cubic-bezier(.2,.8,.2,1);
-}
-.project-folder.is-open .pf-back{transform:rotateX(15deg);}
-
-/* ファンの枠（中央上に固定されたアンカー点） */
-.pf-files{position:absolute;left:50%;top:12px;width:0;height:0;z-index:5;pointer-events:none;}
-
-/* ファイルカード */
-.pf-file{
-    position:absolute;left:0;top:0;width:96px;height:150px;margin-left:-48px;
-    border-radius:10px;border:1px solid rgba(0,0,0,.08);
-    background:var(--c,#bbf7d0);overflow:hidden;
-    box-shadow:0 6px 16px rgba(0,0,0,.10);
-    transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .5s ease;
-    will-change:transform;
-}
-.pf-file .pf-lines{position:absolute;left:12px;top:14px;width:56px;}
-.pf-file .pf-lines i{display:block;height:3px;border-radius:2px;background:rgba(0,0,0,.12);margin-bottom:7px;}
-.pf-file .pf-mark{position:absolute;right:10px;bottom:8px;font-size:1.7rem;font-weight:700;color:rgba(0,0,0,.42);}
-
-/* 前面のラベル（開くと手前に傾く） */
-.pf-front{
-    position:absolute;inset-inline:0;bottom:0;height:112px;overflow:hidden;
-    border-radius:18px;border:1px solid rgba(0,0,0,.08);
-    background:rgba(255,255,255,.7);backdrop-filter:blur(18px);
-    transform-origin:center bottom;transform:rotateX(0deg);
-    transition:transform .5s cubic-bezier(.2,.8,.2,1);
-    backface-visibility:hidden;z-index:20;
-}
-.project-folder.is-open .pf-front{transform:rotateX(-25deg);}
-.pf-title-row{height:64px;display:flex;align-items:center;padding:0 18px;}
-.pf-title{font-size:1.15rem;font-weight:700;color:#111827;line-height:1.3;}
-.pf-meta-row{height:48px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 18px;border-top:1px solid rgba(0,0,0,.08);}
-.pf-count{font-size:.8rem;font-weight:600;color:rgba(0,0,0,.6);white-space:nowrap;}
-.pf-desc{font-size:.8rem;color:#6b7280;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-
-/* Footer */
-footer{
-    padding:32px 24px 48px;font-size:.82rem;color:#9ca3af;text-align:center;
-}
-
-@media(max-width:640px){
-    .hero{padding:64px 20px 44px;}
-    .hero-bg-circle{width:260px;height:260px;top:-80px;right:-80px;}
-    .hero-bg-cloud{width:160px;height:110px;top:20px;left:-40px;}
-    .cards{gap:24px;padding:40px 16px 28px;}
-    .project-folder{width:288px;max-width:100%;}
-    .green-band{padding:36px 20px;}
+@media(prefers-reduced-motion:reduce){
+  .anim{animation:none!important;opacity:1!important;}
 }
 </style>
 </head>
 <body>
 
-<!-- ===== Hero セクション ===== -->
-<section class="hero">
+<!-- 右侧自然插画：草坡、树、人物遛狗、飞鸟 -->
+<div class="landscape" aria-hidden="true">
+  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#f7f5ef"/>
+        <stop offset="100%" stop-color="#ffffff"/>
+      </linearGradient>
+      <linearGradient id="hill" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4e9a0"/>
+        <stop offset="55%" stop-color="#9cc96a"/>
+        <stop offset="100%" stop-color="#0f7a40"/>
+      </linearGradient>
+      <linearGradient id="hillShadow" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#0f7a40"/>
+        <stop offset="100%" stop-color="#0a5a2e"/>
+      </linearGradient>
+      <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="2"/>
+      </filter>
+    </defs>
 
-    <!-- 右の大きな薄い円 -->
-    <svg class="hero-bg-circle" viewBox="0 0 420 420" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="210" cy="210" r="200" fill="#0f7a40" fill-opacity="0.06"/>
-        <circle cx="210" cy="210" r="140" fill="#0f7a40" fill-opacity="0.04"/>
-    </svg>
+    <!-- 天空飞鸟 -->
+    <g fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round">
+      <path d="M980 180q12 -8 24 0q-12 4 -24 0" transform="translate(0,0) scale(.9)"/>
+      <path d="M1080 140q10 -7 20 0q-10 4 -20 0" transform="translate(0,0) scale(.75)"/>
+      <path d="M1020 220q8 -5 16 0q-8 3 -16 0" transform="translate(0,0) scale(.6)"/>
+    </g>
 
-    <!-- 左の雲っぽい曲線 -->
-    <svg class="hero-bg-cloud" viewBox="0 0 220 160" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M30 120 Q10 80 50 70 Q55 40 95 45 Q130 25 155 55 Q195 60 190 100 Q210 130 170 135 Q130 150 90 140 Q50 150 30 120Z"
-              fill="#0f7a40" fill-opacity="0.08"/>
-    </svg>
+    <!-- 远山淡影 -->
+    <ellipse cx="1180" cy="420" rx="260" ry="90" fill="#e8efe0" opacity=".7"/>
 
-    <!-- Hero 下の波うつ曲線 -->
-    <svg class="hero-bg-curve" viewBox="0 0 1440 320" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-        <path d="M0 224 Q 180 140 360 192 T 720 176 T 1080 208 T 1440 160 L1440 320 L0 320Z" fill="#0f7a40" fill-opacity="0.07"/>
-        <path d="M0 260 Q 220 200 440 240 T 880 224 T 1320 250 L1440 240 L1440 320 L0 320Z" fill="#0f7a40" fill-opacity="0.05"/>
-    </svg>
+    <!-- 大树 -->
+    <g class="tree" transform="translate(1160, 180) scale(1.1)">
+      <path d="M28 220 Q22 160 30 110 Q18 80 35 50 Q55 20 85 35 Q115 25 130 55 Q155 70 145 105 Q165 140 140 175 Q135 200 130 220 Z" fill="#6a9e45"/>
+      <path d="M28 220 Q35 170 32 130" stroke="#5d4a35" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M32 130 Q10 110 5 90" stroke="#5d4a35" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M32 115 Q55 95 70 80" stroke="#5d4a35" stroke-width="3" fill="none" stroke-linecap="round"/>
+    </g>
 
-    <!-- 装飾小物 -->
-    <svg class="deco deco-dot-1" width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" fill="#0f7a40" fill-opacity="0.35"/></svg>
-    <svg class="deco deco-dot-2" width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#0f7a40" fill-opacity="0.25"/></svg>
-    <svg class="deco deco-dot-3" width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="9" fill="none" stroke="#0f7a40" stroke-width="1.5" stroke-opacity="0.3"/></svg>
-    <svg class="deco deco-tri" width="28" height="28" viewBox="0 0 28 28"><polygon points="14,3 26,25 2,25" fill="#0f7a40" fill-opacity="0.18"/></svg>
-    <svg class="deco deco-ring" width="48" height="48" viewBox="0 0 48 48">
-        <circle cx="24" cy="24" r="20" fill="none" stroke="#0f7a40" stroke-width="2" stroke-opacity="0.15"/>
-        <circle cx="24" cy="24" r="12" fill="none" stroke="#0f7a40" stroke-width="1" stroke-opacity="0.2"/>
-    </svg>
+    <!-- 主草坡 -->
+    <path d="M0 900 L1440 900 L1440 520 Q1100 480 820 620 Q520 780 0 760 Z" fill="url(#hill)"/>
+    <path d="M0 900 L1440 900 L1440 620 Q1150 620 900 720 Q600 840 0 820 Z" fill="url(#hillShadow)" opacity=".35"/>
 
-    <h1>日本語 <span class="accent">基礎練習</span></h1>
-    <p class="sub">五十音 ・ 数字 ・ 日付 ・ 時刻 　のランダム練習ツール</p>
-</section>
+    <!-- 草坡纹理 -->
+    <g stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" opacity=".18">
+      <path d="M980 720q20 -12 40 0"/>
+      <path d="M1050 700q18 -10 36 0"/>
+      <path d="M1120 740q22 -14 44 0"/>
+      <path d="M1200 680q16 -9 32 0"/>
+      <path d="M1280 710q20 -12 40 0"/>
+      <path d="M850 760q18 -10 36 0"/>
+      <path d="M920 780q16 -9 32 0"/>
+    </g>
 
-<!-- ===== 緑の帯 ===== -->
-<div class="green-band">
-    <p>学びたい場所を、選んでください。</p>
+    <!-- 人物与狗 -->
+    <g class="person-group" transform="translate(1010, 545) scale(0.85)">
+      <!-- 人物影子 -->
+      <ellipse cx="55" cy="268" rx="35" ry="6" fill="#0a5a2e" opacity=".25"/>
+      <!-- 长裙 -->
+      <path d="M55 268 L28 150 Q25 130 45 125 L70 125 Q88 130 85 150 L75 268 Z" fill="#0f7a40"/>
+      <!-- 头 -->
+      <circle cx="57" cy="108" r="14" fill="#f3d2c1"/>
+      <!-- 斗笠 -->
+      <ellipse cx="57" cy="100" rx="28" ry="10" fill="#e8c97a"/>
+      <ellipse cx="57" cy="96" rx="12" ry="5" fill="#d4b065"/>
+      <!-- 手臂 -->
+      <path d="M72 145 Q95 170 120 185" stroke="#f3d2c1" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <!-- 牵引绳 -->
+      <path d="M120 185 Q150 200 175 210" stroke="#8b7355" stroke-width="1.8" fill="none"/>
+      <!-- 狗 -->
+      <g transform="translate(165, 195)">
+        <ellipse cx="18" cy="18" rx="18" ry="12" fill="#f5f0e6"/>
+        <circle cx="32" cy="10" r="9" fill="#f5f0e6"/>
+        <circle cx="35" cy="8" r="1.5" fill="#333"/>
+        <ellipse cx="8" cy="25" rx="5" ry="10" fill="#f5f0e6"/>
+        <ellipse cx="26" cy="25" rx="5" ry="10" fill="#f5f0e6"/>
+        <path d="M30 4 L34 -2" stroke="#f5f0e6" stroke-width="3" stroke-linecap="round"/>
+        <path d="M36 4 L40 -2" stroke="#f5f0e6" stroke-width="3" stroke-linecap="round"/>
+      </g>
+    </g>
+  </svg>
 </div>
 
-<!-- ===== カード（Project Folder スタイル） ===== -->
-<div class="cards">
+<div class="wrap">
 
-    <!-- Folder 1: 五十音 -->
-    <a class="project-folder" href="kana.html" aria-label="五十音 ランダム練習を開く">
-        <div class="pf-back" aria-hidden="true"></div>
-        <div class="pf-files" aria-hidden="true">
-            <div class="pf-file" style="--c:#bbf7d0"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">あ</span></div>
-            <div class="pf-file" style="--c:#fed7aa"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">か</span></div>
-            <div class="pf-file" style="--c:#bae6fd"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">さ</span></div>
-            <div class="pf-file" style="--c:#ddd6fe"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">た</span></div>
-            <div class="pf-file" style="--c:#fef3c7"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">な</span></div>
-        </div>
-        <div class="pf-front" aria-hidden="true">
-            <div class="pf-title-row"><div class="pf-title">五十音 ランダム練習</div></div>
-            <div class="pf-meta-row"><span class="pf-count">5 files</span><span class="pf-desc">ひらがな / カタカナ</span></div>
-        </div>
+  <!-- 导航 -->
+  <nav class="nav anim" style="animation-name:navIn;animation-duration:.7s;animation-delay:.05s;">
+    <a class="brand" href="index.html">
+      <div class="logo">日</div>
+      <span>日本語 Practice</span>
     </a>
+    <div class="nav-links">
+      <a href="kana.html">五十音</a>
+      <a href="suuji.html">数字</a>
+      <a href="kanji.html">漢字</a>
+      <a href="#modes">このサイト</a>
+    </div>
+    <div class="nav-right">
+      <div class="lang">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        日本語
+      </div>
+      <a class="btn-dark" href="kana.html">
+        始める
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </nav>
 
-    <!-- Folder 2: 数字・日付・時刻 -->
-    <a class="project-folder" href="suuji.html" aria-label="数字・日付・時刻 練習を開く">
-        <div class="pf-back" aria-hidden="true"></div>
-        <div class="pf-files" aria-hidden="true">
-            <div class="pf-file" style="--c:#bbf7d0"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">1</span></div>
-            <div class="pf-file" style="--c:#fed7aa"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">2</span></div>
-            <div class="pf-file" style="--c:#bae6fd"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">3</span></div>
-            <div class="pf-file" style="--c:#ddd6fe"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">4</span></div>
-            <div class="pf-file" style="--c:#fef3c7"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">5</span></div>
+  <!-- Hero 主体 -->
+  <main class="hero">
+    <div class="hero-content">
+      <!-- 社交证明 -->
+      <div class="proof anim" style="animation-name:fadeUp;animation-duration:.6s;animation-delay:.2s;">
+        <div class="avatars">
+          <span style="background:#0f7a40">あ</span>
+          <span style="background:#f59e0b">1</span>
+          <span style="background:#3b82f6">日</span>
+          <span style="background:#8b5cf6">漢</span>
         </div>
-        <div class="pf-front" aria-hidden="true">
-            <div class="pf-title-row"><div class="pf-title">数字・日付・時刻 練習</div></div>
-            <div class="pf-meta-row"><span class="pf-count">5 files</span><span class="pf-desc">数字 / 日付 / 時刻</span></div>
-        </div>
-    </a>
+        <p>JLPT N5〜N1 対応 · 教室内ですぐ使える</p>
+      </div>
 
-    <!-- Folder 3: 漢字 -->
-    <a class="project-folder" href="kanji.html" aria-label="漢字 反転カードを開く">
-        <div class="pf-back" aria-hidden="true"></div>
-        <div class="pf-files" aria-hidden="true">
-            <div class="pf-file" style="--c:#bbf7d0"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">日</span></div>
-            <div class="pf-file" style="--c:#fed7aa"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">月</span></div>
-            <div class="pf-file" style="--c:#bae6fd"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">火</span></div>
-            <div class="pf-file" style="--c:#ddd6fe"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">水</span></div>
-            <div class="pf-file" style="--c:#fef3c7"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">木</span></div>
-        </div>
-        <div class="pf-front" aria-hidden="true">
-            <div class="pf-title-row"><div class="pf-title">漢字 反転カード</div></div>
-            <div class="pf-meta-row"><span class="pf-count">5 files</span><span class="pf-desc">漢字 初級 / 初中級</span></div>
-        </div>
-    </a>
+      <!-- 标题（两行错落） -->
+      <h1>
+        <span class="l1 anim" style="animation-name:riseBlur;animation-duration:.9s;animation-delay:.3s;">自然平静</span>
+        <span class="l2 anim" style="animation-name:riseBlur;animation-duration:.9s;animation-delay:.48s;">経験優雅</span>
+      </h1>
 
+      <!-- 副标题 + CTA -->
+      <div class="anim" style="animation-name:fadeUp;animation-duration:.7s;animation-delay:.85s;">
+        <p class="subtitle">ひらがな・カタカナ・数字・日付・時刻・漢字をランダム出題。日本語教師向けの、インストール不要の練習ツール。</p>
+        <div class="cta-row">
+          <a class="btn-primary" href="#modes">
+            発見する
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a class="btn-ghost" href="kanji.html">
+            練習を見る
+            <span class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 底部 3 列特性区 -->
+  <section class="features" id="modes">
+    <div class="feat-grid">
+      <a class="feat anim" style="animation-name:pop;animation-duration:.6s;animation-delay:1.3s;" href="kana.html">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <p>五十音 ランダム練習 — ひらがな・カタカナをクリックでローマ字確認</p>
+        <span class="more">開く →</span>
+      </a>
+      <a class="feat anim" style="animation-name:pop;animation-duration:.6s;animation-delay:1.38s;" href="suuji.html">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
+        <p>数字・日付・時刻 練習 — 1〜兆単位・年月日・時刻をランダム出題</p>
+        <span class="more">開く →</span>
+      </a>
+      <a class="feat anim" style="animation-name:pop;animation-duration:.6s;animation-delay:1.46s;" href="kanji.html">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z"/></svg>
+        <p>漢字 反転カード — 初級・初中級からランダム出題、クリックで反転</p>
+        <span class="more">開く →</span>
+      </a>
+    </div>
+    <div class="scroll-hint anim" style="animation-name:fadeUp;animation-duration:.6s;animation-delay:1.55s;" onclick="document.querySelector('.hero').scrollIntoView({behavior:'smooth'})">
+      トップへ戻る
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 11l6-6 6 6"/></svg>
+    </div>
+  </section>
+
+  <footer>
+    日本語 Practice Tools · 日本語教師向けランダム出題
+  </footer>
 </div>
-
-<footer>
-    Japanese Practice Tools · 日本語教師向けランダム出題
-</footer>
-
-<script>
-(function(){
-  // オリジナル getPreviewTransform を再現（中央が最大、外側へ行くほど小さく透明）
-  function getPreviewTransform(index, count){
-    const offset = index - (count - 1) / 2;
-    const distance = Math.abs(offset);
-    const centerLift = Math.max(0, 2 - distance) * 8;
-    return {
-      x: offset * 44,
-      y: 8 - centerLift,
-      rotate: offset * 6,
-      scale: distance === 0 ? 1.04 : distance === 1 ? 0.95 : 0.88,
-      opacity: distance === 0 ? 1 : distance === 1 ? 0.78 : 0.58,
-      zIndex: 10 - distance
-    };
-  }
-  // 開状態（hover/open）は 1.4倍広げて8px上がり、透明度も少し上げる
-  function openBoost(t){
-    return {
-      x: t.x * 1.4,
-      y: t.y - 8,
-      rotate: t.rotate * 1.3,
-      scale: t.scale * 1.02,
-      opacity: Math.min(1, t.opacity + 0.18),
-      zIndex: t.zIndex
-    };
-  }
-  function apply(card, t){
-    card.style.transform =
-      'translate(' + t.x + 'px,' + t.y + 'px) rotate(' + t.rotate + 'deg) scale(' + t.scale + ')';
-    card.style.opacity = t.opacity;
-    card.style.zIndex = t.zIndex;
-  }
-
-  const folders = Array.prototype.slice.call(document.querySelectorAll('.project-folder'));
-  folders.forEach(function(folder){
-    const cards = Array.prototype.slice.call(folder.querySelectorAll('.pf-file'));
-    folder._cards = cards.map(function(card){
-      const t = getPreviewTransform(cards.indexOf(card), cards.length);
-      const o = openBoost(t);
-      card._base = t; card._open = o;
-      apply(card, t);
-      return card;
-    });
-    folder._files = cards.map(function(card){
-      return {
-        color: getComputedStyle(card).getPropertyValue('--c').trim(),
-        glyph: card.querySelector('.pf-mark').textContent
-      };
-    });
-
-    function setOpen(open){
-      folder.classList.toggle('is-open', open);
-      folder._cards.forEach(function(c){ apply(c, open ? c._open : c._base); });
-    }
-    folder.addEventListener('mouseenter', function(){ setOpen(true); });
-    folder.addEventListener('mouseleave', function(){ if(!folder._expanded) setOpen(false); });
-    folder.addEventListener('focus', function(){ setOpen(true); });
-    folder.addEventListener('blur', function(){ if(!folder._expanded) setOpen(false); });
-  });
-
-})();
-</script>
-
 </body>
 </html>
