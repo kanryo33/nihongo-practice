@@ -5,81 +5,142 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>日本語 基礎練習 | 五十音・数字・日付・時刻</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:"Meiryo","メイリオ","Noto Sans JP",system-ui,sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;font-family:"Meiryo","メイリオ","Noto Sans JP",system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+html,body{background:#ffffff;}
 body{
     min-height:100vh;
-    background:linear-gradient(135deg,#eef2ff 0%,#fdf4ff 50%,#f0fdf4 100%);
     display:flex;
     flex-direction:column;
     align-items:center;
-    justify-content:center;
-    padding:24px;
     color:#1f2937;
+    line-height:1.6;
 }
-header{text-align:center;margin-bottom:48px;}
-h1{font-size:clamp(1.8rem,5vw,2.6rem);font-weight:700;letter-spacing:2px;margin-bottom:12px;}
-.subtitle{font-size:1rem;color:#6b7280;}
+
+/* Hero Section — JREast 风大标题 */
+.hero{
+    width:100%;
+    text-align:center;
+    padding:80px 24px 56px;
+}
+.hero h1{
+    font-size:clamp(2.4rem,6.5vw,4.2rem);
+    font-weight:700;
+    letter-spacing:.02em;
+    line-height:1.25;
+    color:#111827;
+    margin-bottom:20px;
+}
+.hero h1 .accent{
+    color:#0f7a40;
+}
+.hero .sub{
+    font-size:clamp(.95rem,1.8vw,1.15rem);
+    color:#6b7280;
+    letter-spacing:.04em;
+}
+.hero .divider{
+    width:40px;height:3px;background:#0f7a40;border-radius:2px;
+    margin:28px auto 0;
+}
+
+/* Cards — 干净卡片 */
 .cards{
     display:flex;
-    gap:24px;
+    gap:28px;
     flex-wrap:wrap;
     justify-content:center;
-    max-width:900px;
+    max-width:960px;
+    padding:16px 24px 48px;
+    width:100%;
 }
 .card{
     display:block;
-    width:320px;
-    padding:36px 28px;
-    background:#fff;
-    border-radius:20px;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    width:calc(33.333% - 19px);
+    min-width:280px;
+    flex:1 1 280px;
+    padding:40px 32px 36px;
+    background:#ffffff;
+    border-radius:16px;
+    border:1px solid #e5e7eb;
+    border-top:3px solid #0f7a40;
     text-decoration:none;
     color:inherit;
-    transition:transform .2s,box-shadow .2s;
-    border:1px solid #e5e7eb;
+    transition:transform .25s ease, box-shadow .25s ease, border-color .25s;
+    position:relative;
 }
-.card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.12);}
-.icon{font-size:3rem;margin-bottom:16px;}
-.card h2{font-size:1.4rem;margin-bottom:8px;}
-.card p{font-size:.95rem;color:#6b7280;line-height:1.5;}
-.badge{display:inline-block;margin-top:14px;padding:4px 12px;border-radius:999px;font-size:.8rem;font-weight:600;}
-.badge-kana{background:#eef2ff;color:#4f46e5;}
-.badge-suuji{background:#fff7ed;color:#ea580c;}
-.badge-kanji{background:#ecfdf5;color:#059669;}
-footer{margin-top:48px;font-size:.85rem;color:#9ca3af;}
+.card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 20px 50px rgba(15,122,64,.12);
+    border-color:#0f7a40;
+}
+.card .icon{
+    width:56px;height:56px;border-radius:14px;
+    background:#ecfdf5;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.8rem;font-weight:700;color:#0f7a40;
+    margin-bottom:20px;
+}
+.card h2{
+    font-size:1.3rem;font-weight:700;margin-bottom:10px;color:#111827;
+}
+.card p{
+    font-size:.93rem;color:#6b7280;line-height:1.65;
+}
+.badge{
+    display:inline-block;margin-top:20px;padding:5px 14px;
+    border-radius:6px;font-size:.78rem;font-weight:600;
+    background:#ecfdf5;color:#0f7a40;letter-spacing:.03em;
+}
+
+/* Footer */
+footer{
+    padding:32px 24px 48px;
+    font-size:.82rem;color:#9ca3af;text-align:center;
+}
+
+/* Responsive */
+@media(max-width:640px){
+    .hero{padding:56px 20px 36px;}
+    .hero h1{letter-spacing:.01em;}
+    .cards{gap:20px;padding:8px 16px 32px;}
+    .card{padding:32px 24px 28px;min-width:100%;}
+}
 </style>
 </head>
 <body>
-<header>
-    <h1>日本語 基礎練習</h1>
-    <p class="subtitle">五十音 ・ 数字 ・ 日付 ・ 時刻 　のランダム練習ツール</p>
-</header>
+
+<section class="hero">
+    <h1>日本語 <span class="accent">基礎練習</span></h1>
+    <p class="sub">五十音 ・ 数字 ・ 日付 ・ 時刻 　のランダム練習ツール</p>
+    <div class="divider"></div>
+</section>
 
 <div class="cards">
     <a class="card" href="kana.html">
         <div class="icon">あ</div>
         <h2>五十音 ランダム練習</h2>
-        <p>ひらがな・カタカナをランダム出題。カードをクリックしてローマ字を確認。基本五十音・濁音・拗音を選択可能。</p>
-        <span class="badge badge-kana">ひらがな / カタカナ</span>
+        <p>ひらがな・カタカナをランダム出題。カードをクリックしてローマ字を確認。基本五十音・濁音・拗音・外来語拗音を選択可能。</p>
+        <span class="badge">ひらがな / カタカナ</span>
     </a>
 
     <a class="card" href="suuji.html">
         <div class="icon">123</div>
         <h2>数字・日付・時刻 練習</h2>
-        <p>数字（1〜8桁）・年月日・時刻をランダム出題。「読み方表示」で正しい読みを確認。</p>
-        <span class="badge badge-suuji">数字 / 日付 / 時刻</span>
+        <p>数字（1〜兆単位）・年月日・時刻をランダム出題。「読み方表示」で正しい読みを確認。</p>
+        <span class="badge">数字 / 日付 / 時刻</span>
     </a>
 
     <a class="card" href="kanji.html">
         <div class="icon">漢</div>
-        <h2>漢字たまご 練習</h2>
-        <p>漢字たまご 初級・初中級の指定ページからランダムに漢字カードを出題。クリックで反転表示。</p>
-        <span class="badge badge-kanji">漢字 初級 / 初中級</span>
+        <h2>漢字 反転カード</h2>
+        <p>漢字たまご 初級・初中級の指定ページからランダムにカードを出題。「開始ゲーム」でシャッフル、クリックで反転表示。</p>
+        <span class="badge">漢字 初級 / 初中級</span>
     </a>
 </div>
 
 <footer>
-    3 つのツールを 1 つのプロジェクトに統合
+    Japanese Practice Tools · 日本語教師向けランダム出題
 </footer>
+
 </body>
 </html>

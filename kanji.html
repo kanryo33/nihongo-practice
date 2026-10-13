@@ -6,13 +6,13 @@
 <title>漢字たまご 練習</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:"Meiryo","メイリオ","Noto Sans JP",system-ui,sans-serif;color:#1f2937}
-body{min-height:100vh;background:linear-gradient(135deg,#eef2ff 0%,#fdf4ff 50%,#f0fdf4 100%);padding:40px 24px}
+body{min-height:100vh;background:#f8faf9;padding:40px 24px}
 .wrap{max-width:1100px;margin:0 auto;background:#fff;padding:40px 32px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.08);border:1px solid #e5e7eb}
 h1{font-size:1.5rem;font-weight:700;text-align:center;margin-bottom:24px;letter-spacing:2px}
 .ctrl{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center;margin-bottom:20px;font-size:15px;color:#4b5563}
 .ctrl label{font-weight:600}
 .ctrl select,.ctrl input[type=text]{padding:8px 14px;font-size:15px;border-radius:10px;border:1px solid #d1d5db;background:#fff;color:#374151;cursor:pointer;outline:none}
-.ctrl select:focus,.ctrl input:focus{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.15)}
+.ctrl select:focus,.ctrl input:focus{border-color:#0f7a40;box-shadow:0 0 0 3px rgba(15,122,64,.15)}
 .ctrl input[type=text]{width:140px}
 .pages-info{font-size:13px;color:#6b7280;margin-top:4px}
 .cards{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;margin-top:20px;min-height:420px;position:relative}
@@ -21,7 +21,7 @@ h1{font-size:1.5rem;font-weight:700;text-align:center;margin-bottom:24px;letter-
 .flip-card.flipped .flip-card-inner{transform:rotateY(180deg)}
 .flip-card-front,.flip-card-back{position:absolute;width:100%;height:100%;-webkit-backface-visibility:hidden;backface-visibility:hidden;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;text-align:center;box-shadow:0 8px 20px rgba(0,0,0,.08)}
 .flip-card-front{background:#fff;border:1px solid #d1d5db}
-.flip-card-back{background:#6366f1;border:1px solid #4f46e5;transform:rotateY(180deg)}
+.flip-card-back{background:#0f7a40;border:1px solid #0f7a40;transform:rotateY(180deg)}
 .card-kanji{font-size:clamp(1.4rem,4vw,2.5rem);font-weight:bold;color:#111;line-height:1.2;word-break:break-all}
 .card-num{font-size:clamp(1.8rem,5vw,3rem);font-weight:700;color:#fff;line-height:1}
 .game-animating .flip-card{pointer-events:none}
@@ -30,10 +30,10 @@ h1{font-size:1.5rem;font-weight:700;text-align:center;margin-bottom:24px;letter-
 .btn{padding:10px 22px;margin:6px;font-size:14px;border:none;border-radius:12px;cursor:pointer;transition:transform .15s,box-shadow .15s;font-weight:600;color:#fff}
 .btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.15)}
 .btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important;box-shadow:none!important}
-.b1{background:#6366f1} .b2{background:#10b981} .b3{background:#f59e0b} .b4{background:#6b7280}
+.b1{background:#0f7a40} .b2{background:#10b981} .b3{background:#f59e0b} .b4{background:#6b7280}
 .game-state{text-align:center;font-size:12px;color:#9ca3af;margin-top:4px}
 .empty-msg{font-size:18px;color:#dc2626;margin-top:60px}
-.back-btn{position:fixed;top:16px;left:20px;z-index:999;padding:8px 16px;background:rgba(255,255,255,.85);backdrop-filter:blur(4px);color:#4f46e5;font-size:14px;font-weight:600;border-radius:10px;border:1px solid #e5e7eb;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:transform .15s,box-shadow .15s}
+.back-btn{position:fixed;top:16px;left:20px;z-index:999;padding:8px 16px;background:rgba(255,255,255,.85);backdrop-filter:blur(4px);color:#0f7a40;font-size:14px;font-weight:600;border-radius:10px;border:1px solid #e5e7eb;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:transform .15s,box-shadow .15s}
 .back-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.12)}
 </style>
 </head>
