@@ -73,54 +73,63 @@ body{
     position:absolute;top:100%;left:0;width:100%;height:40px;pointer-events:none;
 }
 
-/* ========= Cards ========= */
+/* ========= Project Folders（卡片ファン スタイル） ========= */
 .cards{
     display:flex;gap:28px;flex-wrap:wrap;justify-content:center;
-    max-width:960px;padding:56px 24px 40px;width:100%;
+    max-width:1000px;padding:56px 24px 40px;width:100%;
     position:relative;
 }
-.card{
-    display:block;width:calc(33.333% - 19px);min-width:280px;
-    flex:1 1 280px;padding:44px 32px 40px;
-    background:#fff;border-radius:16px;
-    border:1px solid #e5e7eb;border-top:3px solid #0f7a40;
+
+/* 单个文件夹 */
+.project-folder{
+    position:relative;width:288px;height:224px;flex:0 0 auto;display:block;
     text-decoration:none;color:inherit;
-    transition:transform .25s ease,box-shadow .25s ease,border-color .25s;
-    position:relative;overflow:hidden;
+    border-radius:18px;perspective:1200px;cursor:pointer;outline:none;
+    transition:transform .25s ease;
 }
-/* カード右上の装飾 */
-.card::after{
-    content:'';position:absolute;top:-30px;right:-30px;width:100px;height:100px;
-    border-radius:50%;background:#ecfdf5;opacity:0;transform:scale(.5);
-    transition:transform .35s ease,opacity .35s ease;
+.project-folder:focus-visible{box-shadow:0 0 0 4px rgba(15,122,64,.28);border-radius:18px;}
+
+/* 背面の壁（開くと後ろに傾く） */
+.pf-back{
+    position:absolute;inset:0;border-radius:18px;
+    border:1px solid rgba(0,0,0,.08);
+    background:rgba(255,255,255,.28);backdrop-filter:blur(12px);
+    transform-origin:center bottom;transform:rotateX(0deg);
+    transition:transform .5s cubic-bezier(.2,.8,.2,1);
 }
-.card:hover{
-    transform:translateY(-6px);
-    box-shadow:0 20px 50px rgba(15,122,64,.14);
-    border-color:#0f7a40;
+.project-folder.is-open .pf-back{transform:rotateX(15deg);}
+
+/* ファンの枠（中央上に固定されたアンカー点） */
+.pf-files{position:absolute;left:50%;top:12px;width:0;height:0;z-index:5;pointer-events:none;}
+
+/* ファイルカード */
+.pf-file{
+    position:absolute;left:0;top:0;width:96px;height:150px;margin-left:-48px;
+    border-radius:10px;border:1px solid rgba(0,0,0,.08);
+    background:var(--c,#bbf7d0);overflow:hidden;
+    box-shadow:0 6px 16px rgba(0,0,0,.10);
+    transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .5s ease;
+    will-change:transform;
 }
-.card:hover::after{opacity:1;transform:scale(1.5);}
-.card .icon{
-    position:relative;z-index:2;
-    width:60px;height:60px;border-radius:14px;
-    background:#ecfdf5;display:flex;align-items:center;justify-content:center;
-    font-size:1.9rem;font-weight:700;color:#0f7a40;
-    margin-bottom:22px;
+.pf-file .pf-lines{position:absolute;left:12px;top:14px;width:56px;}
+.pf-file .pf-lines i{display:block;height:3px;border-radius:2px;background:rgba(0,0,0,.12);margin-bottom:7px;}
+.pf-file .pf-mark{position:absolute;right:10px;bottom:8px;font-size:1.7rem;font-weight:700;color:rgba(0,0,0,.42);}
+
+/* 前面のラベル（開くと手前に傾く） */
+.pf-front{
+    position:absolute;inset-inline:0;bottom:0;height:112px;overflow:hidden;
+    border-radius:18px;border:1px solid rgba(0,0,0,.08);
+    background:rgba(255,255,255,.7);backdrop-filter:blur(18px);
+    transform-origin:center bottom;transform:rotateX(0deg);
+    transition:transform .5s cubic-bezier(.2,.8,.2,1);
+    backface-visibility:hidden;z-index:20;
 }
-.card h2{
-    position:relative;z-index:2;
-    font-size:1.3rem;font-weight:700;margin-bottom:10px;color:#111827;
-}
-.card p{
-    position:relative;z-index:2;
-    font-size:.93rem;color:#6b7280;line-height:1.65;
-}
-.badge{
-    position:relative;z-index:2;
-    display:inline-block;margin-top:22px;padding:6px 15px;
-    border-radius:6px;font-size:.78rem;font-weight:600;
-    background:#ecfdf5;color:#0f7a40;letter-spacing:.03em;
-}
+.project-folder.is-open .pf-front{transform:rotateX(-25deg);}
+.pf-title-row{height:64px;display:flex;align-items:center;padding:0 18px;}
+.pf-title{font-size:1.15rem;font-weight:700;color:#111827;line-height:1.3;}
+.pf-meta-row{height:48px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 18px;border-top:1px solid rgba(0,0,0,.08);}
+.pf-count{font-size:.8rem;font-weight:600;color:rgba(0,0,0,.6);white-space:nowrap;}
+.pf-desc{font-size:.8rem;color:#6b7280;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
 /* Footer */
 footer{
@@ -131,8 +140,8 @@ footer{
     .hero{padding:64px 20px 44px;}
     .hero-bg-circle{width:260px;height:260px;top:-80px;right:-80px;}
     .hero-bg-cloud{width:160px;height:110px;top:20px;left:-40px;}
-    .cards{gap:20px;padding:40px 16px 28px;}
-    .card{padding:36px 24px 32px;min-width:100%;}
+    .cards{gap:24px;padding:40px 16px 28px;}
+    .project-folder{width:288px;max-width:100%;}
     .green-band{padding:36px 20px;}
 }
 </style>
@@ -179,33 +188,126 @@ footer{
     <p>学びたい場所を、選んでください。</p>
 </div>
 
-<!-- ===== カード ===== -->
+<!-- ===== カード（Project Folder スタイル） ===== -->
 <div class="cards">
-    <a class="card" href="kana.html">
-        <div class="icon">あ</div>
-        <h2>五十音 ランダム練習</h2>
-        <p>ひらがな・カタカナをランダム出題。カードをクリックしてローマ字を確認。基本五十音・濁音・拗音・外来語拗音を選択可能。</p>
-        <span class="badge">ひらがな / カタカナ</span>
+
+    <!-- Folder 1: 五十音 -->
+    <a class="project-folder" href="kana.html" aria-label="五十音 ランダム練習を開く">
+        <div class="pf-back" aria-hidden="true"></div>
+        <div class="pf-files" aria-hidden="true">
+            <div class="pf-file" style="--c:#bbf7d0"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">あ</span></div>
+            <div class="pf-file" style="--c:#fed7aa"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">か</span></div>
+            <div class="pf-file" style="--c:#bae6fd"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">さ</span></div>
+            <div class="pf-file" style="--c:#ddd6fe"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">た</span></div>
+            <div class="pf-file" style="--c:#fef3c7"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">な</span></div>
+        </div>
+        <div class="pf-front" aria-hidden="true">
+            <div class="pf-title-row"><div class="pf-title">五十音 ランダム練習</div></div>
+            <div class="pf-meta-row"><span class="pf-count">5 files</span><span class="pf-desc">ひらがな / カタカナ</span></div>
+        </div>
     </a>
 
-    <a class="card" href="suuji.html">
-        <div class="icon">123</div>
-        <h2>数字・日付・時刻 練習</h2>
-        <p>数字（1〜兆単位）・年月日・時刻をランダム出題。「読み方表示」で正しい読みを確認。</p>
-        <span class="badge">数字 / 日付 / 時刻</span>
+    <!-- Folder 2: 数字・日付・時刻 -->
+    <a class="project-folder" href="suuji.html" aria-label="数字・日付・時刻 練習を開く">
+        <div class="pf-back" aria-hidden="true"></div>
+        <div class="pf-files" aria-hidden="true">
+            <div class="pf-file" style="--c:#bbf7d0"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">1</span></div>
+            <div class="pf-file" style="--c:#fed7aa"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">2</span></div>
+            <div class="pf-file" style="--c:#bae6fd"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">3</span></div>
+            <div class="pf-file" style="--c:#ddd6fe"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">4</span></div>
+            <div class="pf-file" style="--c:#fef3c7"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">5</span></div>
+        </div>
+        <div class="pf-front" aria-hidden="true">
+            <div class="pf-title-row"><div class="pf-title">数字・日付・時刻 練習</div></div>
+            <div class="pf-meta-row"><span class="pf-count">5 files</span><span class="pf-desc">数字 / 日付 / 時刻</span></div>
+        </div>
     </a>
 
-    <a class="card" href="kanji.html">
-        <div class="icon">漢</div>
-        <h2>漢字 反転カード</h2>
-        <p>漢字たまご 初級・初中級の指定ページからランダムにカードを出題。「開始ゲーム」でシャッフル、クリックで反転表示。</p>
-        <span class="badge">漢字 初級 / 初中級</span>
+    <!-- Folder 3: 漢字 -->
+    <a class="project-folder" href="kanji.html" aria-label="漢字 反転カードを開く">
+        <div class="pf-back" aria-hidden="true"></div>
+        <div class="pf-files" aria-hidden="true">
+            <div class="pf-file" style="--c:#bbf7d0"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">日</span></div>
+            <div class="pf-file" style="--c:#fed7aa"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">月</span></div>
+            <div class="pf-file" style="--c:#bae6fd"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">火</span></div>
+            <div class="pf-file" style="--c:#ddd6fe"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">水</span></div>
+            <div class="pf-file" style="--c:#fef3c7"><span class="pf-lines"><i></i><i></i><i></i></span><span class="pf-mark">木</span></div>
+        </div>
+        <div class="pf-front" aria-hidden="true">
+            <div class="pf-title-row"><div class="pf-title">漢字 反転カード</div></div>
+            <div class="pf-meta-row"><span class="pf-count">5 files</span><span class="pf-desc">漢字 初級 / 初中級</span></div>
+        </div>
     </a>
+
 </div>
 
 <footer>
     Japanese Practice Tools · 日本語教師向けランダム出題
 </footer>
+
+<script>
+(function(){
+  // オリジナル getPreviewTransform を再現（中央が最大、外側へ行くほど小さく透明）
+  function getPreviewTransform(index, count){
+    const offset = index - (count - 1) / 2;
+    const distance = Math.abs(offset);
+    const centerLift = Math.max(0, 2 - distance) * 8;
+    return {
+      x: offset * 44,
+      y: 8 - centerLift,
+      rotate: offset * 6,
+      scale: distance === 0 ? 1.04 : distance === 1 ? 0.95 : 0.88,
+      opacity: distance === 0 ? 1 : distance === 1 ? 0.78 : 0.58,
+      zIndex: 10 - distance
+    };
+  }
+  // 開状態（hover/open）は 1.4倍広げて8px上がり、透明度も少し上げる
+  function openBoost(t){
+    return {
+      x: t.x * 1.4,
+      y: t.y - 8,
+      rotate: t.rotate * 1.3,
+      scale: t.scale * 1.02,
+      opacity: Math.min(1, t.opacity + 0.18),
+      zIndex: t.zIndex
+    };
+  }
+  function apply(card, t){
+    card.style.transform =
+      'translate(' + t.x + 'px,' + t.y + 'px) rotate(' + t.rotate + 'deg) scale(' + t.scale + ')';
+    card.style.opacity = t.opacity;
+    card.style.zIndex = t.zIndex;
+  }
+
+  const folders = Array.prototype.slice.call(document.querySelectorAll('.project-folder'));
+  folders.forEach(function(folder){
+    const cards = Array.prototype.slice.call(folder.querySelectorAll('.pf-file'));
+    folder._cards = cards.map(function(card){
+      const t = getPreviewTransform(cards.indexOf(card), cards.length);
+      const o = openBoost(t);
+      card._base = t; card._open = o;
+      apply(card, t);
+      return card;
+    });
+    folder._files = cards.map(function(card){
+      return {
+        color: getComputedStyle(card).getPropertyValue('--c').trim(),
+        glyph: card.querySelector('.pf-mark').textContent
+      };
+    });
+
+    function setOpen(open){
+      folder.classList.toggle('is-open', open);
+      folder._cards.forEach(function(c){ apply(c, open ? c._open : c._base); });
+    }
+    folder.addEventListener('mouseenter', function(){ setOpen(true); });
+    folder.addEventListener('mouseleave', function(){ if(!folder._expanded) setOpen(false); });
+    folder.addEventListener('focus', function(){ setOpen(true); });
+    folder.addEventListener('blur', function(){ if(!folder._expanded) setOpen(false); });
+  });
+
+})();
+</script>
 
 </body>
 </html>
