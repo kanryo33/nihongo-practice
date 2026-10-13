@@ -91,6 +91,22 @@ h1{font-size:1.5rem;font-weight:700;text-align:center;margin-bottom:24px;letter-
 }
 
 
+
+/* ===== 翻転後の子要素透け問題 修正 ===== */
+/* text-shadow 等で独立合成層が生成されると backface-visibility:hidden が効かない */
+/* 子要素にも backface-visibility:hidden を付ける */
+.flip-card-front > *,
+.flip-card-back > *{
+    -webkit-backface-visibility:hidden;
+    backface-visibility:hidden;
+}
+/* text-shadow も消す（合成層生成のトリガー） */
+.kana-front, .kana-back, .roma-back,
+.card-kanji, .card-num{
+    text-shadow:none !important;
+}
+
+
 </style>
 </head>
 <body>
