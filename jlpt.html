@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>JLPT 课堂演示 | 日本語 Practice</title>
+<title>JLPT 授業用デモ | 日本語 Practice</title>
 <link rel="icon" href="logo.png" />
 <style>
 /* ============================================================
-   JLPT 课堂演示模式 —— 大屏教学专用
+   JLPT 授業デモ模式 —— 大屏教学专用
    - 文字大、模块清晰、层级分明，投影 / 大电视后排可读
    - 听解：音频可拖进度条；带图题左侧大图 + 右侧题干选项同屏
-   - 读解：文章字号加大，限高可滚动 / 展开全文，选项保持在同版面
+   - 读解：文章字号加大，限高可滚动 / 全文を表示，选项保持在同版面
    ============================================================ */
 :root {
   --bg: #f1f3f9;
@@ -565,44 +565,44 @@ body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1
   <header class="sel-top">
     <div class="brand">
       <img src="logo.png" alt="JLPT" />
-      <span>JLPT 课堂演示</span>
+      <span>JLPT 授業用デモ</span>
     </div>
     <a class="btn" href="index.html" title="ホームに戻る">ホーム</a>
   </header>
   <main class="sel-main">
     <div class="sel-head">
-      <h1>课堂大屏演示</h1>
-      <p>先选择等级 / 分类 / 场次，再开始演示。文字为大屏设计，投影与大电视后排也清晰可读。</p>
+      <h1>授業用大画面デモ</h1>
+      <p>レベル・分野・回を選んでからデモを開始します。文字は大画面用に設計されており、プロジェクターや大型テレビの後ろの席からもはっきり読めます。</p>
     </div>
 
     <section class="filter-block">
       <div class="filter-head">
-        <h2>等级</h2>
-        <button class="mini" id="toggle-level" type="button">全选 / 清空</button>
+        <h2>レベル</h2>
+        <button class="mini" id="toggle-level" type="button">すべて選択 / クリア</button>
       </div>
       <div class="chips" id="sel-level"></div>
     </section>
 
     <section class="filter-block">
       <div class="filter-head">
-        <h2>分类</h2>
-        <button class="mini" id="toggle-category" type="button">全选 / 清空</button>
+        <h2>分野</h2>
+        <button class="mini" id="toggle-category" type="button">すべて選択 / クリア</button>
       </div>
       <div class="chips" id="sel-category"></div>
     </section>
 
     <section class="filter-block">
       <div class="filter-head">
-        <h2>考试场次</h2>
-        <button class="mini" id="toggle-year" type="button">全选 / 清空</button>
+        <h2>試験回</h2>
+        <button class="mini" id="toggle-year" type="button">すべて選択 / クリア</button>
       </div>
       <div class="chips" id="sel-year"></div>
     </section>
 
     <div class="sel-stat" id="sel-stat"></div>
     <div class="sel-actions">
-      <button class="btn start" id="btn-start" type="button">开始课堂演示</button>
-      <button class="btn big" id="btn-random" type="button">随机抽一题</button>
+      <button class="btn start" id="btn-start" type="button">授業デモを開始</button>
+      <button class="btn big" id="btn-random" type="button">ランダムに1問</button>
     </div>
   </main>
 </div>
@@ -610,18 +610,18 @@ body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1
 <!-- ===== 视图二：演示 ===== -->
 <div id="view-demo" hidden>
   <header class="demo-top">
-    <button class="btn" id="btn-back" type="button">返回选题</button>
-    <div class="demo-title">课堂演示</div>
+    <button class="btn" id="btn-back" type="button">選択に戻る</button>
+    <div class="demo-title">授業デモ</div>
     <div class="demo-meta" id="demo-meta"></div>
     <div class="demo-progress" id="demo-progress"></div>
-    <button class="btn" id="btn-full" type="button">全屏</button>
+    <button class="btn" id="btn-full" type="button">全画面</button>
   </header>
   <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
   <main class="demo-main" id="demo-main"></main>
   <footer class="demo-bar">
-    <button class="btn big" id="btn-prev" type="button">← 上一题</button>
-    <button class="btn big primary" id="btn-answer" type="button">显示答案</button>
-    <button class="btn big" id="btn-next" type="button">下一题 →</button>
+    <button class="btn big" id="btn-prev" type="button">← 前の問題</button>
+    <button class="btn big primary" id="btn-answer" type="button">答えを表示</button>
+    <button class="btn big" id="btn-next" type="button">次の問題 →</button>
   </footer>
 </div>
 
@@ -635,9 +635,10 @@ body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1
   const LEVEL_ORDER = ["N5", "N4", "N3", "N2", "N1"];
   const LEVEL_COLOR = { N5: "#2f9e6f", N4: "#2f8fe0", N3: "#d99a1b", N2: "#e8722f", N1: "#d6453b" };
   const CATS = ["文字词汇", "语法", "读解", "听解"];
+  const CAT_LABEL = {"文字词汇":"文字・語彙","语法":"文法","读解":"読解","听解":"聴解"};
 
   let QUESTIONS = [];
-  // 默认不预选任何等级 / 分类 / 场次 —— 老师主动选择后再开始
+  // 最初はレベル・分野・回を何も選択しない。先生が選んでから開始
   // 音频地址前缀：默认空（同目录 audio/ 相对路径）。
   // 部署到对象存储（如 Cloudflare R2）时改为存储域名，例如 "https://xxx.r2.dev/"，
   // 或运行时在地址栏加 ?audio_base= 覆盖，无需改代码。
@@ -666,7 +667,7 @@ body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1
     return {
       id: String(q.id != null ? q.id : ""),
       level: String(q.level || "N?"),
-      category: String(q.category || "未分类"),
+      category: String(q.category || "未分類"),
       type: String(q.type || ""),
       question: String(q.question || ""),
       questionNumber: (q.questionNumber != null && !isNaN(q.questionNumber)) ? Number(q.questionNumber) : null,
@@ -678,7 +679,7 @@ body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1
       answer: (typeof q.answer === "number") ? q.answer : (q.answer != null ? String(q.answer) : ""),
       explanation: String(q.explanation || ""),
       tags: Array.isArray(q.tags) ? q.tags.map(String) : [],
-      source: String(q.source || "未注明"),
+      source: String(q.source || "未記載"),
       audioUrl: q.audioUrl || null,
       imageUrl: q.imageUrl || null,
       year: q.year != null ? Number(q.year) : null
@@ -768,7 +769,7 @@ body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1
       const b = document.createElement("button");
       b.type = "button";
       b.className = "chip" + (set.has(v) ? " active" : "") + (group === "level" ? " lv-" + v.toLowerCase() : "");
-      b.textContent = group === "year" ? ymLabel(v) : v;
+      b.textContent = group === "year" ? ymLabel(v) : group === "category" ? (CAT_LABEL[v] || v) : v;
       b.onclick = () => {
         if (set.has(v)) set.delete(v); else set.add(v);
         if (group === "level") { F.yearMonths = new Set(); renderYearChips(); }
@@ -783,7 +784,7 @@ body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1
     const el = $("#sel-year");
     const yms = yearsForLevels(F.levels);
     if (!yms.length) {
-      el.innerHTML = '<span class="chip-hint">请先选择等级</span>';
+      el.innerHTML = '<span class="chip-hint">まずレベルを選択してください</span>';
       $("#toggle-year").disabled = true;
       return;
     }
@@ -820,18 +821,18 @@ body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1
     const el = $("#sel-stat");
     const startBtn = $("#btn-start"), randBtn = $("#btn-random");
     if (!F.levels.size && !F.categories.size && !F.yearMonths.size) {
-      el.innerHTML = "请先选择<b>等级</b>和<b>分类</b>，再开始演示";
+      el.innerHTML = "まず<b>レベル</b>と<b>分野</b>を選んでからデモを開始してください";
       startBtn.disabled = true;
       randBtn.disabled = true;
       return;
     }
     if (!n) {
-      el.innerHTML = "当前条件下没有题目，试试调整筛选";
+      el.innerHTML = "この条件では問題がありません。絞り込みを変えてみてください";
       startBtn.disabled = true;
       randBtn.disabled = true;
       return;
     }
-    el.innerHTML = "共 <b>" + n + "</b> 题 <small>（题库总量 " + QUESTIONS.length + " 题）</small>";
+    el.innerHTML = "合計 <b>" + n + "</b> 問 <small>（問題総数 " + QUESTIONS.length + " 問）</small>";
     startBtn.disabled = false;
     randBtn.disabled = false;
   }
@@ -871,7 +872,7 @@ body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1
   function toggleAnswer() {
     SHOW_ANS = !SHOW_ANS;
     renderDemo();
-    // 显示答案时把答案区滚入视野（长文章场景也方便课堂讲解）
+    // 答えを表示したとき、解答エリアを画面内にスクロール（長文でも授業中の解説に便利）
     if (SHOW_ANS) {
       const box = document.querySelector("#demo-main .q-answer");
       if (box) box.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -883,7 +884,7 @@ body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1
     if (!box) return;
     box.classList.toggle("expanded");
     const btn = box.querySelector(".a-toggle");
-    if (btn) btn.textContent = box.classList.contains("expanded") ? "收起" : "展开全文";
+    if (btn) btn.textContent = box.classList.contains("expanded") ? "閉じる" : "全文を表示";
   }
 
   function renderDemo() {
@@ -914,9 +915,9 @@ body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1
         '</div>'
       : "";
 
-    // 文章：读解大字号，限高滚动 + 展开全文
+    // 文章：读解大字号，限高滚动 + 全文を表示
     const articleHtml = q.article
-      ? '<div class="q-article"><div class="a-head"><span class="a-label">文章</span><button class="a-toggle" type="button">展开全文</button></div><div class="a-body">' + rich(q.article) + "</div></div>"
+      ? '<div class="q-article"><div class="a-head"><span class="a-label">文章</span><button class="a-toggle" type="button">全文を表示</button></div><div class="a-body">' + rich(q.article) + "</div></div>"
       : "";
 
     const stemHtml =
@@ -932,7 +933,7 @@ body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1
           if (SHOW_ANS && CLICKED === i && i !== ai) cls.push("wrong");
           const oi = q.optionImages && q.optionImages[i];
           const inner = oi
-            ? '<img src="' + esc(oi) + '" alt="选项图片" />'
+            ? '<img src="' + esc(oi) + '" alt="選択肢の画像" />'
             : '<span class="ot">' + rich(o) + "</span>";
           const ok = (SHOW_ANS && i === ai) ? '<span class="ok-badge">正解</span>' : "";
           return '<div class="' + cls.join(" ") + '" data-i="' + i + '">' +
@@ -944,11 +945,11 @@ body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1
     if (SHOW_ANS) {
       const ansText = ai >= 0 && q.options[ai]
         ? (ai + 1) + " " + q.options[ai]
-        : (ai >= 0 ? String(ai + 1) : "答案未录入");
+        : (ai >= 0 ? String(ai + 1) : "答えが未入力");
       const sp = splitTranscript(q.explanation);
       const mainExp = sp ? sp.main : q.explanation;
       const transHtml = sp
-        ? '<details class="ans-trans"><summary>听力原文</summary>' +
+        ? '<details class="ans-trans"><summary>聴解原文</summary>' +
             '<div class="tr-jp">' + rich(sp.jp) + "</div>" +
             (sp.zh ? '<div class="tr-zh">' + rich(cleanZh(sp.zh)) + "</div>" : "") +
           "</details>"
@@ -964,7 +965,7 @@ body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1
     let inner;
     if (listenWithImage) {
       // 听解带图：左栏大图，右栏音频 + 题干 + 选项，保证同屏
-      const imageHtml = '<div class="q-image"><img src="' + esc(q.imageUrl) + '" alt="题目图片" /></div>';
+      const imageHtml = '<div class="q-image"><img src="' + esc(q.imageUrl) + '" alt="問題の画像" /></div>';
       inner =
         '<div class="q-listen">' +
           imageHtml +
@@ -972,7 +973,7 @@ body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1
         "</div>";
     } else {
       const imageHtml = q.imageUrl
-        ? '<div class="q-image"><img src="' + esc(q.imageUrl) + '" alt="题目图片" /></div>'
+        ? '<div class="q-image"><img src="' + esc(q.imageUrl) + '" alt="問題の画像" /></div>'
         : "";
       inner = audioHtml + imageHtml + articleHtml + stemHtml + optsHtml;
     }
@@ -995,10 +996,10 @@ body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1
     var audioBox = document.querySelector("#demo-main .q-audio");
     if (audioBox) initPlayer(audioBox);
 
-    $("#demo-meta").textContent = q.level + " · " + q.category + (ym ? " · " + ymLabel(ym) + "真题" : "");
-    $("#demo-progress").textContent = "第 " + (IDX + 1) + " / " + LIST.length + " 题";
+    $("#demo-meta").textContent = q.level + " · " + (CAT_LABEL[q.category] || q.category) + (ym ? " · " + ymLabel(ym) + "本試験" : "");
+    $("#demo-progress").textContent = "第 " + (IDX + 1) + " / " + LIST.length + " 問";
     $("#progress-fill").style.width = ((IDX + 1) / LIST.length * 100) + "%";
-    $("#btn-answer").textContent = SHOW_ANS ? "隐藏答案" : "显示答案";
+    $("#btn-answer").textContent = SHOW_ANS ? "答えを隠す" : "答えを表示";
     $("#demo-main").scrollTop = 0;
   }
 
@@ -1055,7 +1056,7 @@ body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1
       if (!box.querySelector(".ap-err")) {
         var err = document.createElement("span");
         err.className = "ap-err";
-        err.textContent = "音频加载失败";
+        err.textContent = "音声の読み込みに失敗しました";
         box.querySelector(".ap-bar").appendChild(err);
       }
     });
@@ -1106,13 +1107,13 @@ body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1
     updateUI();
   }
 
-  /* ---------- 全屏 ---------- */
+  /* ---------- 全画面 ---------- */
   function toggleFullscreen() {
     if (document.fullscreenElement) document.exitFullscreen();
     else document.documentElement.requestFullscreen().catch(() => {});
   }
   document.addEventListener("fullscreenchange", () => {
-    $("#btn-full").textContent = document.fullscreenElement ? "退出全屏" : "全屏";
+    $("#btn-full").textContent = document.fullscreenElement ? "退出全画面" : "全画面";
   });
 
   /* ---------- 键盘 ---------- */
