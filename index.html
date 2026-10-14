@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>日本語 基礎練習 | 五十音・数字・日付・時刻・漢字</title>
+<title>日本語 基礎練習 | 五十音・数字・日付・時刻・漢字・単語</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -88,7 +88,7 @@ h1 .l2{display:block;color:var(--green);}
 
 /* 底部 3 列特性区 */
 .features{max-width:1180px;width:100%;margin:0 auto;padding:8px 28px 56px;display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap;}
-.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;flex:1;min-width:280px;}
+.feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;flex:1;min-width:280px;}
 .feat{display:flex;flex-direction:column;gap:14px;text-decoration:none;color:inherit;background:#fff;border:1px solid var(--line);border-radius:18px;padding:28px 26px;box-shadow:0 1px 3px rgba(0,0,0,.04);transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;}
 .feat:hover{transform:translateY(-6px);box-shadow:0 18px 44px rgba(15,122,64,.16);border-color:var(--green);}
 .feat-ic{width:48px;height:48px;border-radius:13px;background:var(--green-light);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;}
@@ -133,6 +133,7 @@ footer{border-top:1px solid var(--line);padding:22px 28px;text-align:center;colo
       <a href="kana.html">五十音</a>
       <a href="suuji.html">数字</a>
       <a href="kanji.html">漢字</a>
+      <a href="words.html">単語</a>
       <a href="#modes">このサイト</a>
     </div>
     <div class="nav-right">
@@ -169,7 +170,7 @@ footer{border-top:1px solid var(--line);padding:22px 28px;text-align:center;colo
 
       <!-- 副标题 + CTA -->
       <div class="anim" style="animation-name:fadeUp;animation-duration:.7s;animation-delay:.85s;">
-        <p class="subtitle">ひらがな・カタカナ・数字・日付・時刻・漢字をランダム出題。日本語教師向けの、インストール不要の練習ツール。</p>
+        <p class="subtitle">ひらがな・カタカナ・数字・日付・時刻・漢字・単語をランダム出題。日本語教師向けの、インストール不要の練習ツール。</p>
       </div>
     </div>
   </main>
@@ -193,6 +194,12 @@ footer{border-top:1px solid var(--line);padding:22px 28px;text-align:center;colo
         <span class="feat-ic">漢</span>
         <h3 class="feat-title">漢字 反転カード</h3>
         <p class="feat-desc">初級・初中級からランダム出題、クリックで反転</p>
+        <span class="more">開く →</span>
+      </a>
+      <a class="feat anim" style="animation-name:pop;animation-duration:.6s;animation-delay:1.54s;" href="words.html">
+        <span class="feat-ic">単</span>
+        <h3 class="feat-title">単語カード 四語練習</h3>
+        <p class="feat-desc">できる日本語 初級〜中級＋N3：日・英・中・ネパール</p>
         <span class="more">開く →</span>
       </a>
     </div>
