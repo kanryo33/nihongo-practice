@@ -9,6 +9,9 @@ body{min-height:100vh;background:#f8faf9;text-align:center;padding:40px 24px;col
 .wrap{max-width:1100px;margin:0 auto;background:#fff;padding:40px 32px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.08);border:1px solid #e5e7eb}
 .ctrl{margin-bottom:28px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;justify-content:center;font-size:16px;color:#4b5563}
 .ctrl label{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.ctrl-group{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:8px 14px;background:rgba(255,255,255,.7);border:1px solid #e5e7eb;border-radius:12px}
+.ctrl-label{font-weight:700;color:#0f7a40;font-size:14px;margin-right:2px}
+.ctrl input[type=radio]{width:16px;height:16px;accent-color:#0f7a40}
 .ctrl input[type=checkbox]{width:16px;height:16px;accent-color:#0f7a40}
 .kana-area{min-height:260px;display:flex;gap:26px;justify-content:center;align-items:center;flex-wrap:wrap;margin:30px 10px}
 
@@ -131,25 +134,33 @@ body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1
 <a class="back-btn" href="./index.html">← ホーム</a>
 <div class="wrap">
   <div class="ctrl">
-    <label><input type="checkbox" id="hira" checked> ひらがな</label>
-    <label><input type="checkbox" id="kata" checked> カタカナ</label>
-    <label><input type="checkbox" id="basic" checked> 基本五十音</label>
-    <label><input type="checkbox" id="daku"> 濁音・半濁音</label>
-    <label><input type="checkbox" id="youon"> 拗音</label>
-    <label><input type="checkbox" id="gai"> 外来語拗音</label>
-    <span>一度に表示：</span>
-    <select id="countSel">
-      <option value="1">1 文字</option>
-      <option value="2">2 文字</option>
-      <option value="3">3 文字</option>
-      <option value="4">4 文字</option>
-      <option value="5">5 文字</option>
-      <option value="6">6 文字</option>
-      <option value="7">7 文字</option>
-      <option value="8">8 文字</option>
-      <option value="9">9 文字</option>
-      <option value="10">10 文字</option>
-    </select>
+    <div class="ctrl-group">
+      <span class="ctrl-label">字体</span>
+      <label><input type="radio" name="script" value="hira" checked> 平假名</label>
+      <label><input type="radio" name="script" value="kata"> 片假名</label>
+      <label><input type="radio" name="script" value="rand"> 随机</label>
+    </div>
+    <div class="ctrl-group">
+      <span class="ctrl-label">范围</span>
+      <label><input type="checkbox" id="r-basic" checked> 清音</label>
+      <label><input type="checkbox" id="r-daku" checked> 濁音・半濁音</label>
+      <label><input type="checkbox" id="r-you" checked> 拗音</label>
+    </div>
+    <div class="ctrl-group">
+      <span class="ctrl-label">一次显示</span>
+      <select id="countSel">
+        <option value="1">1 文字</option>
+        <option value="2">2 文字</option>
+        <option value="3">3 文字</option>
+        <option value="4">4 文字</option>
+        <option value="5">5 文字</option>
+        <option value="6">6 文字</option>
+        <option value="7">7 文字</option>
+        <option value="8">8 文字</option>
+        <option value="9">9 文字</option>
+        <option value="10">10 文字</option>
+      </select>
+    </div>
   </div>
 
   <div class="kana-area" id="box"></div>
@@ -200,31 +211,27 @@ const youon = [
   {h:'ぴゃ',k:'ピャ',r:'pya'},{h:'ぴゅ',k:'ピュ',r:'pyu'},{h:'ぴょ',k:'ピョ',r:'pyo'}
 ];
 
-// 外来語拗音（現代日本語で実際に使われているもの 14種類）
-const gaigoyouon = [
-  {h:'ふぁ',k:'ファ',r:'fa'},{h:'ふぃ',k:'フィ',r:'fi'},{h:'ふぇ',k:'フェ',r:'fe'},{h:'ふぉ',k:'フォ',r:'fo'},
-  {h:'しぇ',k:'シェ',r:'she'},{h:'じぇ',k:'ジェ',r:'je'},{h:'ちぇ',k:'チェ',r:'che'},
-  {h:'てぃ',k:'ティ',r:'ti'},{h:'でぃ',k:'ディ',r:'di'},{h:'でゅ',k:'デュ',r:'dyu'},{h:'とぅ',k:'トゥ',r:'tu'},
-  {h:'うぃ',k:'ウィ',r:'wi'},{h:'うぇ',k:'ウェ',r:'we'},{h:'うぉ',k:'ウォ',r:'wo'}
-];
-
 let currentList = [];
 let allFlipped = false; // 记录全体卡片翻转状态
 const box = document.getElementById('box');
-const hiraCb = document.getElementById('hira');
-const kataCb = document.getElementById('kata');
-const basicCb = document.getElementById('basic');
-const dakuCb = document.getElementById('daku');
-const youonCb = document.getElementById('youon');
-const gaiCb = document.getElementById('gai');
+const scriptRadios = document.querySelectorAll('input[name="script"]');
+const basicCb = document.getElementById('r-basic');
+const dakuCb = document.getElementById('r-daku');
+const youCb = document.getElementById('r-you');
 const sel = document.getElementById('countSel');
+
+// 字体模式：hira=平假名, kata=片假名, rand=随机
+function getScriptMode(){
+  let mode = 'hira';
+  scriptRadios.forEach(r=>{ if(r.checked) mode = r.value; });
+  return mode;
+}
 
 function getRandomPool(){
   let pool = [];
   if(basicCb.checked) pool = pool.concat(gojuon);
   if(dakuCb.checked) pool = pool.concat(dakuon);
-  if(youonCb.checked) pool = pool.concat(youon);
-  if(gaiCb.checked) pool = pool.concat(gaigoyouon);
+  if(youCb.checked) pool = pool.concat(youon);
   return pool;
 }
 
@@ -241,27 +248,22 @@ function getRandom(arr, num){
 function render(){
   let cnt = Number(sel.value);
   let pool = getRandomPool();
+  let mode = getScriptMode();
   box.innerHTML = '';
   allFlipped = false; // 新生成卡片默认全部正面
 
   if(pool.length === 0){
-    box.innerHTML = '<div style="font-size:24px;color:red;">少なくとも1種類の文字を選択してください</div>';
-    currentList = [];
-    return;
-  }
-  if(!hiraCb.checked && !kataCb.checked){
-    box.innerHTML = '<div style="font-size:24px;color:red;">ひらがなまたはカタカナを選択してください</div>';
+    box.innerHTML = '<div style="font-size:24px;color:red;">少なくとも1つの範囲を選択してください</div>';
     currentList = [];
     return;
   }
 
   currentList = getRandom(pool, cnt);
   currentList.forEach(item=>{
-    let typePool = [];
-    if(hiraCb.checked) typePool.push('h');
-    if(kataCb.checked) typePool.push('k');
-    let t = typePool[Math.floor(Math.random()*typePool.length)];
-    let charFront = t==='h' ? item.h : item.k;
+    // 字体：随机模式下每张卡独立决定平/片假名
+    let t = mode;
+    if(mode === 'rand') t = Math.random() < 0.5 ? 'h' : 'k';
+    let charFront = t === 'h' ? item.h : item.k;
 
     let flipCard = document.createElement('div');
     flipCard.className = 'flip-card';
@@ -301,12 +303,10 @@ function nextSet(){ render() }
 function reset(){ render() }
 
 sel.onchange = ()=>render();
-hiraCb.onchange = ()=>render();
-kataCb.onchange = ()=>render();
+scriptRadios.forEach(r=> r.onchange = ()=>render());
 basicCb.onchange = ()=>render();
 dakuCb.onchange = ()=>render();
-youonCb.onchange = ()=>render();
-gaiCb.onchange = ()=>render();
+youCb.onchange = ()=>render();
 
 render();
 </script>
