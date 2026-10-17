@@ -13,6 +13,15 @@ body{min-height:100vh;background:#f8faf9;text-align:center;padding:40px 24px;col
 .ctrl-label{font-weight:700;color:#0f7a40;font-size:14px;margin-right:2px}
 .ctrl input[type=radio]{width:16px;height:16px;accent-color:#0f7a40}
 .ctrl input[type=checkbox]{width:16px;height:16px;accent-color:#0f7a40}
+
+/* ===== 数字 Stepper（复刻 watermelon stepper 外观 + 滚动动画） ===== */
+.stepper{display:inline-flex;align-items:center;gap:10px;background:transparent;border:2px solid #e6e6ef;border-radius:999px;padding:4px;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.stepper-btn{flex:0 0 auto;width:40px;height:40px;border:none;border-radius:50%;background:#f0eff6;color:#5a5a63;font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s cubic-bezier(.34,1.4,.6,1),opacity .15s}
+.stepper-btn:hover:not(:disabled){transform:scale(1.05)}
+.stepper-btn:active:not(:disabled){transform:scale(.92)}
+.stepper-btn:disabled{opacity:.4;cursor:not-allowed}
+.stepper-value{position:relative;min-width:30px;height:40px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.stepper-value .digit{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#242426;font-variant-numeric:tabular-nums;transition:transform .28s cubic-bezier(.34,1.35,.6,1),opacity .22s}
 .kana-area{min-height:260px;display:flex;gap:26px;justify-content:center;align-items:center;flex-wrap:wrap;margin:30px 10px}
 
 /* 卡片翻转核心样式 */
@@ -148,18 +157,11 @@ body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1
     </div>
     <div class="ctrl-group">
       <span class="ctrl-label">一次显示</span>
-      <select id="countSel">
-        <option value="1">1 文字</option>
-        <option value="2">2 文字</option>
-        <option value="3">3 文字</option>
-        <option value="4">4 文字</option>
-        <option value="5">5 文字</option>
-        <option value="6">6 文字</option>
-        <option value="7">7 文字</option>
-        <option value="8">8 文字</option>
-        <option value="9">9 文字</option>
-        <option value="10">10 文字</option>
-      </select>
+      <div class="stepper" id="stepper">
+        <button type="button" class="stepper-btn" id="stepMinus" aria-label="減少">−</button>
+        <div class="stepper-value" id="stepperValue"><span class="digit">1</span></div>
+        <button type="button" class="stepper-btn" id="stepPlus" aria-label="增加">+</button>
+      </div>
     </div>
   </div>
 
@@ -218,7 +220,40 @@ const scriptRadios = document.querySelectorAll('input[name="script"]');
 const basicCb = document.getElementById('r-basic');
 const dakuCb = document.getElementById('r-daku');
 const youCb = document.getElementById('r-you');
-const sel = document.getElementById('countSel');
+
+// 数字 Stepper 控制「一次显示」数量（1~10）
+const STEP_MIN = 1, STEP_MAX = 10;
+let cardCount = STEP_MIN;
+const stepperValue = document.getElementById('stepperValue');
+const stepMinus = document.getElementById('stepMinus');
+const stepPlus = document.getElementById('stepPlus');
+
+function setCount(val, dir){
+  val = Math.max(STEP_MIN, Math.min(STEP_MAX, val));
+  if(val === cardCount) return;
+  const oldEl = stepperValue.firstElementChild;
+  const newEl = document.createElement('span');
+  newEl.className = 'digit';
+  newEl.textContent = val;
+  newEl.style.transform = `translateY(${dir > 0 ? 100 : -100}%)`;
+  newEl.style.opacity = '0';
+  stepperValue.appendChild(newEl);
+  void newEl.offsetHeight; // 强制回流以触发过渡
+  newEl.style.transform = 'translateY(0)';
+  newEl.style.opacity = '1';
+  if(oldEl){
+    oldEl.style.transform = `translateY(${dir > 0 ? -100 : 100}%)`;
+    oldEl.style.opacity = '0';
+    setTimeout(()=>{ if(oldEl.parentNode) oldEl.remove(); }, 300);
+  }
+  cardCount = val;
+  stepMinus.disabled = cardCount <= STEP_MIN;
+  stepPlus.disabled = cardCount >= STEP_MAX;
+  render();
+}
+stepMinus.onclick = ()=> setCount(cardCount - 1, -1);
+stepPlus.onclick = ()=> setCount(cardCount + 1, 1);
+stepMinus.disabled = cardCount <= STEP_MIN;
 
 // 字体模式：hira=平假名, kata=片假名, rand=随机
 function getScriptMode(){
@@ -246,7 +281,7 @@ function getRandom(arr, num){
 }
 
 function render(){
-  let cnt = Number(sel.value);
+  let cnt = cardCount;
   let pool = getRandomPool();
   let mode = getScriptMode();
   box.innerHTML = '';
@@ -302,7 +337,6 @@ function flipAllCards(){
 function nextSet(){ render() }
 function reset(){ render() }
 
-sel.onchange = ()=>render();
 scriptRadios.forEach(r=> r.onchange = ()=>render());
 basicCb.onchange = ()=>render();
 dakuCb.onchange = ()=>render();
