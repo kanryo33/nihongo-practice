@@ -157,7 +157,7 @@ function generateNumber(){
     const val = Math.floor(Math.random()*(max-min+1))+min;
     rawData = {
         type:"num",
-        text:val.toLocaleString(),
+        text:String(val),
         yomi:numToReading(val)
     };
     renderDisplay();
