@@ -7,338 +7,425 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:"Meiryo","メイリオ","Noto Sans JP",system-ui,sans-serif;color:#1f2937}
 body{min-height:100vh;background:#f8faf9;padding:40px 24px}
-.wrap{max-width:1100px;margin:0 auto;background:#fff;padding:40px 32px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.08);border:1px solid #e5e7eb}
-h1{font-size:1.5rem;font-weight:700;text-align:center;margin-bottom:24px;letter-spacing:2px}
-.ctrl{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center;margin-bottom:20px;font-size:15px;color:#4b5563}
-.ctrl label{font-weight:600}
-.ctrl select,.ctrl input[type=text]{padding:8px 14px;font-size:15px;border-radius:10px;border:1px solid #d1d5db;background:#fff;color:#374151;cursor:pointer;outline:none}
-.ctrl select:focus,.ctrl input:focus{border-color:#0f7a40;box-shadow:0 0 0 3px rgba(15,122,64,.15)}
-.ctrl input[type=text]{width:140px}
-.pages-info{font-size:13px;color:#6b7280;margin-top:4px}
+.wrap{max-width:1100px;margin:0 auto;background:#fff;padding:36px 32px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.08);border:1px solid #e5e7eb}
+h1{font-size:1.5rem;font-weight:700;text-align:center;margin-bottom:22px;letter-spacing:2px}
+
+/* ===== 控件区 ===== */
+.ctrl-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center;margin-bottom:12px}
+.ctrl-label{font-size:14px;font-weight:700;color:#0f7a40;margin-right:2px}
+select{padding:8px 14px;font-size:15px;border-radius:10px;border:1px solid #d1d5db;background:#fff;color:#374151;cursor:pointer;outline:none}
+select:focus{border-color:#0f7a40;box-shadow:0 0 0 3px rgba(15,122,64,.15)}
+select:disabled{opacity:.5;cursor:not-allowed}
+
+/* 页码芯片 */
+.page-chips{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin:4px auto 0;max-width:1000px}
+.chip{padding:6px 13px;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;
+  border:1px solid #d1d5db;border-radius:999px;background:#fff;color:#4b5563;cursor:pointer;
+  transition:all .16s ease;line-height:1.4}
+.chip:hover:not(:disabled){background:#f0fdf4;border-color:#86efac;color:#0f7a40}
+.chip.on{background:linear-gradient(90deg,#0284c7 0%,#0ea5e9 100%);border-color:transparent;color:#fff;box-shadow:0 2px 8px rgba(2,132,199,.28)}
+.chip:disabled{opacity:.4;cursor:not-allowed}
+.chip:focus-visible{outline:2px solid rgba(2,132,199,.45);outline-offset:2px}
+.chip-empty{font-size:14px;color:#9ca3af;padding:10px}
+
+/* ===== 按钮（复刻 watermelon button-10 滑动渐变）===== */
+.btn{padding:10px 22px;font-size:14px;border:none;border-radius:12px;cursor:pointer;font-weight:600;letter-spacing:.5px;color:#fff;
+  background:linear-gradient(90deg,#0284c7 0%,#0ea5e9 50%,#0284c7 100%);
+  background-size:200% auto;background-position:0% center;
+  transition:transform .15s,box-shadow .15s,opacity .15s,background-position .5s ease-out}
+.btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 16px rgba(2,132,199,.28);background-position:100% center}
+.btn:active:not(:disabled){transform:translateY(0)}
+.btn:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
+.btn-ghost{background:#fff;color:#4b5563;border:1px solid #d1d5db}
+.btn-ghost:hover:not(:disabled){background:#f9fafb;box-shadow:0 4px 12px rgba(0,0,0,.08)}
+
+/* ===== 提示信息 ===== */
+.pages-info{font-size:13px;color:#6b7280;text-align:center;min-height:18px;margin-top:6px}
+.pages-info.warn{color:#dc2626}
+.game-state{text-align:center;font-size:13px;color:#0f7a40;margin-top:10px;min-height:18px;font-weight:600}
+
+/* ===== 卡片 ===== */
 .cards{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;margin-top:20px;min-height:420px;position:relative}
-.flip-card{width:140px;height:180px;perspective:1000px;cursor:pointer}
-.flip-card-inner{position:relative;width:100%;height:100%;transition:transform .5s cubic-bezier(.4,.0,.2,1);transform-style:preserve-3d}
+.flip-card{width:150px;height:190px;perspective:1000px;cursor:pointer;position:relative;
+  transition:transform .3s cubic-bezier(.2,1.3,.3,1),box-shadow .3s}
+.flip-card:hover{transform:translateY(-6px) scale(1.03);box-shadow:0 16px 40px rgba(15,122,64,.20)}
+.flip-card-inner{position:relative;width:100%;height:100%;transition:transform .5s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d}
 .flip-card.flipped .flip-card-inner{transform:rotateY(180deg)}
-.flip-card-front,.flip-card-back{position:absolute;width:100%;height:100%;-webkit-backface-visibility:hidden;backface-visibility:hidden;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;text-align:center;box-shadow:0 8px 20px rgba(0,0,0,.08)}
-.flip-card-front{background:#fff;border:1px solid #d1d5db}
-.flip-card-back{background:#0f7a40;border:1px solid #0f7a40;transform:rotateY(180deg)}
-.card-kanji{font-size:clamp(1.4rem,4vw,2.5rem);font-weight:bold;color:#111;line-height:1.2;word-break:break-all}
-.card-num{font-size:clamp(1.8rem,5vw,3rem);font-weight:700;color:#fff;line-height:1}
+.flip-card-front,.flip-card-back{position:absolute;inset:0;border-radius:18px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px;text-align:center;
+  overflow:hidden;-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.flip-card-front{background:linear-gradient(160deg,#ffffff 0%,#f0fdf4 100%);border:1px solid #d1fae5;box-shadow:0 8px 24px rgba(15,122,64,.12)}
+.flip-card-back{background:linear-gradient(160deg,#0f7a40 0%,#0a5c2f 100%);border:1px solid #0a5c2f;
+  transform:rotateY(180deg);box-shadow:0 12px 32px rgba(15,122,64,.30)}
+
+/* 正面词条：按字数设固定字号分档（纯 CSS，不做 JS 自适应） */
+.card-kanji{font-weight:700;color:#0f7a40;line-height:1.25;word-break:keep-all}
+.len-1,.len-2{font-size:2.6rem}
+.len-3{font-size:2.1rem}
+.len-4{font-size:1.7rem}
+.len-5{font-size:1.35rem}
+.len-6{font-size:1.15rem}
+
+/* 背面编号 */
+.card-num{font-size:1.6rem;font-weight:800;color:#fff;line-height:1;letter-spacing:.04em}
+.card-page{margin-top:8px;font-size:.8rem;color:rgba(255,255,255,.8);letter-spacing:.06em}
+
+/* 翻面透明问题修正 */
+.flip-card-front > *,.flip-card-back > *{-webkit-backface-visibility:hidden;backface-visibility:hidden}
+
 .game-animating .flip-card{pointer-events:none}
 .game-animating .flip-card-inner{transition:none!important}
+.empty-msg{font-size:18px;color:#dc2626;margin-top:60px;text-align:center}
+.empty-hint{color:#6b7280;font-size:14px;margin-top:8px;text-align:center;line-height:1.7}
 
-.btn{padding:10px 22px;margin:6px;font-size:14px;border:none;border-radius:12px;cursor:pointer;transition:transform .15s,box-shadow .15s;font-weight:600;color:#fff}
-.btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.15)}
-.btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important;box-shadow:none!important}
-.b1{background:#0f7a40} .b2{background:#10b981} .b3{background:#f59e0b} .b4{background:#6b7280}
-.game-state{text-align:center;font-size:12px;color:#9ca3af;margin-top:4px}
-.empty-msg{font-size:18px;color:#dc2626;margin-top:60px}
 .back-btn{position:fixed;top:16px;left:20px;z-index:999;padding:8px 16px;background:rgba(255,255,255,.85);backdrop-filter:blur(4px);color:#0f7a40;font-size:14px;font-weight:600;border-radius:10px;border:1px solid #e5e7eb;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:transform .15s,box-shadow .15s}
 .back-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.12)}
 
-/* ===== JR東日本風 カード美化 ===== */
-.flip-card{
-    width:140px;height:180px;border-radius:18px;
-    transition:transform .3s cubic-bezier(.2,1.3,.3,1), box-shadow .3s;
-    position:relative;
-}
-.flip-card:hover{
-    transform:translateY(-6px) scale(1.03);
-    box-shadow:0 16px 40px rgba(15,122,64,.20);
-}
-.flip-card-front, .flip-card-back{
-    border-radius:18px!important;
-    box-shadow:0 8px 24px rgba(15,122,64,.12)!important;
-    overflow:hidden;position:absolute;
-}
-.flip-card-front{
-    background:linear-gradient(160deg,#ffffff 0%,#f0fdf4 100%)!important;
-    border:1px solid #d1fae5!important;
-}
-.flip-card-front::before{
-    content:'';position:absolute;z-index:-1;top:-30px;right:-30px;width:70px;height:70px;
-    border-radius:50%;background:#0f7a40;opacity:.07;
-}
-.flip-card-front::after{
-    content:'';position:absolute;z-index:-1;bottom:10px;left:10px;
-    width:20px;height:20px;border-radius:3px;
-    border:2px solid #0f7a40;opacity:.15;transform:rotate(12deg);
-}
-.flip-card-back{
-    background:linear-gradient(160deg,#0f7a40 0%,#0a5c2f 100%)!important;
-    border:1px solid #0a5c2f!important;
-    box-shadow:0 12px 32px rgba(15,122,64,.30)!important;
-}
-.flip-card-back::before{
-    content:'';position:absolute;z-index:-1;top:0;left:0;width:100%;height:40%;
-    background:linear-gradient(180deg,rgba(255,255,255,.14) 0%,transparent 100%);
-    pointer-events:none;
-}
-.card-kanji{
-    font-size:clamp(1.4rem,4vw,2.5rem)!important;
-    font-weight:700!important;
-    color:#0f7a40!important;
-    position:relative;
-}
-.card-num{
-    font-size:clamp(1.8rem,5vw,3rem)!important;
-    font-weight:800!important;
-    color:#ffffff!important;
-    letter-spacing:.05em;
-    position:relative;
-}
-
-
-
-/* ===== 翻転後の子要素透け問題 修正 ===== */
-/* text-shadow 等で独立合成層が生成されると backface-visibility:hidden が効かない */
-/* 子要素にも backface-visibility:hidden を付ける */
-.flip-card-front > *,
-.flip-card-back > *{
-    -webkit-backface-visibility:hidden;
-    backface-visibility:hidden;
-}
-/* text-shadow も消す（合成層生成のトリガー） */
-.kana-front, .kana-back, .roma-back,
-.card-kanji, .card-num{
-    text-shadow:none !important;
-}
-
-
-
 /* 背景：首页草坡图（低透明度 + 高斯模糊） */
 .page-bg{position:fixed;inset:0;z-index:0;background:#f8faf9 url('assets/hero-34-bg.jpg') center/cover no-repeat;opacity:.16;filter:blur(12px);transform:scale(1.06);pointer-events:none;}
-body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1;}
+body>*:not(.page-bg):not(.back-btn){position:relative;z-index:1}
+
+@media (max-width:640px){
+  body{padding:20px 12px}
+  .wrap{padding:24px 16px}
+  .chip{padding:5px 10px;font-size:13px}
+  .btn{padding:9px 16px;font-size:13px}
+  .flip-card{width:130px;height:170px}
+  .len-1,.len-2{font-size:2.2rem} .len-3{font-size:1.8rem} .len-4{font-size:1.5rem}
+}
 </style>
 </head>
 <body>
 <div class="page-bg" aria-hidden="true"></div>
 <a class="back-btn" href="./index.html">← ホーム</a>
+
 <div class="wrap">
-<h1>漢字たまご 練習</h1>
-<div class="ctrl">
-  <label>教材</label>
-  <select id="sel-level">
-    <option value="初級">漢字たまご 初級</option>
-    <option value="初中級">漢字たまご 初中級</option>
-  </select>
-  <label>ページ</label>
-  <input type="text" id="inp-pages" placeholder="例：10 11 12" autocomplete="off">
-  <button class="btn b1" onclick="generate()">表示</button>
-  <button class="btn b2" id="btn-start" onclick="startGame()" disabled>開始ゲーム</button>
-  <button class="btn b4" onclick="resetAll()">再生成</button>
+  <h1>漢字たまご 練習</h1>
+
+  <div class="ctrl-row">
+    <span class="ctrl-label">教材</span>
+    <select id="sel-level">
+      <option value="初級">漢字たまご 初級</option>
+      <option value="初中級">漢字たまご 初中級</option>
+    </select>
+  </div>
+
+  <div class="ctrl-row">
+    <span class="ctrl-label">ページ</span>
+    <div class="page-chips" id="pageChips"></div>
+  </div>
+
   <div class="pages-info" id="pages-info"></div>
-</div>
-<div class="game-state" id="game-state"></div>
-<div class="cards" id="cards"></div>
+
+  <div class="ctrl-row" style="margin-top:14px">
+    <button class="btn" id="btn-start" onclick="startGame()" disabled>開始ゲーム</button>
+    <button class="btn" id="btn-reshuffle" onclick="reshuffle()" disabled>再生成</button>
+    <button class="btn btn-ghost" id="btn-clear" onclick="resetAll()">クリア</button>
+  </div>
+
+  <div class="game-state" id="game-state"></div>
+  <div class="cards" id="cards"></div>
 </div>
 
 <script>
 const KANJI_TAMAGO = {"初級":{"6":["私","私立","人","日本人","才","学","学生","学校","大学","留学生","学ぶ","生","大学生","先生","生きる","生まれる"],"7":["校","学校","日","日本","誕生日","休日","本","語","日本語"],"10":["一","一つ","一人","一日","一月","二","二月","二つ","二人","二日","三","三月","三日","三つ","四","四月","四時","四日","四つ","五","五月","五日","五つ"],"11":["六","六月","六日","六つ","七","七月","七つ","七日","八","八月","八つ","八日","九","九月","九日","九つ","十","十月","十歳","十日"],"12":["百","三百円","六百","千","三千円","千葉","万","一万円","百万","一千万","円","百円","千円","円い"],"13":["牛肉","豚肉","鶏肉","アメリカ産","引き","酒"],"18":["月","月曜日","一月","火","火曜日","火事","水","水曜日","木","木曜日","金","金曜日","お金"],"19":["土","土曜日","土地","曜","日曜日","何","何曜日","年","今年","去年","来年","時","時間","時計"],"20":["間","時間","間に合います","分","分かります","分けます","十分","雨","場所","平日","祝日"],"26":["東","東京","京","京都","名","名前","有名","前","午前","国","外国","韓国","中国"],"27":["男","男の人","男性","女","女の人","女性","区","区役所","市","市役所","市場"],"28":["電話","住所","歳","性別"],"34":["先","先生","先月","週","先週","一週間","毎","毎日","毎週","毎月","毎年","午","午前","午後","後","後ろ","後半"],"35":["見","見学","食","食事","食べ物","食べます","飲","飲みます","飲み物","飲食","買","買います","物","買い物","動物","荷物"],"36":["行","行きます","旅行","行います","休","休みます","休み","休日","食べ放題","営業","徒歩"],"44":["今","今週","今月","今年","来","来ます","来る","来ない","来週","来月","来年","帰","帰ります","日帰り","帰国","会","会います","会社","会話","飲み会","社","社会"],"45":["聞","聞きます","新聞","聞こえます","読","読みます","読書","書","書きます","辞書","図書館","話","話します","電話"],"46":["新聞","図書館","辞書","受付"],"55":["寺","お寺"],"56":["言","言います","言葉","貝","田","田んぼ","田中さん","山田さん","力","門","専門学校"],"58":["肉","牛肉","豚肉","鶏肉","料","料理","料金","理","野","野菜","長野","半","一時半","半分","半額"],"59":["大","大学","大きい","大人","大丈夫","大切","大変","小","小学校","小さい","小鳥","魚","野菜","ご飯","酒","カツ丼","半額","定食"]},"初中級":{"7":["仕","仕事","事","事故","事務所","大事","行事","働","働く","教","教える","教室","泳","水泳","泳ぐ"],"8":["英","英語","運","運転","運ぶ","転","自転車","転ぶ","方","この方","読み方","夕方","方法","行方","留","留学","留守"],"9":["可","不可","時給","履歴書","要"],"17":["服","洋服","品","食料品","返品","品物","スポーツ用品","電","電気","電子辞書","別","別れる","特別","引","引く","引き","割引"],"18":["送","送る","送料","転送","送信","切","売り切れ","品切れ","大切","切る","安","安い","不安","安心","開","開く","開ける","開始","閉","閉まる","閉める","開閉"],"19":["払う","返品","無料","価格","税","込"],"28":["説","説明","小説","明","明るい","明日","写","写真","写す","真","真ん中","願","願書","お願い"],"29":["部","学部","部長","部屋","科","学科","専門","就職","受験","必着"],"39":["住","住所","住む","所","民","国民","市民","役","区役所","役に立つ","知","知る","お知らせ"],"40":["問","問い合わせ","質問","合","集合","合う","試合","定","定員","予定","定食","員","会社員","無","無料","無い","無理"],"41":["集","集まる","集合","集める","収集日","友","友達","友人","申し込み","参加","他","費","在住","在学","在勤"],"51":["急","急行","急ぐ","急に","特","特急","特別","特に","線","一番線","新幹線","回","一回","回送電車","回す","回る","遅","遅れる","遅い"],"52":["忘","忘れる","忘れ物","待","待つ","招待","取","取る","取り消し","消","消す","消える","消しゴム","残","残る","残高","残念"],"53":["各駅停車","暗証番号","確認","預ける","精算機","訂正","振込"],"59":["心","安心","心配","心地","主","主人","糸"],"60":["刀"],"63":["子","子ども","お菓子","親","親子","親切","代","代金","時代","代わる","屋","屋上","部屋","内","国内","屋内","内科"],"64":["自","自分","自転車","由","自由","理由","発","出発","始発","発見","着","着く","到着","着る","上着","着物","遠","遠い","遠足"],"65":["泊まる","送迎","温泉","往復"],"75":["牛","牛肉","魚","飯","ご飯","菜","野菜","味","調味料","意味"],"76":["色","景色","茶","お茶","茶色","喫茶店","少","少し","少々","少ない","洗","洗う","洗濯","弱","弱い","弱火"],"77":["暗","暗い","冷暗所","砂糖","塩","油","卵","限定"],"87":["広","広い","便","便利","郵便局","利","利用","建","建物","建てる","建築","近","近い","近所","最近"],"88":["空","空く","空気","空港","室","空室","室内","教室","和","和室","和食","洋","洋室","洋服","有","有り","有名"],"89":["階","家賃","保証人","引っ越し","敷金","礼金","収納"],"99":["足","足りる","足す","不足","手","運転手","手伝う","元","元気","火元","足元","作","作る","作文","返","返す","返事","返信"],"100":["者","送信者","参加者","林","小林さん","森","森林","村","木村さん","山","山田さん","山車"],"101":["川","小川さん","返信","様","保存","印刷"],"109":["場","場所","乗り場","動","動く","動物","自動車","運動","動かす","公","公園","園","動物園","鳥","小鳥","白鳥"],"110":["遊","遊ぶ","遊園地","池","電池","店","店員","売","売店","売る","売り場","産","産地","生産","土産"],"111":["軽","軽い","軽食","美術館","展望台"],"119":["工","工事","工場","医","医者","歯医者","医院","紙","手紙","用紙","町","市町村","南","東南アジア"],"120":["以","以下","以上","初","初め","初めて","最初","借","借りる","貸","貸す","押","押す"],"121":["燃える","缶","資源ごみ","駐輪場"],"129":["頭","頭痛","先頭","顔","洗顔料","首","手首","足首","首都","走","走る","声","音声"],"130":["重","重い","体重","太","太い","太る","計","体重計","計画","時計","不","不足","不便","不可","不明","痛","頭痛","痛い"],"131":["健康","両","肩","体脂肪","秒"],"141":["文","作文","文学部","注文","文化","文字","研","研究","究","課","学生課","課題","課長","題","問題","宿題"],"142":["習","習う","予習","実習","練習","堂","食堂","講堂","席","出席","欠席","全","全部","安全"],"143":["授業","宿題","実習","寮","期限"],"151":["都","都合","東京都","県","北","東北地方","北海道","西","関西","西洋","東西南北","正","正しい","正月"],"152":["花","花見","花瓶","花粉症","祭","祭り","文化祭","青","青い","青春","真っ青","黒","黒い","白","白い","白紙"],"153":["赤","赤い","赤飯","真っ赤","関西","お祝い","結婚式"],"163":["漢","漢字","字","ローマ字","文字","暑","暑い","残暑","寒","寒い","去","去年","過去"],"164":["質","質問","答","答える","答え","同","同時","同じ","思","思う","思い出す","考","考える"],"165":["銀","銀行","悪","最悪","悪い","調べる","増える","減る","過去","殺す","盗む","逮捕"]}};
 
-let gameActive = false;
-let gameAnimating = false;
-let currentLevel = null;
-const BOX_PAD = 14; // 每张卡堆叠时的偏移（模拟牌堆厚度）
+let gameActive   = false;   // 卡片可点击
+let gameAnimating = false;  // 洗牌动画进行中
+let gameToken    = 0;       // 令牌：使旧的 setTimeout 链失效
+let selectedPages = new Set();
+let currentCards  = [];     // 当前显示的词条数组
+const BOX_PAD = 14;
 
-function parsePages(str){
-    if(!str) return [];
-    return [...new Set(str.split(/[\s,、，]+/).map(s=>s.trim()).filter(Boolean))];
+const elCards  = document.getElementById('cards');
+const elChips  = document.getElementById('pageChips');
+const elInfo   = document.getElementById('pages-info');
+const elState  = document.getElementById('game-state');
+const btnStart = document.getElementById('btn-start');
+const btnResh  = document.getElementById('btn-reshuffle');
+const btnClear = document.getElementById('btn-clear');
+const selLevel = document.getElementById('sel-level');
+
+/* ===== 页码芯片 ===== */
+function pagesOf(level){
+  return Object.keys(KANJI_TAMAGO[level] || {}).map(Number).sort((a,b)=>a-b);
 }
-
-function renderCards(chars){
-    const box = document.getElementById('cards');
-    box.innerHTML = '';
-    gameActive = false;
-    gameAnimating = false;
-    box.classList.remove('game-animating');
-    document.getElementById('game-state').textContent = '';
-    document.getElementById('btn-start').disabled = false;
-    chars.forEach(function(c, i){
-        const card = document.createElement('div');
-        card.className = 'flip-card';
-        card.innerHTML = '<div class="flip-card-inner">'
-            + '<div class="flip-card-front"><div class="card-kanji">' + c + '</div></div>'
-            + '<div class="flip-card-back"><div class="card-num">#' + (i+1) + '</div></div>'
-            + '</div>';
-        card.addEventListener('click', function(){
-            if(gameAnimating || !gameActive) return;
-            card.classList.toggle('flipped');
-        });
-        box.appendChild(card);
+function renderChips(){
+  const level  = selLevel.value;
+  const pages  = pagesOf(level);
+  // 切教材时丢弃不存在的页
+  selectedPages = new Set([...selectedPages].filter(p=>pages.includes(p)));
+  elChips.innerHTML = '';
+  if(!pages.length){
+    elChips.innerHTML = '<div class="chip-empty">この教材はまだ登録されていません</div>';
+    return;
+  }
+  pages.forEach(function(p){
+    const b = document.createElement('button');
+    b.className = 'chip' + (selectedPages.has(p) ? ' on' : '');
+    b.textContent = p;
+    b.dataset.page = p;
+    b.addEventListener('click', function(){
+      if(gameAnimating) return;
+      if(selectedPages.has(p)) selectedPages.delete(p); else selectedPages.add(p);
+      generate();
     });
+    elChips.appendChild(b);
+  });
 }
 
+// 让芯片高亮与 selectedPages 保持一致
+function syncChips(){
+  elChips.querySelectorAll('.chip').forEach(function(c){
+    c.classList.toggle('on', selectedPages.has(Number(c.dataset.page)));
+  });
+}
+
+/* ===== 生成卡片 ===== */
 function generate(){
-    const level = document.getElementById('sel-level').value;
-    currentLevel = level;
-    const pages = parsePages(document.getElementById('inp-pages').value);
-    const data = KANJI_TAMAGO[level] || {};
-    const availablePages = Object.keys(data);
-    const found = [];
-    const missing = [];
-    pages.forEach(function(p){
-        if(data[p]) found.push.apply(found, data[p]);
-        else missing.push(p);
+  gameToken++;                       // 使进行中的动画失效
+  gameAnimating = false;
+  gameActive = false;
+  elCards.classList.remove('game-animating');
+  syncChips();                       // 芯片高亮与选择同步
+
+  const level = selLevel.value;
+  const data  = KANJI_TAMAGO[level] || {};
+  const picked = [...selectedPages].sort((a,b)=>a-b);
+  const allPages = pagesOf(level);
+
+  if(!picked.length){
+    currentCards = [];
+    elCards.innerHTML = '<div class="empty-msg">ページを選んでください</div>'
+      + '<div class="empty-hint">' + level + ' の収録ページ：'
+      + allPages.map(p=>'<b>'+p+'</b>').join('・') + '</div>';
+    elInfo.textContent = '';
+    elState.textContent = '';
+    btnStart.disabled = true; btnResh.disabled = true;
+    lockControls(false);
+    return;
+  }
+
+  // 收集 + 跨页去重
+  const seen = new Set();
+  const cards = [];
+  const dupes = [];
+  picked.forEach(function(p){
+    (data[p] || []).forEach(function(w){
+      if(seen.has(w)){ dupes.push(w); return; }
+      seen.add(w);
+      cards.push({ word:w, page:p });
     });
-    var info = '';
-    if(found.length){
-        info = '表示 ' + found.length + ' 字';
-        if(missing.length) info += '（' + missing.join(',') + ' ページなし）';
-    }
-    document.getElementById('pages-info').textContent = info;
-    if(!found.length){
-        var msg = missing.length ? 'ページ ' + missing.join(',') + ' は未収録です' : 'ページを入力してください';
-        var hint = level + ' の収録ページ: ' + availablePages.sort(function(a,b){return +a-+b}).join('・');
-        document.getElementById('cards').innerHTML = '<div class="empty-msg">' + msg + '</div><div style="color:#6b7280;font-size:14px;margin-top:8px">' + hint + '</div>';
-        document.getElementById('btn-start').disabled = true;
-        return;
-    }
-    renderCards(found);
+  });
+  currentCards = cards;
+
+  let info = picked.join('・') + ' ページ　' + cards.length + ' 枚';
+  if(dupes.length) info += '（重複 ' + dupes.length + ' 語を除外：' + dupes.join('、') + '）';
+  elInfo.textContent = info;
+  elInfo.classList.toggle('warn', dupes.length > 0);
+
+  renderCardList();
+  btnStart.disabled = false;
+  btnResh.disabled  = false;
+  lockControls(false);
+  elState.textContent = cards.length + ' 枚のカードを準備しました';
 }
 
+// 渲染卡片（不触发动画）
+function renderCardList(){
+  elCards.innerHTML = '';
+  currentCards.forEach(function(c, i){
+    const card = document.createElement('div');
+    card.className = 'flip-card';
+    const len = [...c.word].length;
+    const cls = len >= 6 ? 'len-6' : 'len-' + len;
+    card.innerHTML =
+      '<div class="flip-card-inner">' +
+        '<div class="flip-card-front"><div class="card-kanji ' + cls + '">' + c.word + '</div></div>' +
+        '<div class="flip-card-back">' +
+          '<div class="card-num">#' + (i+1) + '</div>' +
+          '<div class="card-page">p.' + c.page + '</div>' +
+        '</div>' +
+      '</div>';
+    card.addEventListener('click', function(){
+      if(gameAnimating || !gameActive) return;
+      card.classList.toggle('flipped');
+    });
+    elCards.appendChild(card);
+  });
+}
+
+/* ===== 洗牌游戏 ===== */
 function startGame(){
-    const box = document.getElementById('cards');
-    const cards = Array.from(document.querySelectorAll('.flip-card'));
-    if(!cards.length || gameAnimating) return;
+  if(!currentCards.length || gameAnimating) return;
+  const myToken = ++gameToken;
+  const alive = ()=> myToken === gameToken;   // 令牌校验
 
-    gameAnimating = true;
-    gameActive = false;
-    box.classList.add('game-animating');
-    document.getElementById('btn-start').disabled = true;
-    document.getElementById('game-state').textContent = '🎴 カードをシャッフル中...';
+  const cards = Array.from(elCards.querySelectorAll('.flip-card'));
+  if(!cards.length) return;
 
-    // === 阶段 1：翻背面 (400ms) ===
-    cards.forEach(function(c){ c.classList.add('flipped'); });
-    const t1_end = 420;
+  gameAnimating = true;
+  gameActive    = false;
+  elCards.classList.add('game-animating');
+  btnStart.disabled = true;
+  btnResh.disabled  = true;
+  lockControls(true);
+  elState.textContent = 'カードをシャッフル中...';
 
-    // === 阶段 2：收拢到中心堆叠 (450ms) ===
-    setTimeout(function(){
-        const boxRect = box.getBoundingClientRect();
-        const centerX = boxRect.left + boxRect.width / 2;
-        const centerY = boxRect.top + boxRect.height / 2;
+  // 阶段 1：翻背面
+  cards.forEach(function(c){ c.classList.add('flipped'); });
+  const t1 = 420;
 
-        // 读每张卡当前位置，计算到中心的偏移
-        cards.forEach(function(c, i){
-            const r = c.getBoundingClientRect();
-            // 堆叠时每张卡略微偏移，模拟牌堆厚度
-            const stackX = centerX - r.left - BOX_PAD * i;
-            const stackY = centerY - r.top - BOX_PAD * i;
-            const stackR = (Math.random() * 6 - 3).toFixed(2); // -3~3度旋转
-            c.style.transition = 'transform 450ms cubic-bezier(.55,.05,.3,.95)';
-            c.style.transform = 'translate(' + stackX + 'px,' + stackY + 'px) rotate(' + stackR + 'deg)';
-            c.style.zIndex = i;
-        });
-    }, t1_end);
-    const t2_end = t1_end + 470;
+  // 阶段 2：收拢到中心堆叠
+  setTimeout(function(){
+    if(!alive()) return;
+    const boxRect = elCards.getBoundingClientRect();
+    const cx = boxRect.left + boxRect.width / 2;
+    const cy = boxRect.top  + boxRect.height / 2;
+    cards.forEach(function(c, i){
+      const r = c.getBoundingClientRect();
+      const sx = cx - r.left - BOX_PAD * i;
+      const sy = cy - r.top  - BOX_PAD * i;
+      const sr = (Math.random() * 6 - 3).toFixed(2);
+      c.style.transition = 'transform 450ms cubic-bezier(.55,.05,.3,.95)';
+      c.style.transform = 'translate(' + sx + 'px,' + sy + 'px) rotate(' + sr + 'deg)';
+      c.style.zIndex = i;
+    });
+  }, t1);
+  const t2 = t1 + 470;
 
-    // === 阶段 3：洗牌抖动 (4轮 × 100ms) ===
-    setTimeout(function(){
-        let round = 0;
-        function jitter(){
-            if(round >= 4){
-                // 洗牌结束，把所有 zIndex 打乱（视觉上更像真洗过）
-                cards.forEach(function(c){ c.style.zIndex = Math.floor(Math.random() * cards.length); });
-                return;
-            }
-            round++;
-            cards.forEach(function(c){
-                const dx = (Math.random() * 32 - 16).toFixed(1);
-                const dy = (Math.random() * 24 - 12).toFixed(1);
-                const r = (Math.random() * 24 - 12).toFixed(2);
-                c.style.transition = 'transform 100ms cubic-bezier(.25,.8,.25,1)';
-                c.style.transform = 'translate(' + dx + 'px,' + dy + 'px) rotate(' + r + 'deg)';
-            });
-            setTimeout(jitter, 110);
-        }
-        jitter();
-    }, t2_end);
-    const t3_end = t2_end + 480; // 4轮 × 110ms
+  // 阶段 3：洗牌抖动（4 轮）
+  setTimeout(function(){
+    if(!alive()) return;
+    let round = 0;
+    (function jitter(){
+      if(!alive()) return;
+      if(round >= 4){
+        cards.forEach(function(c){ c.style.zIndex = Math.floor(Math.random() * cards.length); });
+        return;
+      }
+      round++;
+      cards.forEach(function(c){
+        const dx = (Math.random()*32-16).toFixed(1);
+        const dy = (Math.random()*24-12).toFixed(1);
+        const rr = (Math.random()*24-12).toFixed(2);
+        c.style.transition = 'transform 100ms cubic-bezier(.25,.8,.25,1)';
+        c.style.transform = 'translate(' + dx + 'px,' + dy + 'px) rotate(' + rr + 'deg)';
+      });
+      setTimeout(jitter, 110);
+    })();
+  }, t2);
+  const t3 = t2 + 480;
 
-    // === 阶段 4：DOM 重排 + 重编号 + 计算发牌起点（在中心堆叠位置冻结）===
-    setTimeout(function(){
-        // 关闭过渡，重排 DOM，强制浏览器重排读新位置
-        cards.forEach(function(c){ c.style.transition = 'none'; });
-        box.style.transition = 'none';
+  // 阶段 4：DOM 重排 + 重编号（保持中心堆叠位置）
+  setTimeout(function(){
+    if(!alive()) return;
+    cards.forEach(function(c){ c.style.transition = 'none'; });
+    const shuffled = cards.slice();
+    for(let i = shuffled.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    shuffled.forEach(function(c){ elCards.appendChild(c); });
 
-        // 洗牌 DOM 顺序
-        const shuffled = cards.slice();
-        for(let i = shuffled.length - 1; i > 0; i--){
-            const j = Math.floor(Math.random() * (i+1));
-            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
-        shuffled.forEach(function(c){ box.appendChild(c); });
+    void elCards.offsetHeight;                       // 强制重排
+    const newCards = Array.from(elCards.querySelectorAll('.flip-card'));
+    const targetRects = newCards.map(function(c){ return c.getBoundingClientRect(); });
+    const currentRects = newCards.map(function(c){ return c.getBoundingClientRect(); });
+    newCards.forEach(function(c, i){
+      const dx = currentRects[i].left - targetRects[i].left;
+      const dy = currentRects[i].top  - targetRects[i].top;
+      c.style.transform = 'translate(' + dx + 'px,' + dy + 'px) rotate(0deg)';
+      c.style.zIndex = '';
+      c.querySelector('.card-num').textContent = '#' + (i + 1);
+    });
 
-        // 强制重排，读新的 flex 布局位置（这就是"发牌落点"）
-        void box.offsetHeight;
-        const newCards = Array.from(document.querySelectorAll('.flip-card'));
-        const targetRects = newCards.map(function(c){ return c.getBoundingClientRect(); });
-
-        // 当前每张卡还停在中心堆叠位置（带偏移），记录它们此刻的位置
-        const currentRects = newCards.map(function(c){ return c.getBoundingClientRect(); });
-
-        // 从中心堆叠 → 新目标位置的位移
-        const boxLeft = box.getBoundingClientRect().left;
-        const boxTop = box.getBoundingClientRect().top;
+    // 阶段 5：逐张发牌
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        if(!alive()) return;
         newCards.forEach(function(c, i){
-            const dx = currentRects[i].left - targetRects[i].left;
-            const dy = currentRects[i].top - targetRects[i].top;
-            // 保持在中心堆叠位置（translate 回原位）
-            c.style.transform = 'translate(' + dx + 'px,' + dy + 'px) rotate(0deg)';
-            c.style.zIndex = '';
-            // 重新编号
-            c.querySelector('.card-num').textContent = '#' + (i+1);
+          setTimeout(function(){
+            if(!alive()) return;
+            c.style.transition = 'transform 400ms cubic-bezier(.2,.8,.2,1)';
+            c.style.transform = '';
+          }, i * 55);
         });
-
-        // 下一帧开启动画，逐张释放 transform
-        requestAnimationFrame(function(){
-            requestAnimationFrame(function(){
-                // 阶段 5：发牌动画（逐张错落）
-                newCards.forEach(function(c, i){
-                    setTimeout(function(){
-                        c.style.transition = 'transform 400ms cubic-bezier(.2,.8,.2,1)';
-                        c.style.transform = '';
-                    }, i * 55);
-                });
-
-                // 等最后一张发完
-                setTimeout(function(){
-                    // 清理内联样式
-                    newCards.forEach(function(c){ c.style.transition = ''; c.style.transform = ''; });
-                    box.classList.remove('game-animating');
-                    gameAnimating = false;
-                    gameActive = true;
-                    document.getElementById('btn-start').disabled = false;
-                    document.getElementById('game-state').textContent = '🎮 ゲーム開始！ カードをタップして漢字を確認';
-                }, newCards.length * 55 + 450);
-            });
-        });
-    }, t3_end);
+        setTimeout(function(){
+          if(!alive()) return;
+          newCards.forEach(function(c){ c.style.transition=''; c.style.transform=''; });
+          elCards.classList.remove('game-animating');
+          gameAnimating = false;
+          gameActive    = true;
+          btnStart.disabled = false;
+          btnResh.disabled  = false;
+          lockControls(false);
+          elState.textContent = 'ゲーム開始！ カードをタップして裏を確認';
+        }, newCards.length * 55 + 450);
+      });
+    });
+  }, t3);
 }
 
+// 重新洗牌：保留页码选择，只重排当前卡片
+function reshuffle(){
+  if(!currentCards.length) return;
+  generate();
+  startGame();
+}
+
+// 游戏期间锁定控件，避免状态机错乱
+function lockControls(on){
+  selLevel.disabled = on;
+  elChips.querySelectorAll('.chip').forEach(function(c){ c.disabled = on; });
+  btnClear.disabled = on;
+}
+
+// 清除：清空页码选择与卡片
 function resetAll(){
-    const box = document.getElementById('cards');
-    box.classList.remove('game-animating');
-    document.getElementById('inp-pages').value = '';
-    document.getElementById('cards').innerHTML = '';
-    document.getElementById('pages-info').textContent = '';
-    document.getElementById('game-state').textContent = '';
-    document.getElementById('btn-start').disabled = true;
-    gameActive = false;
-    gameAnimating = false;
+  gameToken++;
+  gameAnimating = false;
+  gameActive = false;
+  elCards.classList.remove('game-animating');
+  selectedPages.clear();
+  currentCards = [];
+  renderChips();
+  elCards.innerHTML = '';
+  elInfo.textContent = '';
+  elInfo.classList.remove('warn');
+  elState.textContent = '';
+  btnStart.disabled = true;
+  btnResh.disabled  = true;
+  selLevel.disabled = false;
+  elChips.querySelectorAll('.chip').forEach(function(c){ c.disabled = false; });
 }
 
-document.getElementById('inp-pages').addEventListener('keydown', function(e){
-    if(e.key==='Enter') generate();
+// 快捷键：Space 开始 / R 重洗 / C 清除
+document.addEventListener('keydown', function(e){
+  if(e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') return;
+  if(e.code === 'Space'){ e.preventDefault(); if(!btnStart.disabled) startGame(); }
+  else if(e.key === 'r' || e.key === 'R'){ if(!btnResh.disabled) reshuffle(); }
+  else if(e.key === 'c' || e.key === 'C'){ resetAll(); }
 });
-document.getElementById('sel-level').addEventListener('change', function(){
-    document.getElementById('inp-pages').value='';
-    document.getElementById('cards').innerHTML='';
-    document.getElementById('pages-info').textContent='';
-    document.getElementById('game-state').textContent='';
-    document.getElementById('btn-start').disabled=true;
-    gameActive = false;
+
+// 切教材：重建芯片（selectedPages 会自动过滤掉不存在的页）
+selLevel.addEventListener('change', function(){
+  gameToken++;
+  gameAnimating = false;
+  gameActive = false;
+  elCards.classList.remove('game-animating');
+  currentCards = [];
+  renderChips();
+  elCards.innerHTML = '';
+  elInfo.textContent = '';
+  elInfo.classList.remove('warn');
+  elState.textContent = '';
+  btnStart.disabled = true;
+  btnResh.disabled  = true;
 });
+
+renderChips();
+elCards.innerHTML = '<div class="empty-msg">教材とページを選んでください</div>';
 </script>
 </body>
 </html>
