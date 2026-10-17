@@ -14,14 +14,15 @@ body{min-height:100vh;background:#f8faf9;text-align:center;padding:40px 24px;col
 .ctrl input[type=radio]{width:16px;height:16px;accent-color:#0f7a40}
 .ctrl input[type=checkbox]{width:16px;height:16px;accent-color:#0f7a40}
 
-/* ===== 数字 Stepper（复刻 watermelon stepper 外观 + 滚动动画） ===== */
-.stepper{display:inline-flex;align-items:center;gap:10px;background:transparent;border:2px solid #e6e6ef;border-radius:999px;padding:4px;box-shadow:0 1px 2px rgba(0,0,0,.06)}
-.stepper-btn{flex:0 0 auto;width:40px;height:40px;border:none;border-radius:50%;background:#f0eff6;color:#5a5a63;font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s cubic-bezier(.34,1.4,.6,1),opacity .15s}
+/* ===== 数字 Stepper（复刻 watermelon stepper，高度与 ctrl-group 一致） ===== */
+.stepper{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid #e5e7eb;border-radius:999px;padding:2px 4px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.stepper-btn{flex:0 0 auto;width:26px;height:26px;border:none;border-radius:50%;background:#f0eff6;color:#5a5a63;font-size:16px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .12s cubic-bezier(.34,1.4,.6,1),opacity .12s}
 .stepper-btn:hover:not(:disabled){transform:scale(1.05)}
 .stepper-btn:active:not(:disabled){transform:scale(.92)}
 .stepper-btn:disabled{opacity:.4;cursor:not-allowed}
-.stepper-value{position:relative;min-width:30px;height:40px;overflow:hidden;display:flex;align-items:center;justify-content:center}
-.stepper-value .digit{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#242426;font-variant-numeric:tabular-nums;transition:transform .28s cubic-bezier(.34,1.35,.6,1),opacity .22s}
+.stepper-value{position:relative;min-width:22px;height:26px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.stepper-value .digit{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#242426;font-variant-numeric:tabular-nums;transition:transform .18s cubic-bezier(.34,1.4,.6,1),opacity .18s}
+.stepper-value .digit.pop{transform:scale(1.18);opacity:.55}
 .kana-area{min-height:260px;display:flex;gap:26px;justify-content:center;align-items:center;flex-wrap:wrap;margin:30px 10px}
 
 /* 卡片翻转核心样式 */
@@ -228,31 +229,22 @@ const stepperValue = document.getElementById('stepperValue');
 const stepMinus = document.getElementById('stepMinus');
 const stepPlus = document.getElementById('stepPlus');
 
-function setCount(val, dir){
+function setCount(val){
   val = Math.max(STEP_MIN, Math.min(STEP_MAX, val));
   if(val === cardCount) return;
-  const oldEl = stepperValue.firstElementChild;
-  const newEl = document.createElement('span');
-  newEl.className = 'digit';
-  newEl.textContent = val;
-  newEl.style.transform = `translateY(${dir > 0 ? 100 : -100}%)`;
-  newEl.style.opacity = '0';
-  stepperValue.appendChild(newEl);
-  void newEl.offsetHeight; // 强制回流以触发过渡
-  newEl.style.transform = 'translateY(0)';
-  newEl.style.opacity = '1';
-  if(oldEl){
-    oldEl.style.transform = `translateY(${dir > 0 ? -100 : 100}%)`;
-    oldEl.style.opacity = '0';
-    setTimeout(()=>{ if(oldEl.parentNode) oldEl.remove(); }, 300);
-  }
   cardCount = val;
   stepMinus.disabled = cardCount <= STEP_MIN;
   stepPlus.disabled = cardCount >= STEP_MAX;
+  const digit = stepperValue.querySelector('.digit');
+  if(digit){
+    digit.textContent = val;
+    digit.classList.add('pop');
+    setTimeout(()=> digit.classList.remove('pop'), 140);
+  }
   render();
 }
-stepMinus.onclick = ()=> setCount(cardCount - 1, -1);
-stepPlus.onclick = ()=> setCount(cardCount + 1, 1);
+stepMinus.onclick = ()=> setCount(cardCount - 1);
+stepPlus.onclick = ()=> setCount(cardCount + 1);
 stepMinus.disabled = cardCount <= STEP_MIN;
 
 // 字体模式：hira=平假名, kata=片假名, rand=随机
