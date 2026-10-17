@@ -10,6 +10,7 @@ body{min-height:100vh;background:#f8faf9;text-align:center;padding:40px 24px;col
 .ctrl{margin-bottom:28px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;justify-content:center;font-size:16px;color:#4b5563}
 .ctrl label{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
 .ctrl-group{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:8px 14px;background:rgba(255,255,255,.7);border:1px solid #e5e7eb;border-radius:12px}
+.ctrl-group.no-border{border:none;background:transparent;padding-left:4px;padding-right:4px}
 .ctrl-label{font-weight:700;color:#0f7a40;font-size:14px;margin-right:2px}
 .ctrl input[type=radio]{width:16px;height:16px;accent-color:#0f7a40}
 .ctrl input[type=checkbox]{width:16px;height:16px;accent-color:#0f7a40}
@@ -156,7 +157,7 @@ body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1
       <label><input type="checkbox" id="r-daku" checked> 濁音・半濁音</label>
       <label><input type="checkbox" id="r-you" checked> 拗音</label>
     </div>
-    <div class="ctrl-group">
+    <div class="ctrl-group no-border">
       <span class="ctrl-label">一次显示</span>
       <div class="stepper" id="stepper">
         <button type="button" class="stepper-btn" id="stepMinus" aria-label="減少">−</button>
