@@ -39,11 +39,13 @@ body{min-height:100vh;background:#f8faf9;text-align:center;padding:40px 24px;col
 .kana-back{font-size:clamp(1.8rem,4vw,3.4rem);font-weight:bold;color:#111;line-height:1.1;white-space:nowrap;text-align:center}
 .roma-back{font-size:32px;font-weight:600;color:#374151;margin-top:14px}
 
-.btn{padding:12px 24px;margin:8px;font-size:15px;border:none;border-radius:12px;cursor:pointer;transition:transform .15s,box-shadow .15s;font-weight:600;letter-spacing:.5px}
-.btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.12)}
-.b1{background:#0f7a40;color:#fff}
-.b2{background:#10b981;color:#fff}
-.b3{background:#f59e0b;color:#fff}
+/* ===== 按钮：复刻 watermelon button-10 滑动渐变风格 ===== */
+.btn{padding:12px 24px;margin:8px;font-size:15px;border:none;border-radius:12px;cursor:pointer;font-weight:600;letter-spacing:.5px;color:#fff;
+  background:linear-gradient(90deg,#0284c7 0%,#0ea5e9 50%,#0284c7 100%);
+  background-size:200% auto;background-position:0% center;
+  transition:transform .15s,box-shadow .15s,background-position .5s ease-out}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(2,132,199,.28);background-position:100% center}
+.btn:active{transform:translateY(0)}
 select{padding:8px 14px;font-size:15px;border-radius:10px;border:1px solid #d1d5db;background:#fff;color:#374151;cursor:pointer;outline:none}
 select:focus{border-color:#0f7a40;box-shadow:0 0 0 3px rgba(15,122,64,.15)}
 .back-btn{position:fixed;top:16px;left:20px;z-index:999;padding:8px 16px;background:rgba(255,255,255,.85);backdrop-filter:blur(4px);color:#0f7a40;font-size:14px;font-weight:600;border-radius:10px;border:1px solid #e5e7eb;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:transform .15s,box-shadow .15s}
@@ -170,9 +172,9 @@ body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1
   <div class="kana-area" id="box"></div>
 
   <div>
-    <button class="btn b1" onclick="flipAllCards()">一括反転</button>
-    <button class="btn b2" onclick="nextSet()">次のセット</button>
-    <button class="btn b3" onclick="reset()">再生成</button>
+    <button class="btn" onclick="flipAllCards()">一括反転</button>
+    <button class="btn" onclick="nextSet()">次のセット</button>
+    <button class="btn" onclick="reset()">再生成</button>
   </div>
 </div>
 
