@@ -181,11 +181,20 @@ function minuteReading(m){
   return head + minUnit[last];
 }
 
-// 时刻の「時」：0時は必ず「くじ」
-function hourReading(h){
-  if(h === 0) return "くじ";
-  return numToReading(h) + "じ";
-}
+// ======== 时刻读法（12 小时制：午前 / 午後）========
+// 0-11 → 午前1〜12時，12-23 → 午後12〜11時（12時制）
+// 读法：午前=ごぜん、午後=ごご
+function meridiemOf(h24){ return h24 < 12 ? "午前" : "午後"; }
+function meridiemReading(h24){ return h24 < 12 ? "ごぜん" : "ごご"; }
+function hour12Of(h24){ const h = h24 % 12; return h === 0 ? 12 : h; }
+
+// 时钟专用的「○时」读法表：与一般数字读法不同
+// 11 时读作 じゅういちじ（不是 いちじゅういちじ），9 时读作 くじじ
+const clockHour = [
+  "", "いちじ", "にじ", "さんじ", "よんじ", "ごじ", "ろくじ",
+  "ななじ", "はちじ", "くじじ", "じゅうじ", "じゅういちじ", "じゅうにじ"
+];
+function hour12Reading(h24){ return clockHour[hour12Of(h24)]; }
 
 // ======== 出題 ========
 function generateNumber(){
@@ -221,13 +230,17 @@ function getDayReading(d){
 }
 
 function generateTime(){
-  const h = Math.floor(Math.random() * 24);
+  const h24 = Math.floor(Math.random() * 24);
   const m = Math.floor(Math.random() * 60);
-  const hStr = String(h).padStart(2, "0");
+  const h12 = hour12Of(h24);
+  const meri = meridiemOf(h24);
+  const hStr = String(h12).padStart(2, "0");
   const mStr = String(m).padStart(2, "0");
-  // 0分は省略（例：3:00 → さんじ）
-  const fullYomi = (m === 0) ? hourReading(h) : `${hourReading(h)} ${minuteReading(m)}`;
-  return { type:"time", text:`${hStr}:${mStr}`, yomi:fullYomi };
+  // 分は 0 のとき省略（例：午後3:00 → ごごさんじ）
+  const fullYomi = (m === 0)
+    ? `${meridiemReading(h24)}${hour12Reading(h24)}`
+    : `${meridiemReading(h24)}${hour12Reading(h24)} ${minuteReading(m)}`;
+  return { type:"time", text:`${meri} ${hStr}:${mStr}`, yomi:fullYomi };
 }
 
 function buildQuestion(){
