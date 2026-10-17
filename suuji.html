@@ -7,236 +7,318 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:"Meiryo","メイリオ","Noto Sans JP",system-ui,sans-serif;color:#1f2937}
 body{min-height:100vh;background:#f8faf9;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px}
-.main-display{text-align:center;margin-bottom:48px;min-height:180px;background:#fff;padding:40px 48px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.08);border:1px solid #e5e7eb;max-width:900px;width:100%}
-.yomi-line{font-size:28px;letter-spacing:4px;color:#4b5563;margin-bottom:12px;min-height:40px;font-weight:500}
-.question-line{font-size:clamp(3rem,10vw,5.5rem);font-weight:700;color:#111}
-.button-area{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;max-width:900px}
-button{padding:12px 24px;font-size:15px;border:none;border-radius:12px;cursor:pointer;transition:transform .15s,box-shadow .15s,opacity .15s;font-weight:600;letter-spacing:.5px;color:#fff}
-button:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.15)}
-button:active{transform:translateY(0)}
-.btn-orange{background:#f59e0b}
-.btn-blue{background:#0f7a40}
-.btn-green{background:#10b981}
-.btn-gray{background:#6b7280}
-.popup-wrap{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,.45);backdrop-filter:blur(4px);align-items:center;justify-content:center;z-index:100}
-.popup-box{background:#fff;padding:36px;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.2);border:1px solid #e5e7eb;max-width:460px;width:calc(100% - 40px)}
-.popup-box > div{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;justify-content:center}
-.popup-box button{padding:10px 18px;font-size:14px;border-radius:10px}
+.wrap{width:100%;max-width:900px;display:flex;flex-direction:column;align-items:center}
+
+/* ===== 表示エリア ===== */
+.main-display{text-align:center;margin-bottom:32px;min-height:200px;background:#fff;padding:40px 48px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.08);border:1px solid #e5e7eb;width:100%}
+.yomi-line{font-size:26px;letter-spacing:.12em;color:#0f7a40;margin-bottom:16px;min-height:44px;font-weight:600;line-height:1.6}
+.yomi-empty{color:#cbd5e1;font-size:18px;letter-spacing:.04em;font-weight:500}
+.question-line{font-size:clamp(2.6rem,9vw,5rem);font-weight:700;color:#111;line-height:1.15;word-break:break-all}
+
+/* ===== 控件区 ===== */
+.ctrl-row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;align-items:center;margin-bottom:14px}
+.ctrl-label{font-size:14px;font-weight:700;color:#0f7a40;margin-right:4px}
+
+/* 分段控件（模式 / 位数） */
+.seg{display:inline-flex;gap:6px;background:rgba(255,255,255,.7);border:1px solid #e5e7eb;border-radius:999px;padding:4px}
+.seg button{border:1px solid transparent;border-radius:999px;padding:8px 20px;font-size:15px;font-weight:600;color:#5a5a63;background:transparent;cursor:pointer;letter-spacing:.02em;transition:all .18s ease;white-space:nowrap}
+.seg button:hover:not(.active):not(:disabled){background:#f0eff6;color:#374151}
+.seg button.active{background:linear-gradient(90deg,#0284c7 0%,#0ea5e9 100%);color:#fff;box-shadow:0 2px 8px rgba(2,132,199,.28)}
+.seg button:disabled{opacity:.35;cursor:not-allowed}
+.seg button:focus-visible{outline:2px solid rgba(2,132,199,.45);outline-offset:2px}
+
+.seg-digit button{padding:8px 15px;font-size:14px;font-variant-numeric:tabular-nums}
+
+/* ===== 按钮（复刻 watermelon button-10 滑动渐变） ===== */
+.btn{padding:12px 24px;font-size:15px;border:none;border-radius:12px;cursor:pointer;font-weight:600;letter-spacing:.5px;color:#fff;
+  background:linear-gradient(90deg,#0284c7 0%,#0ea5e9 50%,#0284c7 100%);
+  background-size:200% auto;background-position:0% center;
+  transition:transform .15s,box-shadow .15s,opacity .15s,background-position .5s ease-out}
+.btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 16px rgba(2,132,199,.28);background-position:100% center}
+.btn:active:not(:disabled){transform:translateY(0)}
+.btn:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
+
+/* 読み方トグル（状態表示つき） */
+.btn-toggle{background:transparent;color:#0284c7;border:2px solid #0ea5e9;padding:10px 22px}
+.btn-toggle:hover:not(:disabled){background:rgba(14,165,233,.08);box-shadow:0 4px 12px rgba(2,132,199,.18)}
+.btn-toggle.on{background:linear-gradient(90deg,#0284c7 0%,#0ea5e9 50%,#0284c7 100%);background-size:200% auto;color:#fff;border-color:transparent;box-shadow:0 4px 12px rgba(2,132,199,.28)}
+.btn-toggle.on:hover{background-position:100% center}
+
+/* 補助ボタン（グレー系） */
+.btn-ghost{background:#fff;color:#4b5563;border:1px solid #d1d5db}
+.btn-ghost:hover:not(:disabled){background:#f9fafb;box-shadow:0 4px 12px rgba(0,0,0,.08)}
+
 .back-btn{position:fixed;top:16px;left:20px;z-index:999;padding:8px 16px;background:rgba(255,255,255,.85);backdrop-filter:blur(4px);color:#0f7a40;font-size:14px;font-weight:600;border-radius:10px;border:1px solid #e5e7eb;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:transform .15s,box-shadow .15s}
 .back-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.12)}
 
 /* 背景：首页草坡图（低透明度 + 高斯模糊） */
 .page-bg{position:fixed;inset:0;z-index:0;background:#f8faf9 url('assets/hero-34-bg.jpg') center/cover no-repeat;opacity:.16;filter:blur(12px);transform:scale(1.06);pointer-events:none;}
-body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1;}
+body>*:not(.page-bg):not(.back-btn){position:relative;z-index:1;}
+
+/* 移动端 */
+@media (max-width:640px){
+  body{padding:20px 14px}
+  .main-display{padding:28px 20px;min-height:170px}
+  .yomi-line{font-size:20px}
+  .seg button{padding:7px 14px;font-size:14px}
+  .seg-digit button{padding:7px 11px;font-size:13px}
+  .btn{padding:10px 18px;font-size:14px}
+}
 </style>
 </head>
 <body>
 <div class="page-bg" aria-hidden="true"></div>
 <a class="back-btn" href="./index.html">← ホーム</a>
-<div class="main-display" id="displayBox">
+
+<div class="wrap">
+  <div class="main-display" id="displayBox">
     <div class="yomi-line" id="yomiBox"></div>
     <div class="question-line" id="textBox">ボタンを押して問題を生成</div>
-</div>
+  </div>
 
-<div class="button-area">
-    <button class="btn-orange" onclick="openDigitSelect()">数字（桁選択）</button>
-    <button class="btn-blue" onclick="generateDate()">年月日</button>
-    <button class="btn-blue" onclick="generateTime()">時刻（時:分）</button>
-    <button class="btn-green" onclick="toggleYomi()">読み方表示</button>
-    <button class="btn-gray" onclick="nextQuestion()">次へ</button>
-    <button class="btn-gray" onclick="resetAll()">リセット</button>
-</div>
-
-<div class="popup-wrap" id="digitPopup">
-    <div class="popup-box">
-        <div>
-            <button onclick="setDigit(1)">1桁</button>
-            <button onclick="setDigit(2)">2桁</button>
-            <button onclick="setDigit(3)">3桁</button>
-            <button onclick="setDigit(4)">4桁</button>
-            <button onclick="setDigit(5)">5桁</button>
-            <button onclick="setDigit(6)">6桁</button>
-            <button onclick="setDigit(7)">7桁</button>
-            <button onclick="setDigit(8)">8桁</button>
-        </div>
+  <!-- モード切替 -->
+  <div class="ctrl-row">
+    <span class="ctrl-label">モード</span>
+    <div class="seg" id="modeSeg">
+      <button data-mode="num" class="active">数字</button>
+      <button data-mode="date">年月日</button>
+      <button data-mode="time">時刻</button>
     </div>
+  </div>
+
+  <!-- 桁選択（数字モード時のみ有効） -->
+  <div class="ctrl-row">
+    <span class="ctrl-label">桁数</span>
+    <div class="seg seg-digit" id="digitSeg">
+      <button data-digit="1">1</button>
+      <button data-digit="2">2</button>
+      <button data-digit="3">3</button>
+      <button data-digit="4" class="active">4</button>
+      <button data-digit="5">5</button>
+      <button data-digit="6">6</button>
+      <button data-digit="7">7</button>
+      <button data-digit="8">8</button>
+    </div>
+  </div>
+
+  <!-- 操作 -->
+  <div class="ctrl-row">
+    <button class="btn" id="btnNew" onclick="newQuestion()">次の問題</button>
+    <button class="btn btn-toggle" id="btnYomi" onclick="toggleYomi()">読み方表示</button>
+    <button class="btn btn-ghost" id="btnReset" onclick="resetAll()">リセット</button>
+  </div>
 </div>
 
 <script>
-let currentMode = null;
+let currentMode = "num";
 let targetDigit = 4;
-let rawData = {};
+let rawData = null;
 let showYomi = false;
 
-// 桁ポップアップ
-function openDigitSelect(){
-    document.getElementById("digitPopup").style.display="flex";
-}
-function setDigit(n){
-    targetDigit = n;
-    document.getElementById("digitPopup").style.display="none";
-    generateNumber();
-}
+const yomiBox = document.getElementById("yomiBox");
+const textBox = document.getElementById("textBox");
+const btnNew  = document.getElementById("btnNew");
+const btnYomi = document.getElementById("btnYomi");
+const btnReset= document.getElementById("btnReset");
+const digitSeg= document.getElementById("digitSeg");
 
-// リセット
-function resetAll(){
-    rawData = {};
-    showYomi = false;
-    currentMode = null;
-    document.getElementById("yomiBox").innerText = "";
-    document.getElementById("textBox").innerText = "ボタンを押して問題を生成";
-}
-
-// 次の問題
-function nextQuestion(){
-    if(currentMode==="num") generateNumber();
-    else if(currentMode==="date") generateDate();
-    else if(currentMode==="time") generateTime();
-}
-
-// 読み方切替
-function toggleYomi(){
-    showYomi = !showYomi;
-    renderDisplay();
-}
-
-// ======== 数字変換ロジック（日本語式4桁グループ化）========
+// ======== 数字 → 日本語読み（4桁グループ）========
 const numYomiBase = ["れい","いち","に","さん","よん","ご","ろく","なな","はち","きゅう"];
-// 4桁グループの名前（右から4桁ごと）
-const groupName = ["", "まん", "おく", "ちょう"]; // 0=なし, 1=万, 2=億, 3=兆
+const groupName = ["", "まん", "おく", "ちょう", "いっちょう"];
 
 // 4桁グループ内部を読む（例: "903" → "きゅうひゃくさん"）
 function readOneGroup(s4){
-    // s4 は 1-4 桁の文字列（先頭の0は含まない）
-    let res = [];
-    const len = s4.length;
-    for(let i=0; i<len; i++){
-        const d = parseInt(s4[i]);
-        const pos = len - i - 1; // 0=一, 1=十, 2=百, 3=千
-        if(d === 0) continue;
-        res.push(numYomiBase[d]);
-        if(pos === 3) res.push("せん");
-        else if(pos === 2) res.push("ひゃく");
-        else if(pos === 1) res.push("じゅう");
-    }
-    return res.join("");
+  let res = [];
+  const len = s4.length;
+  for(let i=0; i<len; i++){
+    const d = parseInt(s4[i]);
+    const pos = len - i - 1; // 0=一, 1=十, 2=百, 3=千
+    if(d === 0) continue;
+    res.push(numYomiBase[d]);
+    if(pos === 3) res.push("せん");
+    else if(pos === 2) res.push("ひゃく");
+    else if(pos === 1) res.push("じゅう");
+  }
+  return res.join("");
 }
 
 function numToReading(num){
-    if(num === 0) return "れい";
-    let s = num.toString();
-    // 右から4桁ごとに区切る
-    let groups = [];
-    while(s.length > 0){
-        if(s.length <= 4){
-            groups.unshift(s);
-            s = "";
-        } else {
-            groups.unshift(s.slice(-4));
-            s = s.slice(0, -4);
-        }
-    }
-    // groups[0] が最上位、groupName[groupIdx] を付ける
-    let result = [];
-    for(let g=0; g<groups.length; g++){
-        const gnum = groups[g];
-        const gval = parseInt(gnum);
-        if(gval === 0) continue; // 0000 グループはスキップ
-        const yomi = readOneGroup(gnum);
-        const groupIdx = groups.length - 1 - g; // 右から何番目のグループか
-        result.push(yomi + groupName[groupIdx]);
-    }
-    return result.join(" ");
+  if(num === 0) return "れい";
+  let s = String(num);
+  let groups = [];
+  while(s.length > 0){
+    if(s.length <= 4){ groups.unshift(s); s = ""; }
+    else { groups.unshift(s.slice(-4)); s = s.slice(0, -4); }
+  }
+  let result = [];
+  for(let g=0; g<groups.length; g++){
+    const gnum = groups[g];
+    if(parseInt(gnum) === 0) continue;
+    const yomi = readOneGroup(gnum);
+    const groupIdx = groups.length - 1 - g;
+    result.push(yomi + groupName[groupIdx]);
+  }
+  return result.join(""); // 修正：组间不留多余空格
 }
 
-// 数字問題
+// ======== 时刻读法 =====
+// 分の一の位读音表。
+//   撥音「ぷ」在 い・ろ・は・ち 前要加促音「っ」；在 に・ご・なな 前则清音化为「ふ」。
+const minUnit = ["","いっぷん","にふん","さんぷん","よんぷん","ごふん","ろっぷん","ななふん","はっぷん","きゅうぷん"];
+
+// 分の读法：10〜19 分在时刻语境读作「じゅう…」（不出「いち」）
+function minuteReading(m){
+  const last = m % 10;
+  // 十位部分
+  let head;
+  if(m < 10) head = "";
+  else if(m < 20) head = "じゅう";                        // 10分=じゅっぷん, 11分=じゅういちふん
+  else head = numToReading(Math.floor(m / 10) * 10);       // 20分=にじゅっぷん, 45分=よんじゅうごぷん
+  // 整十：う + ぷ → 促音化（じゅう → じゅっ）
+  if(last === 0) return head.replace(/う$/, "っぷん");
+  return head + minUnit[last];
+}
+
+// 时刻の「時」：0時は必ず「くじ」
+function hourReading(h){
+  if(h === 0) return "くじ";
+  return numToReading(h) + "じ";
+}
+
+// ======== 出題 ========
 function generateNumber(){
-    currentMode = "num";
-    const min = 10 ** (targetDigit-1);
-    const max = (10 ** targetDigit)-1;
-    const val = Math.floor(Math.random()*(max-min+1))+min;
-    rawData = {
-        type:"num",
-        text:String(val),
-        yomi:numToReading(val)
-    };
-    renderDisplay();
+  const min = 10 ** (targetDigit - 1);
+  const max = (10 ** targetDigit) - 1;
+  const val = Math.floor(Math.random() * (max - min + 1)) + min;
+  return { type:"num", text:String(val), yomi:numToReading(val) };
 }
 
-// ======== 年月日生成 ========
 function generateDate(){
-    currentMode = "date";
-    const year = Math.floor(Math.random()*(2035-1950+1))+1950;
-    const month = Math.floor(Math.random()*12)+1;
-    let dayMax;
-    if([1,3,5,7,8,10,12].includes(month)) dayMax=31;
-    else if([4,6,9,11].includes(month)) dayMax=30;
-    else dayMax=28;
-    const day = Math.floor(Math.random()*dayMax)+1;
+  const year = Math.floor(Math.random() * (2035 - 1950 + 1)) + 1950;
+  const month = Math.floor(Math.random() * 12) + 1;
+  const dayMax = ([1,3,5,7,8,10,12].includes(month)) ? 31
+               : ([4,6,9,11].includes(month)) ? 30 : 28;
+  const day = Math.floor(Math.random() * dayMax) + 1;
 
-    const monthRead = ["","いちがつ","にがつ","さんがつ","しがつ","ごがつ","ろくがつ","しちがつ","はちがつ","くがつ","じゅうがつ","じゅういちがつ","じゅうにがつ"];
-    const dayRead = getDayReading(day);
-    const fullYomi = `${numToReading(year)} ねん ${monthRead[month]} ${dayRead}`;
-
-    rawData = {
-        type:"date",
-        text:`${year}年${month}月${day}日`,
-        yomi: fullYomi
-    };
-    renderDisplay();
+  const monthRead = ["","いちがつ","にがつ","さんがつ","しがつ","ごがつ","ろくがつ","しちがつ","はちがつ","くがつ","じゅうがつ","じゅういちがつ","じゅうにがつ"];
+  return {
+    type:"date",
+    text:`${year}年${month}月${day}日`,
+    yomi:`${numToReading(year)}ねん ${monthRead[month]} ${getDayReading(day)}`
+  };
 }
 
-// 日付特殊読み
 function getDayReading(d){
-    const sp = {
-        1:"ついたち",2:"ふつか",3:"みっか",4:"よっか",5:"いつか",6:"むいか",7:"なのか",8:"ようか",9:"ここのか",10:"とおか",
-        14:"じゅうよっか",20:"はつか",24:"にじゅうよっか"
-    };
-    if(sp[d]) return sp[d];
-    if(d <= 10) return numToReading(d)+" か";
-    return numToReading(d)+" にち";
+  const sp = {
+    1:"ついたち",2:"ふつか",3:"みっか",4:"よっか",5:"いつか",6:"むいか",7:"なのか",8:"ようか",9:"ここのか",10:"とおか",
+    14:"じゅうよっか",20:"はつか",24:"にじゅうよっか"
+  };
+  if(sp[d]) return sp[d];
+  if(d <= 10) return numToReading(d) + "か";
+  return numToReading(d) + "にち";
 }
 
-// ======== 時刻 ========
 function generateTime(){
-    currentMode = "time";
-    const h = Math.floor(Math.random()*24);
-    const m = Math.floor(Math.random()*60);
-    const hStr = String(h).padStart(2,"0");
-    const mStr = String(m).padStart(2,"0");
-    let hYomi = numToReading(h);
-    let mYomi = numToReading(m);
-    let minuteBase = mYomi + " ふん";
-    minuteBase = minuteBase.replace("さん ふん","さんぷん")
-                 .replace("ろく ふん","ろっぷん")
-                 .replace("はち ふん","はっぷん");
-    const fullYomi = `${hYomi} じ ${minuteBase}`;
-
-    rawData = {
-        type:"time",
-        text:`${hStr}:${mStr}`,
-        yomi: fullYomi
-    };
-    renderDisplay();
+  const h = Math.floor(Math.random() * 24);
+  const m = Math.floor(Math.random() * 60);
+  const hStr = String(h).padStart(2, "0");
+  const mStr = String(m).padStart(2, "0");
+  // 0分は省略（例：3:00 → さんじ）
+  const fullYomi = (m === 0) ? hourReading(h) : `${hourReading(h)} ${minuteReading(m)}`;
+  return { type:"time", text:`${hStr}:${mStr}`, yomi:fullYomi };
 }
 
-// ======== 描画処理：読み方を独立1行に配置（重なり完全解消） ========
+function buildQuestion(){
+  if(currentMode === "num") return generateNumber();
+  if(currentMode === "date") return generateDate();
+  return generateTime();
+}
+
+function newQuestion(){
+  rawData = buildQuestion();
+  renderDisplay();
+}
+
+// ======== 表示 ========
 function renderDisplay(){
-    const yomiBox = document.getElementById("yomiBox");
-    const textBox = document.getElementById("textBox");
-    if(!rawData.type){
-        yomiBox.innerText = "";
-        textBox.innerText = "ボタンを押して問題を生成";
-        return;
-    }
-
-    textBox.innerText = rawData.text;
-    if(showYomi){
-        yomiBox.innerText = rawData.yomi;
-    }else{
-        yomiBox.innerText = "";
-    }
+  if(!rawData){
+    yomiBox.innerHTML = '<span class="yomi-empty">読み方はここに表示されます</span>';
+    textBox.innerText = "ボタンを押して問題を生成";
+    updateButtons();
+    return;
+  }
+  textBox.innerText = rawData.text;
+  if(showYomi){
+    yomiBox.innerText = rawData.yomi;
+  }else{
+    yomiBox.innerHTML = '<span class="yomi-empty">読み方はここに表示されます</span>';
+  }
+  updateButtons();
 }
+
+// ボタン状態（無題・表示切替）を同期
+function updateButtons(){
+  const hasQ = !!rawData;
+  btnNew.disabled = !currentMode;                 // モードは常に有効
+  btnYomi.disabled = !hasQ;
+  btnYomi.classList.toggle("on", showYomi && hasQ);
+  btnYomi.textContent = (showYomi && hasQ) ? "読み方隠す" : "読み方表示";
+  btnReset.disabled = !hasQ;
+  // 桁選択は数字モード時のみ有効
+  digitSeg.querySelectorAll("button").forEach(b=>{
+    b.disabled = (currentMode !== "num");
+  });
+}
+
+function toggleYomi(){
+  if(!rawData) return;
+  showYomi = !showYomi;
+  renderDisplay();
+}
+
+function resetAll(){
+  rawData = null;
+  showYomi = false;
+  renderDisplay();
+}
+
+// ======== イベント ========
+document.getElementById("modeSeg").addEventListener("click", e=>{
+  const btn = e.target.closest("button[data-mode]");
+  if(!btn) return;
+  currentMode = btn.dataset.mode;
+  document.querySelectorAll("#modeSeg button").forEach(b=>b.classList.toggle("active", b === btn));
+  rawData = null;            // モード切替で一旦クリア
+  showYomi = false;
+  renderDisplay();
+});
+
+digitSeg.addEventListener("click", e=>{
+  const btn = e.target.closest("button[data-digit]");
+  if(!btn || btn.disabled) return;
+  targetDigit = Number(btn.dataset.digit);
+  digitSeg.querySelectorAll("button").forEach(b=>b.classList.toggle("active", b === btn));
+  currentMode = "num";
+  document.querySelectorAll("#modeSeg button").forEach(b=>b.classList.toggle("active", b.dataset.mode === "num"));
+  rawData = null;
+  showYomi = false;
+  renderDisplay();
+});
+
+// 快捷键：Space=下一题  Y=读法  R=重置  1/2/3=切模式
+document.addEventListener("keydown", e=>{
+  if(e.target.tagName === "SELECT" || e.target.tagName === "INPUT") return;
+  if(e.code === "Space"){ e.preventDefault(); newQuestion(); }
+  else if(e.key === "y" || e.key === "Y"){ toggleYomi(); }
+  else if(e.key === "r" || e.key === "R"){ resetAll(); }
+  else if(e.key === "1" || e.key === "2" || e.key === "3"){
+    const modes = ["num","date","time"];
+    const target = document.querySelector(`#modeSeg button[data-mode="${modes[Number(e.key)-1]}"]`);
+    if(target) target.click();
+  }
+});
+
+renderDisplay();
 </script>
 </body>
 </html>
