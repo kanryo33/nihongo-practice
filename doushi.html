@@ -31,6 +31,12 @@ select:focus{border-color:#0f7a40;box-shadow:0 0 0 3px rgba(15,122,64,.15)}
 .stepper-value .digit{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#242426;font-variant-numeric:tabular-nums;transition:transform .18s cubic-bezier(.34,1.4,.6,1),opacity .18s}
 .stepper-value .digit.pop{transform:scale(1.18);opacity:.55}
 
+/* ===== 表示倍率（ページ全体を等倍で拡大） ===== */
+:root{--page-zoom:1}
+@media (min-width:900px){:root{--page-zoom:1.3}}
+.zoom-root{zoom:var(--page-zoom)}
+.stepper-value.pct{min-width:48px}
+
 /* ===== 動詞の検索 + 固定語 ===== */
 .search-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:12px}
 .search-box{position:relative;width:min(520px,100%)}
@@ -147,6 +153,7 @@ body>*:not(.page-bg):not(.back-btn){position:relative;z-index:1}
 <div class="page-bg" aria-hidden="true"></div>
 <a class="back-btn" href="./index.html">← ホーム</a>
 
+<div class="zoom-root" id="zoomRoot">
 <div class="wrap">
   <h1>動詞活用 反転カード練習</h1>
   <p class="subtitle">3,820 語 × 17 活用形 · 表面と裏面を自由に設定して教室で問答練習</p>
@@ -167,6 +174,14 @@ body>*:not(.page-bg):not(.back-btn){position:relative;z-index:1}
       <label><input type="checkbox" id="c-ichidan" checked> 一段</label>
       <label><input type="checkbox" id="c-sahen" checked> サ変</label>
       <label><input type="checkbox" id="c-kahen" checked> カ変</label>
+    </div>
+    <div class="ctrl-group no-border">
+      <span class="ctrl-label">表示倍率</span>
+      <div class="stepper" id="zoomStepper">
+        <button type="button" class="stepper-btn" id="zoomMinus" aria-label="縮小">−</button>
+        <div class="stepper-value pct" id="zoomValue"><span class="digit">130%</span></div>
+        <button type="button" class="stepper-btn" id="zoomPlus" aria-label="拡大">+</button>
+      </div>
     </div>
     <div class="ctrl-group no-border">
       <span class="ctrl-label">一度に表示</span>
@@ -196,6 +211,7 @@ body>*:not(.page-bg):not(.back-btn){position:relative;z-index:1}
     <button class="btn" onclick="nextSet()">次のセット</button>
     <button class="btn btn-ghost" onclick="clearPinned()">固定語をクリア</button>
   </div>
+</div>
 </div>
 
 <script src="data/verbs.js"></script>
@@ -228,6 +244,50 @@ const statusEl     = document.getElementById('status');
 const stepperValue = document.getElementById('stepperValue');
 const stepMinus    = document.getElementById('stepMinus');
 const stepPlus     = document.getElementById('stepPlus');
+
+// ======== 表示倍率（ページ全体を等倍で拡大） ========
+// CSS の zoom を使い、ページ全体をそのまま拡大する。
+// zoom 下では getBoundingClientRect() が拡大後の px を返すため、
+// JS 側の座標計算では必ず 1/zoom を掛けること。
+const ZOOM_KEY   = 'jp-practice-zoom';
+const ZOOM_MIN   = 1;
+const ZOOM_MAX   = 2;
+const ZOOM_STEP  = 0.1;
+const zoomValue  = document.getElementById('zoomValue');
+const zoomMinus  = document.getElementById('zoomMinus');
+const zoomPlus   = document.getElementById('zoomPlus');
+let zoomLevel    = ZOOM_MIN;
+
+// 保存済みの倍率を優先。無ければ投影用途を想定した初期値（狭い画面では等倍）
+(function initZoom(){
+  let v = null;
+  try{ v = parseFloat(localStorage.getItem(ZOOM_KEY)); }catch(e){}
+  if(!isNaN(v) && v >= ZOOM_MIN && v <= ZOOM_MAX){
+    zoomLevel = v;
+  } else {
+    zoomLevel = (window.innerWidth >= 900) ? 1.3 : ZOOM_MIN;
+  }
+})();
+
+function applyZoom(){
+  document.documentElement.style.setProperty('--page-zoom', String(zoomLevel));
+  const digit = zoomValue.querySelector('.digit');
+  if(digit){
+    digit.textContent = Math.round(zoomLevel * 100) + '%';
+    digit.classList.add('pop');
+    setTimeout(function(){ digit.classList.remove('pop'); }, 140);
+  }
+  zoomMinus.disabled = zoomLevel <= ZOOM_MIN;
+  zoomPlus.disabled  = zoomLevel >= ZOOM_MAX;
+}
+function setZoom(v){
+  zoomLevel = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, Math.round(v * 10) / 10));
+  try{ localStorage.setItem(ZOOM_KEY, String(zoomLevel)); }catch(e){}
+  applyZoom();
+}
+zoomMinus.onclick = function(){ setZoom(zoomLevel - ZOOM_STEP); };
+zoomPlus.onclick  = function(){ setZoom(zoomLevel + ZOOM_STEP); };
+applyZoom();
 
 // 分類の統一：サ変 / サ変動詞 をまとめる
 function classOf(v){

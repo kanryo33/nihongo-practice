@@ -17,6 +17,18 @@ select{padding:8px 14px;font-size:15px;border-radius:10px;border:1px solid #d1d5
 select:focus{border-color:#0f7a40;box-shadow:0 0 0 3px rgba(15,122,64,.15)}
 select:disabled{opacity:.5;cursor:not-allowed}
 
+/* ===== 表示倍率（ページ全体を等倍で拡大） ===== */
+:root{--page-zoom:1}
+.zoom-root{zoom:var(--page-zoom)}
+.stepper{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid #e5e7eb;border-radius:999px;padding:2px 4px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.stepper-btn{flex:0 0 auto;width:26px;height:26px;border:none;border-radius:50%;background:#f0eff6;color:#5a5a63;font-size:16px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .12s cubic-bezier(.34,1.4,.6,1),opacity .12s}
+.stepper-btn:hover:not(:disabled){transform:scale(1.05)}
+.stepper-btn:active:not(:disabled){transform:scale(.92)}
+.stepper-btn:disabled{opacity:.4;cursor:not-allowed}
+.stepper-value{position:relative;min-width:48px;height:26px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.stepper-value .digit{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#242426;font-variant-numeric:tabular-nums;transition:transform .18s cubic-bezier(.34,1.35,.6,1),opacity .18s}
+.stepper-value .digit.pop{transform:scale(1.18);opacity:.55}
+
 /* ===== ページ Combobox（watermelon combobox-11 の複数選択スタイルを再現）===== */
 .page-field{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:4px}
 .cb-label{font-size:14px;font-weight:700;color:#0f7a40}
@@ -142,6 +154,7 @@ body>*:not(.page-bg):not(.back-btn){position:relative;z-index:1}
 <div class="page-bg" aria-hidden="true"></div>
 <a class="back-btn" href="./index.html">← ホーム</a>
 
+<div class="zoom-root" id="zoomRoot">
 <div class="wrap">
   <h1>漢字たまご 練習</h1>
 
@@ -151,6 +164,12 @@ body>*:not(.page-bg):not(.back-btn){position:relative;z-index:1}
       <option value="初級">漢字たまご 初級</option>
       <option value="初中級">漢字たまご 初中級</option>
     </select>
+    <span class="ctrl-label">表示倍率</span>
+    <div class="stepper" id="zoomStepper">
+      <button type="button" class="stepper-btn" id="zoomMinus" aria-label="縮小">−</button>
+      <div class="stepper-value" id="zoomValue"><span class="digit">130%</span></div>
+      <button type="button" class="stepper-btn" id="zoomPlus" aria-label="拡大">+</button>
+    </div>
   </div>
 
   <div class="page-field">
@@ -176,6 +195,7 @@ body>*:not(.page-bg):not(.back-btn){position:relative;z-index:1}
   <div class="game-state" id="game-state"></div>
   <div class="cards" id="cards"></div>
 </div>
+</div>
 
 <script>
 const KANJI_TAMAGO = {"初級":{"6":["私","私立","人","日本人","才","学","学生","学校","大学","留学生","学ぶ","生","大学生","先生","生きる","生まれる"],"7":["校","学校","日","日本","誕生日","休日","本","語","日本語"],"10":["一","一つ","一人","一日","一月","二","二月","二つ","二人","二日","三","三月","三日","三つ","四","四月","四時","四日","四つ","五","五月","五日","五つ"],"11":["六","六月","六日","六つ","七","七月","七つ","七日","八","八月","八つ","八日","九","九月","九日","九つ","十","十月","十歳","十日"],"12":["百","三百円","六百","千","三千円","千葉","万","一万円","百万","一千万","円","百円","千円","円い"],"13":["牛肉","豚肉","鶏肉","アメリカ産","引き","酒"],"18":["月","月曜日","一月","火","火曜日","火事","水","水曜日","木","木曜日","金","金曜日","お金"],"19":["土","土曜日","土地","曜","日曜日","何","何曜日","年","今年","去年","来年","時","時間","時計"],"20":["間","時間","間に合います","分","分かります","分けます","十分","雨","場所","平日","祝日"],"26":["東","東京","京","京都","名","名前","有名","前","午前","国","外国","韓国","中国"],"27":["男","男の人","男性","女","女の人","女性","区","区役所","市","市役所","市場"],"28":["電話","住所","歳","性別"],"34":["先","先生","先月","週","先週","一週間","毎","毎日","毎週","毎月","毎年","午","午前","午後","後","後ろ","後半"],"35":["見","見学","食","食事","食べ物","食べます","飲","飲みます","飲み物","飲食","買","買います","物","買い物","動物","荷物"],"36":["行","行きます","旅行","行います","休","休みます","休み","休日","食べ放題","営業","徒歩"],"44":["今","今週","今月","今年","来","来ます","来る","来ない","来週","来月","来年","帰","帰ります","日帰り","帰国","会","会います","会社","会話","飲み会","社","社会"],"45":["聞","聞きます","新聞","聞こえます","読","読みます","読書","書","書きます","辞書","図書館","話","話します","電話"],"46":["新聞","図書館","辞書","受付"],"55":["寺","お寺"],"56":["言","言います","言葉","貝","田","田んぼ","田中さん","山田さん","力","門","専門学校"],"58":["肉","牛肉","豚肉","鶏肉","料","料理","料金","理","野","野菜","長野","半","一時半","半分","半額"],"59":["大","大学","大きい","大人","大丈夫","大切","大変","小","小学校","小さい","小鳥","魚","野菜","ご飯","酒","カツ丼","半額","定食"],"66":["家","家族","家賃","族","父","祖父","母","祖母","お父さん","お母さん","兄","お兄さん","兄弟"],"67":["弟","兄弟","姉","お姉さん","姉妹","犬","高い","高","高校"],"68":["長","長い","社長","短","短い","趣味","出身地","職業"],"74":["好","好き","歌","歌います","歌手","音楽","音","楽しい","楽しみ","車","電車"],"75":["映","映画","画","計画","画家","旅","旅行","一人旅","海","海外","外","外国"],"76":["雑誌","漢字","書店"],"84":["駅","上","上手","上がります","上げます","上り","上着","下","地下鉄","下手","下ります","下り","下がります","下げます","上下","地","地図","地震","図書館","図"],"85":["館","図書館","映画館","右","左右","左","道","水道","北海道"],"86":["北口","南口","西口","銀行","地下鉄","駐車場"],"92":["起きる","起","起こします","歩","散歩","歩きます","歩道","乗","乗ります","始める","始","始まります","終","終わります","終わり"],"93":["勉","勉強","強","強い","朝","今朝","朝食","昼","昼食","夜","今夜","夜中"],"94":["自転車","寝る","集合"],"102":["体","体重","目","1つ目","耳","口","北口","人口","歯"],"103":["病","病気","病院","薬","薬局","局"],"104":["体重","受付","熱","内科","外科"],"112":["世","世界","世話","界","春","春夏秋冬","夏","秋"],"113":["冬","早い","早","夕","夕食","夕方","予","予約","予定","約束"],"114":["光","観光","光ります","出発","到着","泊","付き","券"],"122":["入","入ります","入れます","入口","入学","出","出ます","出口","出します","出発","持","持ちます","気持ち","立ちます","立","立てます","国立大学","使","使います","使用","大使館"],"123":["用","使用","用事","中","使用中","中学校","世界中","新","新しい","新聞","古","古い","中古","注","注意"],"124":["意","意見","注意","意味","止","止まります","止めます","禁止","中止","降ります","最","優先席","禁煙"],"132":["天","天気","気","気温","雨","雨天","台","台風","風","風邪","風呂"],"133":["多い","多","多分","最低","低","低い","度","今度","温度","震度","交","交通","通","通ります","通います","通り"],"134":["死","死亡","死にます","気温","事故","地震","晴","雲","雪"]},"初中級":{"7":["仕","仕事","事","事故","事務所","大事","行事","働","働く","教","教える","教室","泳","水泳","泳ぐ"],"8":["英","英語","運","運転","運ぶ","転","自転車","転ぶ","方","この方","読み方","夕方","方法","行方","留","留学","留守"],"9":["可","不可","時給","履歴書","要"],"17":["服","洋服","品","食料品","返品","品物","スポーツ用品","電","電気","電子辞書","別","別れる","特別","引","引く","引き","割引"],"18":["送","送る","送料","転送","送信","切","売り切れ","品切れ","大切","切る","安","安い","不安","安心","開","開く","開ける","開始","閉","閉まる","閉める","開閉"],"19":["払う","返品","無料","価格","税","込"],"28":["説","説明","小説","明","明るい","明日","写","写真","写す","真","真ん中","願","願書","お願い"],"29":["部","学部","部長","部屋","科","学科","専門","就職","受験","必着"],"39":["住","住所","住む","所","民","国民","市民","役","区役所","役に立つ","知","知る","お知らせ"],"40":["問","問い合わせ","質問","合","集合","合う","試合","定","定員","予定","定食","員","会社員","無","無料","無い","無理"],"41":["集","集まる","集合","集める","収集日","友","友達","友人","申し込み","参加","他","費","在住","在学","在勤"],"51":["急","急行","急ぐ","急に","特","特急","特別","特に","線","一番線","新幹線","回","一回","回送電車","回す","回る","遅","遅れる","遅い"],"52":["忘","忘れる","忘れ物","待","待つ","招待","取","取る","取り消し","消","消す","消える","消しゴム","残","残る","残高","残念"],"53":["各駅停車","暗証番号","確認","預ける","精算機","訂正","振込"],"59":["心","安心","心配","心地","主","主人","糸"],"60":["刀"],"63":["子","子ども","お菓子","親","親子","親切","代","代金","時代","代わる","屋","屋上","部屋","内","国内","屋内","内科"],"64":["自","自分","自転車","由","自由","理由","発","出発","始発","発見","着","着く","到着","着る","上着","着物","遠","遠い","遠足"],"65":["泊まる","送迎","温泉","往復"],"75":["牛","牛肉","魚","飯","ご飯","菜","野菜","味","調味料","意味"],"76":["色","景色","茶","お茶","茶色","喫茶店","少","少し","少々","少ない","洗","洗う","洗濯","弱","弱い","弱火"],"77":["暗","暗い","冷暗所","砂糖","塩","油","卵","限定"],"87":["広","広い","便","便利","郵便局","利","利用","建","建物","建てる","建築","近","近い","近所","最近"],"88":["空","空く","空気","空港","室","空室","室内","教室","和","和室","和食","洋","洋室","洋服","有","有り","有名"],"89":["階","家賃","保証人","引っ越し","敷金","礼金","収納"],"99":["足","足りる","足す","不足","手","運転手","手伝う","元","元気","火元","足元","作","作る","作文","返","返す","返事","返信"],"100":["者","送信者","参加者","林","小林さん","森","森林","村","木村さん","山","山田さん","山車"],"101":["川","小川さん","返信","様","保存","印刷"],"109":["場","場所","乗り場","動","動く","動物","自動車","運動","動かす","公","公園","園","動物園","鳥","小鳥","白鳥"],"110":["遊","遊ぶ","遊園地","池","電池","店","店員","売","売店","売る","売り場","産","産地","生産","土産"],"111":["軽","軽い","軽食","美術館","展望台"],"119":["工","工事","工場","医","医者","歯医者","医院","紙","手紙","用紙","町","市町村","南","東南アジア"],"120":["以","以下","以上","初","初め","初めて","最初","借","借りる","貸","貸す","押","押す"],"121":["燃える","缶","資源ごみ","駐輪場"],"129":["頭","頭痛","先頭","顔","洗顔料","首","手首","足首","首都","走","走る","声","音声"],"130":["重","重い","体重","太","太い","太る","計","体重計","計画","時計","不","不足","不便","不可","不明","痛","頭痛","痛い"],"131":["健康","両","肩","体脂肪","秒"],"141":["文","作文","文学部","注文","文化","文字","研","研究","究","課","学生課","課題","課長","題","問題","宿題"],"142":["習","習う","予習","実習","練習","堂","食堂","講堂","席","出席","欠席","全","全部","安全"],"143":["授業","宿題","実習","寮","期限"],"151":["都","都合","東京都","県","北","東北地方","北海道","西","関西","西洋","東西南北","正","正しい","正月"],"152":["花","花見","花瓶","花粉症","祭","祭り","文化祭","青","青い","青春","真っ青","黒","黒い","白","白い","白紙"],"153":["赤","赤い","赤飯","真っ赤","関西","お祝い","結婚式"],"163":["漢","漢字","字","ローマ字","文字","暑","暑い","残暑","寒","寒い","去","去年","過去"],"164":["質","質問","答","答える","答え","同","同時","同じ","思","思う","思い出す","考","考える"],"165":["銀","銀行","悪","最悪","悪い","調べる","増える","減る","過去","殺す","盗む","逮捕"]}};
@@ -199,6 +219,56 @@ const elBadges = document.getElementById('cb-badges');
 const elPanel  = document.getElementById('cb-panel');
 const elSearch = document.getElementById('cb-search');
 const elList   = document.getElementById('cb-list');
+
+// ======== 表示倍率（ページ全体を等倍で拡大） ========
+// CSS の zoom を使い、ページ全体をそのまま拡大する。
+// zoom 下では getBoundingClientRect() が拡大後の px を返し、
+// transform の translate() 値も拡大後になるため、
+// JS 側の座標計算では必ず 1/zoom を掛けること。
+const ZOOM_KEY   = 'jp-practice-zoom';
+const ZOOM_MIN   = 1;
+const ZOOM_MAX   = 2;
+const ZOOM_STEP  = 0.1;
+const zoomValue  = document.getElementById('zoomValue');
+const zoomMinus  = document.getElementById('zoomMinus');
+const zoomPlus   = document.getElementById('zoomPlus');
+let zoomLevel    = ZOOM_MIN;
+
+// 保存済みの倍率を優先。無ければ投影用途を想定した初期値（狭い画面では等倍）
+(function initZoom(){
+  let v = null;
+  try{ v = parseFloat(localStorage.getItem(ZOOM_KEY)); }catch(e){}
+  if(!isNaN(v) && v >= ZOOM_MIN && v <= ZOOM_MAX){
+    zoomLevel = v;
+  } else {
+    zoomLevel = (window.innerWidth >= 900) ? 1.3 : ZOOM_MIN;
+  }
+})();
+
+function applyZoom(){
+  document.documentElement.style.setProperty('--page-zoom', String(zoomLevel));
+  const digit = zoomValue.querySelector('.digit');
+  if(digit){
+    digit.textContent = Math.round(zoomLevel * 100) + '%';
+    digit.classList.add('pop');
+    setTimeout(function(){ digit.classList.remove('pop'); }, 140);
+  }
+  zoomMinus.disabled = zoomLevel <= ZOOM_MIN;
+  zoomPlus.disabled  = zoomLevel >= ZOOM_MAX;
+}
+function setZoom(v){
+  zoomLevel = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, Math.round(v * 10) / 10));
+  try{ localStorage.setItem(ZOOM_KEY, String(zoomLevel)); }catch(e){}
+  applyZoom();
+}
+zoomMinus.onclick = function(){ setZoom(zoomLevel - ZOOM_STEP); };
+zoomPlus.onclick  = function(){ setZoom(zoomLevel + ZOOM_STEP); };
+applyZoom();
+
+// 現在の拡大率。座標計算の補正に使う
+function zoomFactor(){
+  return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--page-zoom')) || 1;
+}
 
 /* ===== ページ Combobox（複数選択 + 検索 + バッジ）===== */
 const MAX_SHOWN = 2;                    // 收起时最多显示 2 个徽标
@@ -412,13 +482,15 @@ function startGame(){
   // フェーズ 2：中央に重ねる
   setTimeout(function(){
     if(!alive()) return;
+    const zf = zoomFactor();
     const boxRect = elCards.getBoundingClientRect();
     const cx = boxRect.left + boxRect.width / 2;
     const cy = boxRect.top  + boxRect.height / 2;
     cards.forEach(function(c, i){
       const r = c.getBoundingClientRect();
-      const sx = cx - r.left - BOX_PAD * i;
-      const sy = cy - r.top  - BOX_PAD * i;
+      // rect は拡大後の px、translate は拡大前の px なので 1/zoom で補正する
+      const sx = (cx - r.left) / zf - BOX_PAD * i;
+      const sy = (cy - r.top)  / zf - BOX_PAD * i;
       const sr = (Math.random() * 6 - 3).toFixed(2);
       c.style.transition = 'transform 450ms cubic-bezier(.55,.05,.3,.95)';
       c.style.transform = 'translate(' + sx + 'px,' + sy + 'px) rotate(' + sr + 'deg)';
@@ -462,12 +534,14 @@ function startGame(){
     shuffled.forEach(function(c){ elCards.appendChild(c); });
 
     void elCards.offsetHeight;                       // 强制重排
+    const zf = zoomFactor();
     const newCards = Array.from(elCards.querySelectorAll('.flip-card'));
     const targetRects = newCards.map(function(c){ return c.getBoundingClientRect(); });
     const currentRects = newCards.map(function(c){ return c.getBoundingClientRect(); });
     newCards.forEach(function(c, i){
-      const dx = currentRects[i].left - targetRects[i].left;
-      const dy = currentRects[i].top  - targetRects[i].top;
+      // rect は拡大後の px なので 1/zoom で補正する
+      const dx = (currentRects[i].left - targetRects[i].left) / zf;
+      const dy = (currentRects[i].top  - targetRects[i].top ) / zf;
       c.style.transform = 'translate(' + dx + 'px,' + dy + 'px) rotate(0deg)';
       c.style.zIndex = '';
       c.querySelector('.card-num').textContent = '#' + (i + 1);
