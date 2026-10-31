@@ -132,6 +132,20 @@ select:focus{border-color:#0f7a40;box-shadow:0 0 0 3px rgba(15,122,64,.15)}
 .flip-card-front > *,.flip-card-back > *{-webkit-backface-visibility:hidden;backface-visibility:hidden}
 .v-front,.v-back,.v-tag{text-shadow:none !important}
 
+/* 漢字フリガナ（ルビ） */
+.v-front ruby,.v-back ruby{ruby-align:center;ruby-position:over}
+.v-front rt,.v-back rt{
+  font-size:.34em;font-weight:600;letter-spacing:.02em;
+  color:#0f7a40;opacity:.75;line-height:1.1;
+  -webkit-user-select:none;user-select:none;
+  text-shadow:none !important;
+}
+.v-back rt{color:rgba(255,255,255,.85);opacity:.9}
+/* ルビで上方向に伸びる分、ベースラインを上げて見た目の中心を保つ */
+.v-front,.v-back{line-height:1.5}
+.v-front ruby,.v-back ruby{ruby-align:center}
+.v-front rt,.v-back rt{transform:translateY(.06em)}
+
 /* 背景：トップの草の丘画像（低透明度 + ガウスぼかし） */
 .page-bg{position:fixed;inset:0;z-index:0;background:#f8faf9 url('assets/hero-34-bg.jpg') center/cover no-repeat;opacity:.16;filter:blur(12px);transform:scale(1.06);pointer-events:none;}
 body>*:not(.page-bg):not(.back-btn){position:relative;z-index:1}
@@ -215,12 +229,71 @@ body>*:not(.page-bg):not(.back-btn){position:relative;z-index:1}
 </div>
 
 <script src="data/verbs.js"></script>
+<script src="data/verb_furigana.js"></script>
 <script>
 // ======== データ展開 ========
 const VERBS = VERB_ROWS.map(function(r){
   return { v:r[0], y:r[1], c:r[2], zh:r[3], f:r[4].split('~') };
 });
 const FORMS = FORM_LABELS;
+
+// ======== 漢字フリガナ ========
+// 辞書の慣例：振り仮名は漢字だけに付け、送り仮名には付けない
+//   食(た)べる / 泳(およ)ぐ / 並べ替える → 並(なら)べ替(か)える
+// データは「原形|分類|辞書形読音|種別|データ」
+//   種別 '*' = 17 活用形で読みが同じ / 'F' = 形態ごとに異なる
+const FURIGANA = (function(){
+  const map = {};
+  for(let i = 0; i < VERB_FURIGANA.length; i++){
+    const p = VERB_FURIGANA[i].split('|');
+    map[p[0]] = { kind:p[3], data:p[4] };
+  }
+  return map;
+})();
+
+// 漢字・仮名の判定
+const RE_KANJI = /[一-鿿々〆〇]/;
+const RE_KANA  = /[ぁ-ゖァ-ヺヶーｦ-ﾟ]/;
+
+// 活用形の漢字にルビを付ける
+function rubyFor(text, formIdx, verbForm){
+  const info = FURIGANA[verbForm];
+  if(!info) return escapeHtml(text);
+  const readStr = (info.kind === '*') ? info.data : (info.data.split(';')[formIdx] || '');
+  if(!readStr) return escapeHtml(text);
+
+  const readMap = {};
+  readStr.split(',').forEach(function(p){
+    const i = p.indexOf('=');
+    if(i > 0) readMap[p.slice(0, i)] = p.slice(i + 1);
+  });
+
+  let out = '';
+  let i = 0;
+  while(i < text.length){
+    const ch = text[i];
+    if(RE_KANJI.test(ch)){
+      let j = i;
+      while(j < text.length && RE_KANJI.test(text[j])) j++;
+      const han = text.slice(i, j);
+      const rd = readMap[han];
+      out += rd ? '<ruby>' + escapeHtml(han) + '<rt>' + escapeHtml(rd) + '</rt></ruby>' : escapeHtml(han);
+      i = j;
+    }else if(RE_KANA.test(ch)){
+      let j = i;
+      while(j < text.length && RE_KANA.test(text[j])) j++;
+      out += escapeHtml(text.slice(i, j));
+      i = j;
+    }else{
+      out += escapeHtml(ch);
+      i++;
+    }
+  }
+  return out;
+}
+function escapeHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
 
 // ======== 状態 ========
 let frontIdx = 0;      // カード正面の活用形
@@ -509,9 +582,9 @@ function render(){
     card.className = 'flip-card';
     card.innerHTML =
       '<div class="flip-card-inner">' +
-        '<div class="flip-card-front"><div class="v-front ' + lenClass(front) + '">' + front + '</div></div>' +
+        '<div class="flip-card-front"><div class="v-front ' + lenClass(front) + '">' + rubyFor(front, frontIdx, v.v) + '</div></div>' +
         '<div class="flip-card-back">' +
-          '<div class="v-back ' + lenClass(back) + '">' + back + '</div>' +
+          '<div class="v-back ' + lenClass(back) + '">' + rubyFor(back, backIdx, v.v) + '</div>' +
           '<div class="v-meta">' +
             '<span class="v-tag k">' + FORMS[frontIdx] + '：' + v.v + '</span>' +
             (v.y ? '<span class="v-tag">' + v.y + '</span>' : '') +
