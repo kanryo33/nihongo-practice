@@ -14,14 +14,14 @@ body{min-height:100vh;background:#f8faf9;display:flex;flex-direction:column;alig
 .yomi-line{font-size:26px;letter-spacing:.12em;color:#0f7a40;margin-bottom:16px;min-height:44px;font-weight:600;line-height:1.6}
 .yomi-empty{color:#cbd5e1;font-size:18px;letter-spacing:.04em;font-weight:500}
 .question-line{font-size:clamp(1.5rem,4.5vw,2.5rem);font-weight:600;color:#94a3b8;line-height:1.3;word-break:normal;transition:font-size .2s ease}
-/* 出题状态：数字统一放大 1.5 倍，始终单行（不自动改字号） */
+/* 出題状態：数字を統一して 1.5 倍に拡大、常に 1 行（文字サイズは自動調整しない） */
 .question-line.has-q{font-size:7.5rem;font-weight:700;color:#111;line-height:1.15;white-space:nowrap;word-break:keep-all}
 
-/* ===== 控件区 ===== */
+/* ===== コントロールエリア ===== */
 .ctrl-row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;align-items:center;margin-bottom:14px}
 .ctrl-label{font-size:14px;font-weight:700;color:#0f7a40;margin-right:4px}
 
-/* 分段控件（模式 / 位数） */
+/* セグメントコントロール（モード / 桁数） */
 .seg{display:inline-flex;gap:6px;background:rgba(255,255,255,.7);border:1px solid #e5e7eb;border-radius:999px;padding:4px}
 .seg button{border:1px solid transparent;border-radius:999px;padding:8px 20px;font-size:15px;font-weight:600;color:#5a5a63;background:transparent;cursor:pointer;letter-spacing:.02em;transition:all .18s ease;white-space:nowrap}
 .seg button:hover:not(.active):not(:disabled){background:#f0eff6;color:#374151}
@@ -31,7 +31,7 @@ body{min-height:100vh;background:#f8faf9;display:flex;flex-direction:column;alig
 
 .seg-digit button{padding:8px 15px;font-size:14px;font-variant-numeric:tabular-nums}
 
-/* ===== 按钮（复刻 watermelon button-10 滑动渐变） ===== */
+/* ===== ボタン（watermelon button-10 のスライドグラデーションを再現） ===== */
 .btn{padding:12px 24px;font-size:15px;border:none;border-radius:12px;cursor:pointer;font-weight:600;letter-spacing:.5px;color:#fff;
   background:linear-gradient(90deg,#0284c7 0%,#0ea5e9 50%,#0284c7 100%);
   background-size:200% auto;background-position:0% center;
@@ -53,11 +53,11 @@ body{min-height:100vh;background:#f8faf9;display:flex;flex-direction:column;alig
 .back-btn{position:fixed;top:16px;left:20px;z-index:999;padding:8px 16px;background:rgba(255,255,255,.85);backdrop-filter:blur(4px);color:#0f7a40;font-size:14px;font-weight:600;border-radius:10px;border:1px solid #e5e7eb;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:transform .15s,box-shadow .15s}
 .back-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.12)}
 
-/* 背景：首页草坡图（低透明度 + 高斯模糊） */
+/* 背景：トップの草の丘画像（低透明度 + ガウスぼかし） */
 .page-bg{position:fixed;inset:0;z-index:0;background:#f8faf9 url('assets/hero-34-bg.jpg') center/cover no-repeat;opacity:.16;filter:blur(12px);transform:scale(1.06);pointer-events:none;}
 body>*:not(.page-bg):not(.back-btn){position:relative;z-index:1;}
 
-/* 移动端 */
+/* モバイル表示 */
 @media (max-width:640px){
   body{padding:20px 14px}
   .main-display{padding:28px 20px;min-height:170px}
@@ -163,33 +163,33 @@ function numToReading(num){
   return result.join(""); // 修正：组间不留多余空格
 }
 
-// ======== 时刻读法 =====
-// 分の一の位读音表。
-//   撥音「ぷ」在 い・ろ・は・ち 前要加促音「っ」；在 に・ご・なな 前则清音化为「ふ」。
+// ======== 時刻の読み =====
+// 分の一の位の読み表。
+//   撥音「ぷ」は い・ろ・は・ち の前に促音「っ」を付ける（に・ご・なな の前は清音化されて「ふ」になる）。
 const minUnit = ["","いっぷん","にふん","さんぷん","よんぷん","ごふん","ろっぷん","ななふん","はっぷん","きゅうぷん"];
 
-// 分の读法：10〜19 分在时刻语境读作「じゅう…」（不出「いち」）
+// 分の読み：10〜19 分は時刻の文脈で「じゅう…」（「いち」は出ない）
 function minuteReading(m){
   const last = m % 10;
-  // 十位部分
+  // 十の位の部分
   let head;
   if(m < 10) head = "";
   else if(m < 20) head = "じゅう";                        // 10分=じゅっぷん, 11分=じゅういちふん
   else head = numToReading(Math.floor(m / 10) * 10);       // 20分=にじゅっぷん, 45分=よんじゅうごぷん
-  // 整十：う + ぷ → 促音化（じゅう → じゅっ）
+  // 十の位：う + ぷ → 促音化（じゅう → じゅっ）
   if(last === 0) return head.replace(/う$/, "っぷん");
   return head + minUnit[last];
 }
 
-// ======== 时刻读法（12 小时制：午前 / 午後）========
-// 0-11 → 午前1〜12時，12-23 → 午後12〜11時（12時制）
-// 读法：午前=ごぜん、午後=ごご
+// ======== 時刻の読み（12時間制：午前 / 午後）========
+// 0-11 → 午前1〜12時、12-23 → 午後12〜11時（12時制）
+// 読み：午前=ごぜん、午後=ごご
 function meridiemOf(h24){ return h24 < 12 ? "午前" : "午後"; }
 function meridiemReading(h24){ return h24 < 12 ? "ごぜん" : "ごご"; }
 function hour12Of(h24){ const h = h24 % 12; return h === 0 ? 12 : h; }
 
-// 时钟专用的「○时」读法表：与一般数字读法不同
-// 11 时读作 じゅういちじ（不是 いちじゅういちじ），9 时读作 くじじ
+// 時計専用の「○時」の読み表：通常の数字の読み方とは異なる
+// 11 時 は じゅういちじ（いちじゅういちじ ではない）、9 時 は くじじ
 const clockHour = [
   "", "いちじ", "にじ", "さんじ", "よんじ", "ごじ", "ろくじ",
   "ななじ", "はちじ", "くじじ", "じゅうじ", "じゅういちじ", "じゅうにじ"
@@ -322,7 +322,7 @@ digitSeg.addEventListener("click", e=>{
   renderDisplay();
 });
 
-// 快捷键：Space=下一题  Y=读法  R=重置  1/2/3=切模式
+// ショートカット：Space=次の問題  Y=読み方  R=リセット  1/2/3=モード切替
 document.addEventListener("keydown", e=>{
   if(e.target.tagName === "SELECT" || e.target.tagName === "INPUT") return;
   if(e.code === "Space"){ e.preventDefault(); newQuestion(); }

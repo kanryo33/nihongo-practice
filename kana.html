@@ -15,7 +15,7 @@ body{min-height:100vh;background:#f8faf9;text-align:center;padding:40px 24px;col
 .ctrl input[type=radio]{width:16px;height:16px;accent-color:#0f7a40}
 .ctrl input[type=checkbox]{width:16px;height:16px;accent-color:#0f7a40}
 
-/* ===== 数字 Stepper（复刻 watermelon stepper，高度与 ctrl-group 一致） ===== */
+/* ===== 数字 Stepper（watermelon stepper を再現、高さは ctrl-group と揃える） ===== */
 .stepper{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid #e5e7eb;border-radius:999px;padding:2px 4px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
 .stepper-btn{flex:0 0 auto;width:26px;height:26px;border:none;border-radius:50%;background:#f0eff6;color:#5a5a63;font-size:16px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .12s cubic-bezier(.34,1.4,.6,1),opacity .12s}
 .stepper-btn:hover:not(:disabled){transform:scale(1.05)}
@@ -26,7 +26,7 @@ body{min-height:100vh;background:#f8faf9;text-align:center;padding:40px 24px;col
 .stepper-value .digit.pop{transform:scale(1.18);opacity:.55}
 .kana-area{min-height:260px;display:flex;gap:26px;justify-content:center;align-items:center;flex-wrap:wrap;margin:30px 10px}
 
-/* 卡片翻转核心样式 */
+/* カード反転の中核スタイル */
 .flip-card{width:180px;height:220px;perspective:1000px;cursor:pointer;transition:transform .2s}
 .flip-card:hover{transform:translateY(-3px)}
 .flip-card-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
@@ -39,7 +39,7 @@ body{min-height:100vh;background:#f8faf9;text-align:center;padding:40px 24px;col
 .kana-back{font-size:clamp(1.8rem,4vw,3.4rem);font-weight:bold;color:#111;line-height:1.1;white-space:nowrap;text-align:center}
 .roma-back{font-size:32px;font-weight:600;color:#374151;margin-top:14px}
 
-/* ===== 按钮：复刻 watermelon button-10 滑动渐变风格 ===== */
+/* ===== ボタン：watermelon button-10 のスライドグラデーションを再現 ===== */
 .btn{padding:12px 24px;margin:8px;font-size:15px;border:none;border-radius:12px;cursor:pointer;font-weight:600;letter-spacing:.5px;color:#fff;
   background:linear-gradient(90deg,#0284c7 0%,#0ea5e9 50%,#0284c7 100%);
   background-size:200% auto;background-position:0% center;
@@ -51,7 +51,7 @@ select:focus{border-color:#0f7a40;box-shadow:0 0 0 3px rgba(15,122,64,.15)}
 .back-btn{position:fixed;top:16px;left:20px;z-index:999;padding:8px 16px;background:rgba(255,255,255,.85);backdrop-filter:blur(4px);color:#0f7a40;font-size:14px;font-weight:600;border-radius:10px;border:1px solid #e5e7eb;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:transform .15s,box-shadow .15s}
 .back-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.12)}
 
-/* ===== JR東日本風 カード美化 ===== */
+/* ===== JR東日本風 カード装飾 ===== */
 .flip-card{
     width:180px;height:220px;border-radius:20px;
     transition:transform .3s cubic-bezier(.2,1.3,.3,1), box-shadow .3s;
@@ -117,19 +117,19 @@ select:focus{border-color:#0f7a40;box-shadow:0 0 0 3px rgba(15,122,64,.15)}
     letter-spacing:.08em;
     backdrop-filter:blur(2px);
 }
-/* カード全体の軽い光沢 */
+/* カード全体の控えめな光沢 */
 
 
 
-/* ===== 翻転後の子要素透け問題 修正 ===== */
-/* text-shadow 等で独立合成層が生成されると backface-visibility:hidden が効かない */
-/* 子要素にも backface-visibility:hidden を付ける */
+/* ===== 反転後の子要素の透け問題 修正 ===== */
+/* text-shadow などで独立した合成層ができると backface-visibility:hidden が効かない */
+/* 子要素にも backface-visibility:hidden を指定 */
 .flip-card-front > *,
 .flip-card-back > *{
     -webkit-backface-visibility:hidden;
     backface-visibility:hidden;
 }
-/* text-shadow も消す（合成層生成のトリガー） */
+/* text-shadow も削除（合成層生成のトリガー） */
 .kana-front, .kana-back, .roma-back,
 .card-kanji, .card-num{
     text-shadow:none !important;
@@ -137,7 +137,7 @@ select:focus{border-color:#0f7a40;box-shadow:0 0 0 3px rgba(15,122,64,.15)}
 
 
 
-/* 背景：首页草坡图（低透明度 + 高斯模糊） */
+/* 背景：トップの草の丘画像（低透明度 + ガウスぼかし） */
 .page-bg{position:fixed;inset:0;z-index:0;background:#f8faf9 url('assets/hero-34-bg.jpg') center/cover no-repeat;opacity:.16;filter:blur(12px);transform:scale(1.06);pointer-events:none;}
 body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1;}
 </style>
@@ -148,19 +148,19 @@ body>*:not(.page-bg):not(.back-btn):not(.popup-wrap){position:relative;z-index:1
 <div class="wrap">
   <div class="ctrl">
     <div class="ctrl-group">
-      <span class="ctrl-label">字体</span>
-      <label><input type="radio" name="script" value="hira" checked> 平假名</label>
-      <label><input type="radio" name="script" value="kata"> 片假名</label>
-      <label><input type="radio" name="script" value="rand"> 随机</label>
+      <span class="ctrl-label">書体</span>
+      <label><input type="radio" name="script" value="hira" checked> ひらがな</label>
+      <label><input type="radio" name="script" value="kata"> カタカナ</label>
+      <label><input type="radio" name="script" value="rand"> ランダム</label>
     </div>
     <div class="ctrl-group">
-      <span class="ctrl-label">范围</span>
+      <span class="ctrl-label">範囲</span>
       <label><input type="checkbox" id="r-basic" checked> 清音</label>
       <label><input type="checkbox" id="r-daku" checked> 濁音・半濁音</label>
       <label><input type="checkbox" id="r-you" checked> 拗音</label>
     </div>
     <div class="ctrl-group no-border">
-      <span class="ctrl-label">一次显示</span>
+      <span class="ctrl-label">一度に表示</span>
       <div class="stepper" id="stepper">
         <button type="button" class="stepper-btn" id="stepMinus" aria-label="減少">−</button>
         <div class="stepper-value" id="stepperValue"><span class="digit">1</span></div>
@@ -218,14 +218,14 @@ const youon = [
 ];
 
 let currentList = [];
-let allFlipped = false; // 记录全体卡片翻转状态
+let allFlipped = false; // 全カードの反転状態を記録
 const box = document.getElementById('box');
 const scriptRadios = document.querySelectorAll('input[name="script"]');
 const basicCb = document.getElementById('r-basic');
 const dakuCb = document.getElementById('r-daku');
 const youCb = document.getElementById('r-you');
 
-// 数字 Stepper 控制「一次显示」数量（1~10）
+// 数字 Stepper で「一度に表示」する枚数を制御（1〜10）
 const STEP_MIN = 1, STEP_MAX = 10;
 let cardCount = STEP_MIN;
 const stepperValue = document.getElementById('stepperValue');
@@ -250,7 +250,7 @@ stepMinus.onclick = ()=> setCount(cardCount - 1);
 stepPlus.onclick = ()=> setCount(cardCount + 1);
 stepMinus.disabled = cardCount <= STEP_MIN;
 
-// 字体模式：hira=平假名, kata=片假名, rand=随机
+// 書体モード：hira=ひらがな, kata=カタカナ, rand=ランダム
 function getScriptMode(){
   let mode = 'hira';
   scriptRadios.forEach(r=>{ if(r.checked) mode = r.value; });
@@ -280,7 +280,7 @@ function render(){
   let pool = getRandomPool();
   let mode = getScriptMode();
   box.innerHTML = '';
-  allFlipped = false; // 新生成卡片默认全部正面
+  allFlipped = false; // 新しく生成したカードは初期状態で全て表面
 
   if(pool.length === 0){
     box.innerHTML = '<div style="font-size:24px;color:red;">少なくとも1つの範囲を選択してください</div>';
@@ -290,7 +290,7 @@ function render(){
 
   currentList = getRandom(pool, cnt);
   currentList.forEach(item=>{
-    // 字体：随机模式下每张卡独立决定平/片假名
+    // 書体：ランダムモードではカードごとにひらがな／カタカナを個別に決定
     let t = mode === 'hira' ? 'h' : 'k';
     if(mode === 'rand') t = Math.random() < 0.5 ? 'h' : 'k';
     let charFront = t === 'h' ? item.h : item.k;
@@ -308,7 +308,7 @@ function render(){
         </div>
       </div>
     `;
-    // 单机卡片单独翻转
+    // カード単体を個別にひっくり返す
     flipCard.addEventListener('click', ()=>{
       flipCard.classList.toggle('flipped');
     })
@@ -316,7 +316,7 @@ function render(){
   })
 }
 
-// 一键批量翻转所有卡片
+// 一括で全カードをひっくり返す
 function flipAllCards(){
   allFlipped = !allFlipped;
   const cards = document.querySelectorAll('.flip-card');
