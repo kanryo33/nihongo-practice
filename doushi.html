@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>動詞活用 闪卡练习 | 日本語 Practice</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:"Meiryo","メイリオ","Noto Sans JP",system-ui,sans-serif;color:#1f2937}
+body{min-height:100vh;background:#f8faf9;text-align:center;padding:40px 24px}
+.wrap{max-width:1180px;margin:0 auto;background:#fff;padding:36px 32px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.08);border:1px solid #e5e7eb}
+h1{font-size:1.5rem;font-weight:700;text-align:center;margin-bottom:6px;letter-spacing:2px}
+.subtitle{text-align:center;font-size:13px;color:#6b7280;margin-bottom:24px}
+
+/* ===== 控件区 ===== */
+.ctrl{display:flex;gap:14px;flex-wrap:wrap;align-items:center;justify-content:center;margin-bottom:14px;font-size:16px;color:#4b5563}
+.ctrl-group{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:8px 14px;background:rgba(255,255,255,.7);border:1px solid #e5e7eb;border-radius:12px}
+.ctrl-group.no-border{border:none;background:transparent;padding-left:4px;padding-right:4px}
+.ctrl-label{font-weight:700;color:#0f7a40;font-size:14px;margin-right:2px;white-space:nowrap}
+.ctrl input[type=checkbox]{width:16px;height:16px;accent-color:#0f7a40}
+.ctrl label{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+select{padding:8px 14px;font-size:15px;border-radius:10px;border:1px solid #d1d5db;background:#fff;color:#374151;cursor:pointer;outline:none;font-family:inherit}
+select:focus{border-color:#0f7a40;box-shadow:0 0 0 3px rgba(15,122,64,.15)}
+
+/* ===== 数字 Stepper（复刻 watermelon stepper） ===== */
+.stepper{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid #e5e7eb;border-radius:999px;padding:2px 4px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.stepper-btn{flex:0 0 auto;width:26px;height:26px;border:none;border-radius:50%;background:#f0eff6;color:#5a5a63;font-size:16px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .12s cubic-bezier(.34,1.4,.6,1),opacity .12s}
+.stepper-btn:hover:not(:disabled){transform:scale(1.05)}
+.stepper-btn:active:not(:disabled){transform:scale(.92)}
+.stepper-btn:disabled{opacity:.4;cursor:not-allowed}
+.stepper-value{position:relative;min-width:22px;height:26px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.stepper-value .digit{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#242426;font-variant-numeric:tabular-nums;transition:transform .18s cubic-bezier(.34,1.4,.6,1),opacity .18s}
+.stepper-value .digit.pop{transform:scale(1.18);opacity:.55}
+
+/* ===== 动词搜索 + 固定语 ===== */
+.search-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:12px}
+.search-box{position:relative;width:min(520px,100%)}
+.search-input{width:100%;padding:10px 14px;font-size:15px;border-radius:12px;border:1px solid #d1d5db;background:#fff;color:#374151;outline:none;font-family:inherit}
+.search-input:focus{border-color:#0f7a40;box-shadow:0 0 0 3px rgba(15,122,64,.15)}
+.search-panel{display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:60;background:#fff;border:1px solid #e5e7eb;border-radius:14px;box-shadow:0 16px 40px rgba(15,23,42,.16);max-height:300px;overflow-y:auto}
+.search-panel.open{display:block}
+.search-item{display:flex;align-items:center;gap:10px;width:100%;padding:9px 14px;border:none;background:transparent;cursor:pointer;text-align:left;font-family:inherit;font-size:14px;color:#374151}
+.search-item:hover{background:#f0fdf4}
+.search-item .s-v{font-weight:700;color:#0f7a40;font-size:15px}
+.search-item .s-y{font-size:12px;color:#9ca3af}
+.search-item .s-c{font-size:11px;padding:2px 7px;border-radius:5px;background:#f1f5f9;color:#64748b;font-weight:700}
+.search-item .s-z{margin-left:auto;font-size:12px;color:#9ca3af}
+.search-item .s-hit{font-size:11px;color:#0284c7;font-weight:600}
+.search-empty{padding:14px;text-align:center;font-size:13px;color:#9ca3af}
+
+.pinned{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;align-items:center}
+.pinned-empty{font-size:13px;color:#9ca3af}
+.pin{display:inline-flex;align-items:center;gap:5px;padding:5px 6px 5px 11px;border-radius:8px;border:1px solid #d1fae5;background:rgba(240,253,244,.8);font-size:14px;font-weight:600;color:#0f7a40}
+.pin-x{width:16px;height:16px;border:none;border-radius:4px;background:transparent;color:#9ca3af;cursor:pointer;font-size:11px;line-height:1;padding:0}
+.pin-x:hover{background:rgba(15,122,64,.16);color:#0f7a40}
+
+/* ===== 状态提示 ===== */
+.status{font-size:13px;color:#6b7280;text-align:center;min-height:20px;margin-bottom:14px}
+.status.warn{color:#dc2626;font-weight:600}
+.status b{color:#0f7a40}
+
+/* ===== 卡片 ===== */
+.kana-area{min-height:280px;display:flex;gap:24px;justify-content:center;align-items:center;flex-wrap:wrap;margin:20px 10px 30px}
+.flip-card{width:210px;height:260px;perspective:1000px;cursor:pointer;
+  transition:transform .3s cubic-bezier(.2,1.3,.3,1),box-shadow .3s;position:relative}
+.flip-card:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 16px 40px rgba(15,122,64,.18)}
+.flip-card-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.flip-card.flipped .flip-card-inner{transform:rotateY(180deg)}
+.flip-card-front,.flip-card-back{position:absolute;inset:0;border-radius:20px;overflow:hidden;
+  -webkit-backface-visibility:hidden;backface-visibility:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;text-align:center;
+  box-shadow:0 8px 24px rgba(15,122,64,.10)}
+.flip-card-front{background:linear-gradient(160deg,#ffffff 0%,#f0fdf4 100%);border:1px solid #d1fae5}
+.flip-card-front::before{content:'';position:absolute;top:-40px;right:-40px;width:100px;height:100px;border-radius:50%;background:#0f7a40;opacity:.06}
+.flip-card-front::after{content:'';position:absolute;bottom:-30px;left:-30px;width:80px;height:80px;border-radius:50%;background:#0f7a40;opacity:.04}
+.flip-card-back{background:linear-gradient(160deg,#0f7a40 0%,#0a5c2f 100%);border:1px solid #0a5c2f;transform:rotateY(180deg);box-shadow:0 12px 32px rgba(15,122,64,.28)}
+.flip-card-back::after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,rgba(255,255,255,.10) 0%,transparent 50%);border-radius:20px;pointer-events:none;z-index:3}
+.flip-card-back::before{content:'';position:absolute;top:0;left:0;width:100%;height:40%;background:linear-gradient(180deg,rgba(255,255,255,.12) 0%,transparent 100%);pointer-events:none}
+
+/* 正面：动词活用形 */
+.v-front{font-weight:700;color:#0f7a40;line-height:1.2;word-break:keep-all;position:relative}
+.v-front.l1,.v-front.l2{font-size:3rem}
+.v-front.l3{font-size:2.5rem}
+.v-front.l4{font-size:2.05rem}
+.v-front.l5{font-size:1.75rem}
+.v-front.l6{font-size:1.5rem}
+.v-front.l7{font-size:1.32rem}
+.v-front.l8{font-size:1.18rem}
+.v-front.l9{font-size:1.05rem}
+.v-front.l10{font-size:.95rem}
+.v-front.l12{font-size:.85rem}
+
+/* 背面：目标活用形 + 元信息 */
+.v-back{font-weight:700;color:#fff;line-height:1.2;word-break:keep-all;position:relative}
+.v-back.l1,.v-back.l2{font-size:3rem}
+.v-back.l3{font-size:2.5rem}
+.v-back.l4{font-size:2.05rem}
+.v-back.l5{font-size:1.75rem}
+.v-back.l6{font-size:1.5rem}
+.v-back.l7{font-size:1.32rem}
+.v-back.l8{font-size:1.18rem}
+.v-back.l9{font-size:1.05rem}
+.v-back.l10{font-size:.95rem}
+.v-back.l12{font-size:.85rem}
+.v-meta{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:16px;position:relative;z-index:4}
+.v-tag{padding:4px 10px;border-radius:7px;background:rgba(255,255,255,.18);font-size:.78rem;color:#fff;font-weight:600;letter-spacing:.03em}
+.v-tag.k{background:rgba(255,255,255,.30)}
+
+/* ===== 按钮（复刻 watermelon button-10 滑动渐变） ===== */
+.btn{padding:12px 24px;margin:8px;font-size:15px;border:none;border-radius:12px;cursor:pointer;font-weight:600;letter-spacing:.5px;color:#fff;
+  background:linear-gradient(90deg,#0284c7 0%,#0ea5e9 50%,#0284c7 100%);
+  background-size:200% auto;background-position:0% center;
+  transition:transform .15s,box-shadow .15s,opacity .15s,background-position .5s ease-out}
+.btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 16px rgba(2,132,199,.28);background-position:100% center}
+.btn:active:not(:disabled){transform:translateY(0)}
+.btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+.btn-ghost{background:#fff;color:#4b5563;border:1px solid #d1d5db}
+.btn-ghost:hover:not(:disabled){background:#f9fafb;box-shadow:0 4px 12px rgba(0,0,0,.08)}
+
+.back-btn{position:fixed;top:16px;left:20px;z-index:999;padding:8px 16px;background:rgba(255,255,255,.85);backdrop-filter:blur(4px);color:#0f7a40;font-size:14px;font-weight:600;border-radius:10px;border:1px solid #e5e7eb;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:transform .15s,box-shadow .15s}
+.back-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.12)}
+
+.empty-msg{font-size:18px;color:#dc2626;margin-top:50px;line-height:1.8}
+.empty-hint{font-size:14px;color:#6b7280;margin-top:10px}
+
+/* 翻面透け修正：子要素も backface-visibility:hidden */
+.flip-card-front > *,.flip-card-back > *{-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.v-front,.v-back,.v-tag{text-shadow:none !important}
+
+/* 背景：首页草坡图（低透明度 + 高斯模糊） */
+.page-bg{position:fixed;inset:0;z-index:0;background:#f8faf9 url('assets/hero-34-bg.jpg') center/cover no-repeat;opacity:.16;filter:blur(12px);transform:scale(1.06);pointer-events:none;}
+body>*:not(.page-bg):not(.back-btn){position:relative;z-index:1}
+
+@media (max-width:640px){
+  body{padding:20px 12px}
+  .wrap{padding:24px 16px}
+  .flip-card{width:160px;height:200px}
+  .v-front.l1,.v-front.l2,.v-back.l1,.v-back.l2{font-size:2.2rem}
+  .v-front.l3,.v-back.l3{font-size:1.9rem}
+  .v-front.l4,.v-back.l4{font-size:1.6rem}
+  .v-front.l5,.v-back.l5{font-size:1.35rem}
+  .v-front.l6,.v-back.l6{font-size:1.2rem}
+  .btn{padding:10px 18px;font-size:14px}
+}
+</style>
+</head>
+<body>
+<div class="page-bg" aria-hidden="true"></div>
+<a class="back-btn" href="./index.html">← ホーム</a>
+
+<div class="wrap">
+  <h1>動詞活用 闪卡练习</h1>
+  <p class="subtitle">3,820 語 × 17 活用形 · 正面と背面を自由に設定して教室で一问一答</p>
+
+  <!-- 正面 / 背面 活用形 -->
+  <div class="ctrl">
+    <div class="ctrl-group">
+      <span class="ctrl-label">卡正面</span>
+      <select id="sel-front"></select>
+    </div>
+    <div class="ctrl-group">
+      <span class="ctrl-label">卡背面</span>
+      <select id="sel-back"></select>
+    </div>
+    <div class="ctrl-group">
+      <span class="ctrl-label">范围</span>
+      <label><input type="checkbox" id="c-godan" checked> 五段</label>
+      <label><input type="checkbox" id="c-ichidan" checked> 一段</label>
+      <label><input type="checkbox" id="c-sahen" checked> サ変</label>
+      <label><input type="checkbox" id="c-kahen" checked> カ変</label>
+    </div>
+    <div class="ctrl-group no-border">
+      <span class="ctrl-label">一次显示</span>
+      <div class="stepper" id="stepper">
+        <button type="button" class="stepper-btn" id="stepMinus" aria-label="減少">−</button>
+        <div class="stepper-value" id="stepperValue"><span class="digit">1</span></div>
+        <button type="button" class="stepper-btn" id="stepPlus" aria-label="增加">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 动词搜索 + 固定语 -->
+  <div class="search-wrap">
+    <div class="search-box">
+      <input type="text" class="search-input" id="searchInput" placeholder="動詞を入力（例：食べる / 食べた / しない）" autocomplete="off">
+      <div class="search-panel" id="searchPanel"></div>
+    </div>
+    <div class="pinned" id="pinnedBox"></div>
+  </div>
+
+  <div class="status" id="status"></div>
+
+  <div class="kana-area" id="box"></div>
+
+  <div>
+    <button class="btn" onclick="flipAllCards()">一括反転</button>
+    <button class="btn" onclick="nextSet()">次のセット</button>
+    <button class="btn btn-ghost" onclick="clearPinned()">固定語をクリア</button>
+  </div>
+</div>
+
+<script src="data/verbs.js"></script>
+<script>
+// ======== データ展開 ========
+const VERBS = VERB_ROWS.map(function(r){
+  return { v:r[0], y:r[1], c:r[2], zh:r[3], f:r[4].split('~') };
+});
+const FORMS = FORM_LABELS;
+
+// ======== 状態 ========
+let frontIdx = 0;      // カード正面の活用形
+let backIdx  = 5;      // カード背面の活用形（初期は「て形」）
+let cardCount = 1;
+let pinned = [];       // 固定した動詞
+let currentList = [];
+let allFlipped = false;
+
+const box          = document.getElementById('box');
+const selFront     = document.getElementById('sel-front');
+const selBack      = document.getElementById('sel-back');
+const cbGodan      = document.getElementById('c-godan');
+const cbIchidan    = document.getElementById('c-ichidan');
+const cbSahen      = document.getElementById('c-sahen');
+const cbKahen      = document.getElementById('c-kahen');
+const searchInput  = document.getElementById('searchInput');
+const searchPanel  = document.getElementById('searchPanel');
+const pinnedBox    = document.getElementById('pinnedBox');
+const statusEl     = document.getElementById('status');
+const stepperValue = document.getElementById('stepperValue');
+const stepMinus    = document.getElementById('stepMinus');
+const stepPlus     = document.getElementById('stepPlus');
+
+// 分类归一化：サ変 / サ変動詞 合并
+function classOf(v){
+  if(v === '五段') return '五段';
+  if(v === '一段') return '一段';
+  if(v === 'カ変') return 'カ変';
+  return 'サ変';
+}
+const CLASS_TONE = { '五段':'#f59e0b', '一段':'#0ea5e9', 'サ変':'#10b981', 'カ変':'#8b5cf6' };
+
+// ======== 初期化 ========
+(function initSelects(){
+  FORMS.forEach(function(label, i){
+    const o1 = document.createElement('option');
+    o1.value = i; o1.textContent = label;
+    selFront.appendChild(o1);
+    const o2 = document.createElement('option');
+    o2.value = i; o2.textContent = label;
+    selBack.appendChild(o2);
+  });
+  selFront.value = frontIdx;
+  selBack.value  = backIdx;
+})();
+
+// ======== 検索（原形・読みで部分一致、活用形は完全一致で逆引き） ========
+function searchVerbs(q){
+  q = q.trim();
+  if(!q) return [];
+  const out = [];
+  const seen = new Set();
+
+  // ① 精確命中：原形・読みそのもの、または17活用形のいずれかと完全一致
+  for(let i=0;i<VERBS.length;i++){
+    const v = VERBS[i];
+    if(v.v === q || v.y === q){ out.push({ v:v, hit:null }); seen.add(i); continue; }
+    for(let j=0;j<v.f.length;j++){
+      if(v.f[j] === q){ out.push({ v:v, hit:j }); seen.add(i); break; }
+    }
+  }
+  // ② 補助：部分一致（活用形の部分形也能找到原形，如「書かされ」→「書く」）
+  //    配点は 原形の先頭一致 > 原形の部分一致 > 活用形の部分一致
+  const partial = [];
+  for(let i=0;i<VERBS.length;i++){
+    if(seen.has(i)) continue;
+    const v = VERBS[i];
+    let score = 0;
+    if(v.v.indexOf(q) === 0) score = 3;
+    else if(v.v.indexOf(q) > 0) score = 2;
+    else if(v.y && v.y.indexOf(q) >= 0) score = 1;
+    else if(v.f.some(function(f){ return f !== '-' && f.indexOf(q) >= 0; })) score = 1;
+    if(score > 0) partial.push({ v:v, hit:null, score:score });
+  }
+  partial.sort(function(a,b){
+    if(b.score !== a.score) return b.score - a.score;
+    return a.v.v.length - b.v.v.length;   // 同分时短词（更基础）优先
+  });
+  for(let i=0;i<partial.length;i++) out.push(partial[i]);
+  return out;
+}
+
+function renderSearchPanel(){
+  const q = searchInput.value.trim();
+  if(!q){ searchPanel.classList.remove('open'); searchPanel.innerHTML=''; return; }
+  const hits = searchVerbs(q).slice(0, 40);
+  if(!hits.length){
+    searchPanel.innerHTML = '<div class="search-empty">該当する動詞がありません</div>';
+    searchPanel.classList.add('open');
+    return;
+  }
+  searchPanel.innerHTML = '';
+  hits.forEach(function(h){
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'search-item';
+    btn.innerHTML =
+      '<span class="s-v">' + h.v.v + '</span>' +
+      '<span class="s-y">' + (h.v.y || '') + '</span>' +
+      '<span class="s-c" style="color:' + CLASS_TONE[classOf(h.v.c)] + '">' + classOf(h.v.c) + '</span>' +
+      (h.hit !== null ? '<span class="s-hit">← ' + FORMS[h.hit] + '</span>' : '') +
+      '<span class="s-z">' + (h.v.zh || '') + '</span>';
+    btn.addEventListener('click', function(){
+      addPinned(h.v.v);
+      searchInput.value = '';
+      searchPanel.classList.remove('open');
+      render();
+    });
+    searchPanel.appendChild(btn);
+  });
+  searchPanel.classList.add('open');
+}
+searchInput.addEventListener('input', renderSearchPanel);
+searchInput.addEventListener('focus', renderSearchPanel);
+document.addEventListener('click', function(e){
+  if(!searchPanel.contains(e.target) && e.target !== searchInput) searchPanel.classList.remove('open');
+});
+
+// ======== 固定語 ========
+function addPinned(name){
+  const v = VERBS.find(function(x){ return x.v === name; });
+  if(!v) return;
+  if(pinned.some(function(x){ return x.v === name; })) return;
+  pinned.push(v);
+  renderPinned();
+}
+function removePinned(name){
+  pinned = pinned.filter(function(x){ return x.v !== name; });
+  renderPinned();
+}
+function renderPinned(){
+  pinnedBox.innerHTML = '';
+  if(!pinned.length){
+    pinnedBox.innerHTML = '<span class="pinned-empty">固定した動詞はここに並びます（検索して追加）</span>';
+    return;
+  }
+  pinned.forEach(function(v){
+    const span = document.createElement('span');
+    span.className = 'pin';
+    span.innerHTML = v.v;
+    const x = document.createElement('button');
+    x.type = 'button';
+    x.className = 'pin-x';
+    x.textContent = '✕';
+    x.title = '削除';
+    x.addEventListener('click', function(){ removePinned(v.v); render(); });
+    span.appendChild(x);
+    pinnedBox.appendChild(span);
+  });
+}
+function clearPinned(){ pinned = []; renderPinned(); render(); }
+
+// ======== プール ========
+function enabledClasses(){
+  const set = new Set();
+  if(cbGodan.checked) set.add('五段');
+  if(cbIchidan.checked) set.add('一段');
+  if(cbSahen.checked) set.add('サ変');
+  if(cbKahen.checked) set.add('カ変');
+  return set;
+}
+
+// 対象プール：選択した分類 かつ 正面/背面とも該当なしでない
+function buildPool(){
+  const classes = enabledClasses();
+  const pool = [];
+  for(let i=0;i<VERBS.length;i++){
+    const v = VERBS[i];
+    if(!classes.has(classOf(v.c))) continue;
+    if(v.f[frontIdx] === '-') continue;   // 正面形が非対応
+    if(v.f[backIdx]  === '-') continue;   // 背面形が非対応
+    pool.push(v);
+  }
+  return pool;
+}
+
+// ======== 描画 ========
+function lenClass(s){
+  const n = [...s].length;
+  if(n <= 2) return 'l1';
+  if(n === 3) return 'l3';
+  if(n === 4) return 'l4';
+  if(n === 5) return 'l5';
+  if(n === 6) return 'l6';
+  if(n === 7) return 'l7';
+  if(n === 8) return 'l8';
+  if(n === 9) return 'l9';
+  if(n === 10) return 'l10';
+  return 'l12';
+}
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function render(){
+  const classes = enabledClasses();
+  const pool = buildPool();
+  const pinnedValid = pinned.filter(function(v){
+    return classes.has(classOf(v.c)) && v.f[frontIdx] !== '-' && v.f[backIdx] !== '-';
+  });
+  const pinnedNames = new Set(pinnedValid.map(function(v){ return v.v; }));
+  const rest = pool.filter(function(v){ return !pinnedNames.has(v.v); });
+  const chosen = pinnedValid.concat(shuffle(rest).slice(0, Math.max(0, cardCount - pinnedValid.length)));
+
+  currentList = chosen;
+  box.innerHTML = '';
+  allFlipped = false;
+
+  // 状態表示
+  let msg = '対象 <b>' + pool.length + '</b> 語';
+  if(pinnedValid.length) msg += '（固定 ' + pinnedValid.length + ' 語を含む）';
+  if(frontIdx === backIdx){
+    msg += '　※ 正面と背面が同じ活用形です';
+    statusEl.classList.add('warn');
+  }else{
+    statusEl.classList.remove('warn');
+  }
+  // 背面形の適用範囲ヒント（対象が少ない場合は注意喚起）
+  if(pool.length < 100){
+    msg += '　※ ' + FORMS[backIdx] + ' が使える動詞は限られます';
+    statusEl.classList.add('warn');
+  }
+  statusEl.innerHTML = msg;
+
+  if(!chosen.length){
+    box.innerHTML = '<div class="empty-msg">該当する動詞がありません</div>'
+      + '<div class="empty-hint">分類・活用形の組み合わせを確認してください<br>（例：使役短縮形は五段動詞のみ）</div>';
+    return;
+  }
+
+  chosen.forEach(function(v){
+    const front = v.f[frontIdx];
+    const back  = v.f[backIdx];
+    const card = document.createElement('div');
+    card.className = 'flip-card';
+    card.innerHTML =
+      '<div class="flip-card-inner">' +
+        '<div class="flip-card-front"><div class="v-front ' + lenClass(front) + '">' + front + '</div></div>' +
+        '<div class="flip-card-back">' +
+          '<div class="v-back ' + lenClass(back) + '">' + back + '</div>' +
+          '<div class="v-meta">' +
+            '<span class="v-tag k">' + FORMS[frontIdx] + '：' + v.v + '</span>' +
+            (v.y ? '<span class="v-tag">' + v.y + '</span>' : '') +
+            '<span class="v-tag">' + classOf(v.c) + '</span>' +
+            (v.zh ? '<span class="v-tag">' + v.zh + '</span>' : '') +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    card.addEventListener('click', function(){
+      card.classList.toggle('flipped');
+    });
+    box.appendChild(card);
+  });
+}
+
+function flipAllCards(){
+  allFlipped = !allFlipped;
+  document.querySelectorAll('.flip-card').forEach(function(c){
+    c.classList.toggle('flipped', allFlipped);
+  });
+}
+function nextSet(){ render(); }
+
+// ======== ステップパー ========
+function setCount(val){
+  val = Math.max(1, Math.min(10, val));
+  if(val === cardCount) return;
+  cardCount = val;
+  stepMinus.disabled = cardCount <= 1;
+  stepPlus.disabled  = cardCount >= 10;
+  const digit = stepperValue.querySelector('.digit');
+  if(digit){
+    digit.textContent = val;
+    digit.classList.add('pop');
+    setTimeout(function(){ digit.classList.remove('pop'); }, 140);
+  }
+  render();
+}
+stepMinus.onclick = function(){ setCount(cardCount - 1); };
+stepPlus.onclick  = function(){ setCount(cardCount + 1); };
+stepMinus.disabled = true;
+
+// ======== イベント ========
+selFront.onchange = function(){ frontIdx = Number(selFront.value); render(); };
+selBack.onchange  = function(){ backIdx  = Number(selBack.value); render(); };
+[cbGodan, cbIchidan, cbSahen, cbKahen].forEach(function(cb){ cb.onchange = function(){ render(); }; });
+
+// 快捷键：Space=下一组  F=全部翻转  C=清除固定
+document.addEventListener('keydown', function(e){
+  if(e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') return;
+  if(e.code === 'Space'){ e.preventDefault(); nextSet(); }
+  else if(e.key === 'f' || e.key === 'F'){ flipAllCards(); }
+  else if(e.key === 'c' || e.key === 'C'){ clearPinned(); }
+});
+
+renderPinned();
+render();
+</script>
+</body>
+</html>
